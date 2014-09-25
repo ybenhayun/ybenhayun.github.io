@@ -2,10 +2,14 @@ body {
 background-color: lightgray;
 margin-right: 40%;
 margin-left: 1%;
+border: solid;
+border-width: 1px;
+
 }
 
 div {
 font-family: helvetica;
+margin-left: .25cm;
 }
 
 h3 {
@@ -21,6 +25,7 @@ margin: 0;
 font-size: 20px;
 font-family: helvetica;
 margin: 0;
+margin-left: .25cm;
 }
 
 span {
@@ -32,6 +37,7 @@ p {
 margin: 0;
 font-family: cambria;
 font-size: 14px;
+border-width: 1px;
 }
 
 .info {
