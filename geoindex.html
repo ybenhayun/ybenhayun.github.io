@@ -3,12 +3,12 @@
 <html>
 
   <head>
-    <title>Geolocation Map Example</title>
+    <title>Tufts Marauder's Map</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places"></script>
     <link rel="stylesheet" href="geolocation_map_style.css" />
     
-    <script>
+    <script> 
       var myLat = 0;
       var myLng = 0;
       var request = new XMLHttpRequest();
@@ -18,7 +18,7 @@
             center: me,
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
-      var map;
+      var map; 
       var marker;
       var infowindow = new google.maps.InfoWindow();
       var places;
@@ -77,7 +77,6 @@
       function callback(results, status)
       {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
-          alert("Got places back!");
           places = results;
           for (var i = 0; i < results.length; i++) {
             createMarker(results[i]);
