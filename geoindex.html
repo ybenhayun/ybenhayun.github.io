@@ -39,7 +39,7 @@
           });
         }
         else {
-          alert("Geolocation is not supported by your web browser.  What a shame!");
+          alert("Geolocation is not supported by your web browser.");
         }
       }
 
@@ -54,6 +54,7 @@
         marker = new google.maps.Marker({
           position: me,
           title: "Here I Am!"
+          icon: "egg.png"
         });
         marker.setMap(map);
           
