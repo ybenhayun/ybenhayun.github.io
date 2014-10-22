@@ -51,10 +51,11 @@
         map.panTo(me);
   
         // Create a marker
+        var image = "egg.png"
         marker = new google.maps.Marker({
           position: me,
-          title: "My Location"
-          //iconURL: 'egg.png'        
+          title: "My Location",
+          icon: image      
         });
         marker.setMap(map);
           
