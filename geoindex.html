@@ -54,7 +54,7 @@
         var image = "egg.png"
         marker = new google.maps.Marker({
           position: me,
-          title: "My Location",
+          title: "This is me!",
           icon: image,     
         });
         marker.setMap(map);
@@ -68,23 +68,12 @@
         // Calling Google Places API
         var request = {
           location: me,
-          radius: '500',
-          types: ['food']
+          radius: '650',
+          types: ['location']
         };
         service = new google.maps.places.PlacesService(map);
         service.search(request, callback);
       }
-      
-      // Taken from http://code.google.com/apis/maps/documentation/javascript/places.html
-      /*function callback(results, status)
-      {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-          places = results;
-          for (var i = 0; i < results.length; i++) {
-            createMarker(results[i]);
-          }
-        }
-      }*/
       
       function createMarker(place)
       {
@@ -99,6 +88,28 @@
           infowindow.setContent(place.name);
           infowindow.open(map, this);
         });
+      }
+    </script>
+
+    <script>
+      function loadXMLDoc(){
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange=function(){
+          if (xmlhttp.readyState==4 && xmlhttp.status==200){
+           document.getElementById("map-canvas").innerHTML=xmlhttp.responseText;
+          }
+        }
+        xmlhttp.open("POST","http://chickenofthesea.herokuapp.com/sendLocation",true);
+        xmlhttp.send();
+        JSON.parse(xmlhttp.responseText);
+
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          places = xmlhttp;
+          for (var i = 0; i < 100; i++) {
+            createMarker(xmlhttp[i]);
+          }
+        }
+      }
       }
     </script>
   </head>
