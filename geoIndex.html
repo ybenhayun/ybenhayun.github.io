@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="style1.css"/>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places"></script>
+    <script>
+        var map, locData, myLat, myLng, infoContent, me;
+        var markers = [];
+        var request = new XMLHttpRequest();
+        var loc = new google.maps.LatLng(42.3581, -71.0636);
+        var infowindow = new google.maps.InfoWindow({
+                content: infoContent,
+        });
+        var myOptions = {
+                zoom: 12,
+                center: loc,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        function init(){
+                map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+                findMe();
+                request.open("POST", "http://warm-fortress-5285.herokuapp.com/sendLocation", true);
+                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        }
+        function dataReady(){
+                if(request.readyState == 4 && request.status == 200){
+                        locData = JSON.parse(request.responseText);
+                        updateMap(locData);
+                }
+        }
+        function updateMap(locData){
+                var i = 0;
+                showMe();
+                
+                for(j=0; j<locData.students.length; j++){
+                        var tempMe, tempName, tempNote;
+                        tempMe = new google.maps.LatLng(locData.students[j].lat, locData.students[j].lng);
+                        tempName = locData.students[j].login;
+                        markers[j] = new google.maps.Marker({
+                                position: tempMe,
+                                title: tempName,
+                        });
+                        google.maps.event.addListener(markers[j],'click',function(){
+                                infowindow.setContent(tempName);
+                                infowindow.open(map,this);
+                        });
+                        markers[j].setMap(map);
+                }
+        }
+        function showMe(){
+                me = new google.maps.LatLng(myLat, myLng);
+                marker = new google.maps.Marker({
+                        position: me,
+                        title: "me",
+                        icon: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3OkA6Iy8/UEhATzhBQkABCgoKDQwNGg8PGislHyU3Kzc3NzcrOCwrNzcsNzg4Kzc3Nzg4ODctKys3ODg3ODg4ODgrNzgyKysxNDE3KyssK//AABEIADAAMAMBIgACEQEDEQH/xAAZAAADAAMAAAAAAAAAAAAAAAAEBgcCAwX/xAAvEAACAQMDAgMHBAMAAAAAAAABAgMEBREAEiExQQYTYRQiMlGRocEjQnGBB9Hw/8QAFwEBAQEBAAAAAAAAAAAAAAAAAwQCAf/EAB0RAAIDAAMBAQAAAAAAAAAAAAECAAMRBBIhQRP/2gAMAwEAAhEDEQA/AJfYbSl0uMdF57Rs2f25J46DVPobXQWWnENHSpLO/HmSkEA9+vGlDwLNDDNOWJk8uPcjYBZM/Fj+eNUC1W6ouTpMsf6XVSeBg98dzqdrOpydpq7jZojt8MuQ0EHXlccZ9e300oeNrFVUsqyUDSyU8kbMY9gzHtGSDjtjP01VY7bR0cwjmq1FS4yFOkvxxDUSWuvjC7/ZVDM/fg8Y1pX+GI9PmiTuCijaNWYhs45UfnpoqOjG4BYkHqwyfwNdC1RCWggk25LIOR3OjUjXcAvHPO0Z13IQHkX7I7UMk2N+3HYfF65xqu+GKFrla6SaWaSExru2RnAYftP8YxqUkNAkQEf6W7AOOQNM3gfxLJR160csk7wSrsR258s9v650BPuw+NdjdWle9noaqSGaVY5ZAg+TYPTOkb/K91pbbaqqnFIZJ6+HyhKGA2gHn86bLepeHy2QhG953U7Q3rxpX/ylZXuNlpp1QPJFOd2Tj3WGB9wPrplOkZLrj0QkRBswc2qjQR4zGMlsfbOjQzsDsSXOepHH50BRSmkpoaVvOEiDZIu3ncP++2i56tN4V9oCg7Tkcn1/3pBkh/ZcnOqKj2WIquAe50NDcxAEwuZQ+Qcawu7Asrr3bDY1os9N7Xd6SI9HlUf1nS1VBhsO2sK2y42CdKyFJw43hQXX5HHXGiLzc4pIGp0VZEPxZGQcc6VraDSw1LPGZFigJgUdSw68/LBGs7jUwraqipHJEO4npjI4XVNHDRW7TNnKdlyIdfVNNUTyKRh5XYHHYk6EaQ+7sVCy5IJHJPGsGfaADkn01q3EN8sad6q2O5B6z//Z"
+               });
+              marker.setMap(map);
+              var myinfowindow = new google.maps.InfoWindow({
+                        content: "Yuval",
+              });
+              myinfowindow.open(map, marker);
+        }
+        function findMe(){
+                if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                                myLat = position.coords.latitude;
+                                myLng = position.coords.longitude;
+                                request.send("login=KatieBell&lat="+ myLat + "&lng=" + myLng);
+                                request.onreadystatechange = dataReady;
+                        });
+                }
+                else {
+                        alert("Geolocation is not supported by your web browser.  What a shame!");
+                }
+        }
+        
+    </script>
+        </head>
+  <body onload="init()">
+<div id="map-canvas"></div>
+</body>
+</html>
