@@ -20,7 +20,7 @@
         function init(){
                 map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
                 findMe();
-                request.open("POST", "http://warm-fortress-5285.herokuapp.com/sendLocation", true);
+                request.open("POST", "https://shielded-temple-1577.herokuapp.com/sendLocation", true);
                 request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         }
         function dataReady(){
