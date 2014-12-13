@@ -1,20 +1,79 @@
-h2 {
-text-align: center;
-font-family: lucida sans typewriter;
-}
-
-span {
-font-family: wingdings;
-}
-p { 
-text-align: center;
-font-family: rockwell;
-}
-img {
-height: 500px;
-width: 500px;
-}
-
 body {
-background-color: lightgray;
+	font-family: rockwell;
+	background-color: orange;
 }
+
+#name {
+	text-align: center;
+}
+
+
+ul {
+	list-style-type: none;
+	margin-top: 1.35in;
+	padding: 0;
+	text-align: center;
+}
+
+li {
+	margin-left: 10px;
+	display: inline;
+}
+
+/* Links */
+a:link 
+{ 
+	color: #666; 
+	outline: none; 
+	text-decoration: none;
+}
+
+a:visited 
+{ 
+	color: #666; 
+	outline: none;
+	text-decoration: none; 
+}
+
+a:hover
+{
+	color: #333; 
+	outline: none;
+	text-decoration: none;
+}
+
+a:active 
+{
+	color: #666; 
+	outline: none;
+	text-decoration: none;
+}
+
+#top {
+	background-color: yellow;
+	margin-top: -20px;
+	text-align: center;
+	margin-right: -20px;
+	margin-left: -20px;
+}
+
+#bottom {
+	background-color: orange;
+	margin-top: -20px;
+	position: relative;
+}
+
+.contact {
+	margin-left: 15%;
+	margin-right: 25%;
+}
+
+.about {
+	margin-left: 15%;
+	margin-right: 25%;
+}
+
+strong {
+	color: black;
+}
+

@@ -15,13 +15,17 @@
 
    <ul>
       <li id = "work" ><a href = "work.html">Work</a></li>
-      <li id = "about"><a href = about.html>About</a></li>
+      <li id = "about"><a href = bio.html>About</a></li>
       <li id = "resume"><a href = resume.html>Resume<a></li>
      <li id = "blog"><a href = "blog.html">Blog</a></li>
-     <li id = "contact"><a href = "contact.html">Contact Me</a></li>
+     <li id = "contact"><a href = "contact.html"><strong>Contact Me</strong></a></li>
    </ul>
   </div>
-  <div id = "bottom"></div>
+  <div id = "bottom">
+    <div class = "about">
+  
+</div>
+  </div>
 
 </body>
 </html>
