@@ -1,1 +1,33 @@
-html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+html {
+        height: 100%;
+}
+
+body {
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+}
+
+#map_canvas {
+        width: 80%;
+        height: 100%;
+        float: left;
+}
+
+h1 {
+        font-family: ‘Metrophobic’, Arial, serif; 
+        font-weight: 300;
+}
+
+h2 {
+        font-family: ‘Metrophobic’, Arial, serif; 
+        font-weight: 200;
+        font-size: 18px;
+}
+
+#header {
+        text-align: center;
+        float: left;
+        width: 20%;
+        height: 100%;
+}
