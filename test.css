@@ -1,0 +1,156 @@
+/* General */
+ul, ol 
+{
+	list-style: none;
+}
+
+h1,h2,h3,h4,h5,h6
+{
+	font-size: 1em;
+}
+
+ul,li,h1,h2,h3,h4,h5,h6,body,html,p,blockquote
+{
+	margin: 0px;
+	padding: 0px; 
+}
+
+p
+{
+  padding: 20px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'HelveticaNeue', "Helvetica", Arial, sans-serif;
+  color: #666; 
+}
+
+body 
+{
+  	background: #1f1f1f;
+  	font: 14px/24px 'Georgia', 'Times New Roman', serif;
+  	color: #e0e0e0;
+}
+
+h1 
+{
+  font-weight: normal;
+  margin-bottom: 8px;
+  font-size: 30px;
+  line-height: 40px;
+} 
+
+h3
+{
+  font-weight: normal;
+  color: #00ffff;
+}
+
+.active
+{
+  font-weight: bold;
+}
+
+/* Links */
+a:link 
+{ 
+	color: #666; 
+	outline: none; 
+	text-decoration: none;
+}
+
+a:visited 
+{ 
+	color: #666; 
+	outline: none;
+	text-decoration: none; 
+}
+
+a:hover
+{
+	color: #333; 
+	outline: none;
+	text-decoration: none;
+}
+
+a:active 
+{
+	color: #666; 
+	outline: none;
+	text-decoration: none;
+}
+
+/* Index */
+.faded
+{
+	display: none;
+}
+
+#index 
+{
+  position: absolute;
+  top: 0; 
+  right: 40px;
+  width: 750px;
+}
+
+#tagline 
+{
+    margin: 210px 0 0 10px; 
+    padding-right: 30px;
+    float: left;
+    width: 360px; height: 10px;
+    display: inline;
+    text-align: right;
+}
+
+#index_nav 
+{
+    padding: 180px 0 0px 30px;
+    float: right;
+    width: 319px;
+    border-left: 1px solid #00ffff;
+}
+
+#index_nav ul a 
+{
+    margin-bottom: 8px; 
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-family: 'HelveticaNeue', "Helvetica", Arial, sans-serif;
+}
+
+#photo
+{
+	width: 180px;
+	height: 180px;
+	border-radius: 15px;
+}
+
+/*About*/
+#nav 
+{
+  padding: 28px 30px 100px 30px;
+  float: right;
+  width: 100px;
+  border-left: 1px solid #00ffff;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'HelveticaNeue', "Helvetica", Arial, sans-serif;
+}
+
+#about
+{
+  float: left;
+  /*width: 670px;*/
+}
+
+.galleria
+{
+  padding: 20px;
+  width: 400px;
+  height: 600px;
+}
