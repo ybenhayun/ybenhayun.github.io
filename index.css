@@ -3,15 +3,6 @@ body {
 	background-color: orange;
 }
 
-#name {
-	margin-top: 75px;
-	padding: 10px;
-	text-align: center;
-	margin-bottom: 0;
-	color: black;
-}
-
-
 ul {
 	list-style-type: none;
 	margin-top: .4in;
@@ -90,6 +81,13 @@ p {
 	line-height: 7mm;
 }
 
+
+#name {
+	margin-top: 75px;
+	padding: 10px;
+	text-align: center;
+	margin-bottom: 0;
+}
 
 
 
