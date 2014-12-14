@@ -139,3 +139,11 @@ span {
 	margin-bottom: 5px;
 }
 
+li:not(.sec):hover{
+	background-color: #FFFF99;
+	padding: 5px;
+	border: solid 1px;
+	border-bottom: none;
+	margin-bottom: 5px;
+}
+
