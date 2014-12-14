@@ -1,11 +1,27 @@
 body {
 	font-family: rockwell;
-	background-color: orange;
+	background-color: #FFFF99;
+}
+
+#top {
+	background-color: #66FF99;
+	margin-top: -20px;
+	text-align: center;
+	margin-right: -20px;
+	margin-left: -20px;
+	border: solid 1px;
+}
+
+#bottom {
+	background-color: #FFFF99;
+	margin-top: -20px;
+	position: relative;
 }
 
 ul {
 	list-style-type: none;
 	margin-top: .4in;
+	margin-bottom: -5px;
 	padding: 5px;
 	text-align: center;
 }
@@ -44,32 +60,20 @@ a:active
 	text-decoration: none;
 }
 
-#top {
-	background-color: yellow;
-	margin-top: -20px;
-	text-align: center;
-	margin-right: -20px;
-	margin-left: -20px;
-	border: solid 1px;
-}
-
-#bottom {
-	background-color: orange;
-	margin-top: -20px;
-	position: relative;
-}
-
 .contact {
+	margin-top: 3%;
 	margin-left: 20%;
 	margin-right: 20%;
 }
 
 .about {
+	margin-top: 3%;
 	margin-left: 20%;
 	margin-right: 20%;
 }
 
 .resume {
+	margin-top: 3%;
 	margin-left: 20%;
 	margin-right: 20%;
 }
@@ -78,6 +82,12 @@ a:active
 	font-weight: 600;
 	margin-bottom: -20px;	
 	padding: 0;
+}
+
+.intro {
+	margin-top: 3%;
+	margin-left: 20%;
+	margin-right: 20%;
 }
 strong {
 	color: black;
