@@ -4,6 +4,7 @@ body {
 }
 
 #name {
+	margin-top: 75px;
 	padding: 10px;
 	text-align: center;
 	margin-bottom: 0;
@@ -57,6 +58,7 @@ a:active
 	text-align: center;
 	margin-right: -20px;
 	margin-left: -20px;
+	border: solid 1px;
 }
 
 #bottom {
@@ -66,16 +68,25 @@ a:active
 }
 
 .contact {
-	margin-left: 15%;
-	margin-right: 25%;
+	margin-left: 20%;
+	margin-right: 20%;
 }
 
 .about {
-	margin-left: 15%;
-	margin-right: 25%;
+	margin-left: 20%;
+	margin-right: 20%;
 }
 
 strong {
 	color: black;
 }
+
+h3 {
+	font-size: 26px
+}
+
+p {
+	line-height: 7mm;
+}
+
 
