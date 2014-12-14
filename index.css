@@ -21,7 +21,7 @@ body {
 ul {
 	list-style-type: none;
 	margin-top: .4in;
-	margin-bottom: -5px;
+	margin-bottom: -1px;
 	padding: 5px;
 }
 
@@ -131,4 +131,11 @@ span {
 	margin-bottom: -20px;
 }
 
+.sec {
+	background-color: #FFFF99;
+	padding: 5px;
+	border: solid 1px;
+	border-bottom: none;
+	margin-bottom: 5px;
+}
 
