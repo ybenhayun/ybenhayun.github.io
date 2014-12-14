@@ -4,13 +4,15 @@ body {
 }
 
 #name {
+	padding: 10px;
 	text-align: center;
+	margin-bottom: 0;
 }
 
 
 ul {
 	list-style-type: none;
-	margin-top: 1.35in;
+	margin-top: .5in;
 	padding: 0;
 	text-align: center;
 }
