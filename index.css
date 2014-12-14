@@ -23,7 +23,6 @@ ul {
 	margin-top: .4in;
 	margin-bottom: -5px;
 	padding: 5px;
-	text-align: center;
 }
 
 li {
@@ -80,6 +79,7 @@ a:active
 
 .section {
 	font-weight: 600;
+	margin-top: -20px;
 	margin-bottom: -20px;	
 	padding: 0;
 }
@@ -120,6 +120,7 @@ span {
 }
 
 #name {
+	color: blue;
 	margin-top: 75px;
 	padding: 10px;
 	text-align: center;
