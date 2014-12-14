@@ -48,7 +48,6 @@ a:visited
 a:hover
 {
 	color: #333; 
-	font-weight: bold;
 	outline: none;
 	text-decoration: none;
 }
