@@ -69,6 +69,16 @@ a:active
 	margin-right: 20%;
 }
 
+.resume {
+	margin-left: 20%;
+	margin-right: 20%;
+}
+
+.section {
+	font-weight: 600;
+	margin-bottom: -20px;	
+	padding: 0;
+}
 strong {
 	color: black;
 }
