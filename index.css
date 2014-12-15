@@ -14,7 +14,7 @@ p {
 
 body {
 	font-family: rockwell;
-	background-color: #FFFF99;
+	background-color: #F6F6F6;
 }
 
 ul {
@@ -30,32 +30,31 @@ li {
 }
 
 #top {
-	background-color: #FFFFEB;
+	color: #F6F6F6;
+	background-color: #2B2B2B; 
 	margin-top: -20px;
 	text-align: center;
 	margin-right: -20px;
 	margin-left: -20px;
-	border: solid 1px;
+	border: solid #DE1B1B 7px;
 }
 
 #bottom {
-	background-color: #FFFF99;
+	background-color: #F6F6F6;
 	margin-top: -20px;
 	position: relative;
 }
-
-
 /* Links */
-a:link 
+/*a:link
 { 
-	color: #666; 
+	color: #666;
 	outline: none; 
 	text-decoration: none;
 }
 
-a:visited 
+a:visited
 { 
-	color: #666; 
+	color: #666;
 	outline: none;
 	text-decoration: none; 
 }
@@ -67,12 +66,12 @@ a:hover
 	text-decoration: none;
 }
 
-a:active 
+a:active
 {
 	color: #666; 
 	outline: none;
 	text-decoration: none;
-}
+}*/
 
 .contact {
 	margin-top: 3%;
@@ -118,7 +117,11 @@ a:active
 }
 
 #name {
-	color: blue;
+	color: white;
+	font-family: rockwell;
+	font-size: 35px;
+	text-decoration: none;
+	outline: none;
 	margin-top: 75px;
 	padding: 10px;
 	text-align: center;
@@ -129,18 +132,37 @@ a:active
 	margin-bottom: -20px;
 }
 
+li a {
+	color: white;
+	outline: none;
+	text-decoration: none;
+}
+
 .sec {
-	background-color: #FFFF99;
+	color: black;
+	outline: none;
+	text-decoration: none;
+	background-color: #DE1B1B;
 	padding: 5px;
-	border: solid 1px;
-	border-bottom: none;
 	margin-bottom: 5px;
 }
 
-li:not(.sec):hover{
-	background-color: #FFFF99;
+li a:not(.sec):hover{
+	color: black;
+	outline: none;
+	text-decoration: none;
+	background-color: #DE1B1B;
 	padding: 5px;
-	border: solid 1px;
-	border-bottom: none;
 	margin-bottom: 5px;
 }
+/*
+UI COMMENTS
+-contact me make one word
+-match font color with oposite background
+-fix resume you butthead
+-add performance works
+-more projects
+*/
+
+
+
