@@ -175,6 +175,11 @@ div.code {
 	margin-left: .5in;
 }
 
+.prob {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-style: italic;
+}
 div.indent {
 	margin-left: .25in;
 }
