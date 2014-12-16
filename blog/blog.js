@@ -1,12 +1,12 @@
 $(document).ready(function(){
-  $("a.euler").click(function(){
+  /*$("a.euler").click(function(){
     $("div.euler").toggle();
     if($("a.euler").html() != "(less)"){
       $("a.euler").html("(less)");
     } else {
       $("a.euler").html("(more)");
     }
-  });
+  });*/
    
    $("a.1").click(function(){
     $("div.1").toggle();
@@ -26,5 +26,5 @@ $(document).ready(function(){
     }
   });
 
-  $("div.euler, div.1, div.2").hide();
+  $("div.1, div.2").hide();
  });

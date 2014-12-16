@@ -30,10 +30,11 @@
     <!--<h3>Blogosphere</h3>
     <p>Content is currently under construction. Come back soon!</p>-->
     <h3>Project Euler Solutions Guide</h3>
-    <p class = "euler">Recently, I've decided to keep track of the problems I've solved from <a href = "https://projecteuler.net">projecteuler.net</a>, and post the steps to the solutions here. Currently, I've solved 23 problems. <a class = "euler">(more)</a></p>
+    <p class = "euler">Recently, I've decided to keep track of the problems I've solved from <a href = "https://projecteuler.net">projecteuler.net</a>, and post the steps to the solutions here. Currently, I've solved 23 problems.</p>
     <div class = "euler">
       <li class = "prob">Problem #1) Multiples of 3 and 5 <a class = "1">(more)</a></li>
-      <div class = "1">The answer to this problem can be accomplished through a simple while/for loop. Set an integer equal to 3, and progressively add 3 to the integer. This number will clearly be divisible by either 3 or 5, so add it to the sum. Like this:<br>
+      <div class = "1"><strong>Problem: </strong> If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23. Find the sum of all the multiples of 3 or 5 below 1000.<br><br>
+      The answer to this problem can be accomplished through a simple while/for loop. Set an integer equal to 3, and progressively add 3 to the integer. This number will clearly be divisible by either 3 or 5, so add it to the sum. Like this:<br>
       <div class = "code"><code>int i = first; <br>while (i < range){ <div class = "indent"> sum += i;<br>i += first;</div> } </code></div>
       Then repeat the process, but start with 5. This time, make sure the number isn't divisible by 3 (by using mod), that way you don't have duplicates.
       <div class = "code"><code> i = second; <br> while (i < range){<div class = "indent">if (i%first != 0)<div class = "indent">
