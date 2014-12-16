@@ -2,7 +2,43 @@
 <html>
 <head>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-<link rel = "stylesheet" type = "text/css" href = "../index.css">
+  <link rel = "stylesheet" type = "text/css" href = "../index.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+  <script>
+$(document).ready(function(){
+  $("a.euler").click(function(){
+    $("div.euler").toggle();
+    if($("a.euler").html() != "(less)"){
+      $("a.euler").html("(less)");
+    } else {
+      $("a.euler").html("(more)");
+    }
+  });
+   
+   $("a.1").click(function(){
+    $("div.1").toggle();
+    if($("a.1").html() != "(less)"){
+      $("a.1").html("(less)");
+    } else {
+      $("a.1").html("(more)");
+    }
+  });
+
+  $("a.2").click(function(){
+    $("div.2").toggle();
+    if($("a.2").html() != "(less)"){
+      $("a.2").html("(less)");
+    } else {
+      $("a.2").html("(more)");
+    }
+  });
+
+  $("div.euler, div.1, div.2").hide();
+ });
+  </script>
+
   <title>Yuval Ben-Hayun</title>
 </head>
 <body>
@@ -22,8 +58,26 @@
    </ul>
   </div>
   <div id = "bottom"><div class = "blog">
-    <h3>Blogosphere</h3>
-    <p>Content is currently under construction. Come back soon!</p></div>
+    <!--<h3>Blogosphere</h3>
+    <p>Content is currently under construction. Come back soon!</p>-->
+    <h3>Project Euler Solutions Guide</h3>
+    <p class = "euler">Recently, I've decided to keep track of the problems I've solved from <a href = "https://projecteuler.net">projecteuler.net</a>, and post the steps to the solutions here. Currently, I've solved 23 problems. <a class = "euler">(more)</a></p>
+    <div class = "euler">
+      <li class = "prob">Problem #1) Multiples of 3 and 5 <a class = "1">(more)</a></li>
+      <div class = "1">The answer to this problem can be accomplished through a simple while/for loop. Set an integer equal to 3, and progressively add 3 to the integer. This number will clealry be divisible by either 3 or 5, so add it to the sum. Like this:<br>
+      <div class = "code"><code>int i = first; <br>while (i < range){ <div class = "indent"> sum += i;<br>i += first;</div> } </code></div>
+      The repeat the process, but start with 5. This time, make sure the number isn't divisible by 3 (by using mod), that way you don't have duplicates.
+      <div class = "code"><code> i = second; <br> while (i < range){<div class = "indent">if (i%first != 0)<div class = "indent">
+      sum += i;</div>i += second;</div>}</code></div>
+      Not at all a difficult problem. You can find the source code <a href = https://github.com/ybenhayun/Project_Euler/blob/master/%231-threeFive/threeFive.cpp class = "code">here</a>.
+
+    </div>
+      <li class = "prob">Problem #2) Another Question <a class = "2">(more)</a></li>
+      <div class = "2">This is another thing</div>
+    </div>
+    
+    <hr>
+  </div>
   </div>
 
 </body>

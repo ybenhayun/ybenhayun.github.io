@@ -1,4 +1,19 @@
 
+a {
+	color: blue;
+	text-decoration: none;
+	outline: none;	
+}
+
+a:visited {
+	text-decoration: none;
+	outline: none;
+}
+
+a:not(.sec):hover {
+	text-decoration: underline;
+}
+
 strong {
 	color: black;
 }
@@ -24,7 +39,7 @@ ul {
 	padding: 5px;
 }
 
-li {
+ul li {
 	margin-left: 15px;
 	display: inline;
 }
@@ -37,6 +52,7 @@ li {
 	margin-right: -20px;
 	margin-left: -20px;
 	border: solid #DE1B1B 7px;
+	border-right: none;
 }
 
 #bottom {
@@ -44,34 +60,6 @@ li {
 	margin-top: -20px;
 	position: relative;
 }
-/* Links */
-/*a:link
-{ 
-	color: #666;
-	outline: none; 
-	text-decoration: none;
-}
-
-a:visited
-{ 
-	color: #666;
-	outline: none;
-	text-decoration: none; 
-}
-
-a:hover
-{
-	color: #333; 
-	outline: none;
-	text-decoration: none;
-}
-
-a:active
-{
-	color: #666; 
-	outline: none;
-	text-decoration: none;
-}*/
 
 .contact {
 	margin-top: 3%;
@@ -147,7 +135,7 @@ li a {
 	margin-bottom: 5px;
 }
 
-li a:not(.sec):hover{
+ul li a:not(.sec):hover{
 	color: black;
 	outline: none;
 	text-decoration: none;
@@ -170,6 +158,32 @@ li a:not(.sec):hover{
 .web {
 	margin-left: .25in;
 }
+
+a.euler {
+	color: #4D4D4D;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+div.euler a:not(.code){
+	color: #4D4D4D;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+div.code {
+	margin-left: .5in;
+}
+
+div.indent {
+	margin-left: .25in;
+}
+
+a.code {
+	color: blue;
+	font-size: 16px;
+}
+
 /*
 UI COMMENTS
 -contact me make one word
