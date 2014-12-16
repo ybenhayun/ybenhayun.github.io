@@ -159,11 +159,11 @@ ul li a:not(.sec):hover{
 	margin-left: .25in;
 }
 
-a.euler {
+/*a.euler {
 	color: #4D4D4D;
 	font-size: 12px;
 	cursor: pointer;
-}
+}*/
 
 div.euler a:not(.code){
 	color: #4D4D4D;
