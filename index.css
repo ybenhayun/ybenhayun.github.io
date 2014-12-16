@@ -1,6 +1,6 @@
 
 a {
-	color: blue;
+	color: #0066FF;
 	text-decoration: none;
 	outline: none;	
 }
@@ -158,12 +158,6 @@ ul li a:not(.sec):hover{
 .web {
 	margin-left: .25in;
 }
-
-/*a.euler {
-	color: #4D4D4D;
-	font-size: 12px;
-	cursor: pointer;
-}*/
 
 div.euler a:not(.code){
 	color: #4D4D4D;
