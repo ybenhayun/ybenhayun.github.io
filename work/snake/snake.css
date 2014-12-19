@@ -1,10 +1,27 @@
 canvas{
 	display: block;
 	position: absolute;
-	border: 1px solid #000;
+	border: 1px solid black;
 	margin: auto;
 	top: 0;
 	bottom: 0;
 	right: 0;
 	left: 0;
+}
+
+#game {
+	border: 1px solid black;
+	height: 100px;
+	width: 100px;	
+	margin-left: 50%;
+	margin-top: 20%;
+}
+
+div {
+	position: absolute;
+	border: 1px solid black;
+	margin-left: 75%;
+	width: 200px;
+	height: 520px;
+	margin-top: 1%;
 }

@@ -1,9 +1,11 @@
-var COLS = 40, ROWS = 26;
-var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3;
+var COLS = 26, ROWS = 26;
+var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4;
 var left  = 0, up = 1, right = 2, down  = 3;
 var larrow  = 37, uarrow = 38, rarrow = 39, darrow = 40;
 var a = 65, d = 68, s = 83, w = 87;
-var canvas, ctx, keystate, frames, score, timer, taken;	 
+var canvas, ctx, keystate, frames, score, timer, taken, board;
+var booleans = [];
+var hx, hy;
 
 grid = {
 	width: null, 
@@ -53,7 +55,7 @@ snake = {
 	}
 };
 
-function setFood() {
+function set(value) {
 	var empty = [];
 	for (var x=0; x < grid.width; x++) {
 		for (var y=0; y < grid.height; y++) {
@@ -63,17 +65,19 @@ function setFood() {
 		}
 	}
 	var randpos = empty[Math.round(Math.random()*(empty.length - 1))];
-	grid.set(FRUIT, randpos.x, randpos.y);
+	grid.set(value, randpos.x, randpos.y);
 	timer = 500;
 }
 
 function main() {
+	//localStorage.clear() //resets high scores
 	canvas = document.createElement("canvas");
 	canvas.width = COLS*20;
 	canvas.height = ROWS*20;
 	ctx = canvas.getContext("2d");
 	document.body.appendChild(canvas);
 	ctx.font = "12px Helvetica";
+
 	frames = 0;
 	keystate = {};
 	document.addEventListener("keydown", function(evt) {
@@ -90,6 +94,7 @@ function init() {
 	score = 0;
 	taken = 0;
 	snake_length = 1;
+	COLS = 26, ROWS = 26;
 	if (localStorage.getItem("highscore") == null) 
 		localStorage.setItem("highscore", 0);
 	grid.init(EMPTY, COLS, ROWS);
@@ -97,7 +102,7 @@ function init() {
 	var sp = {x:Math.floor(COLS/2), y:ROWS-1};
 	snake.init(up, sp.x, sp.y);
 	grid.set(SNAKE, sp.x, sp.y);
-	setFood();
+	set(FRUIT);
 }
 
 function loop() {
@@ -110,7 +115,7 @@ function loop() {
 function update() {
 	frames++;
 
-	if ((keystate[larrow]||keystate[a]) && snake.direction != right) 
+	if ((keystate[larrow]||keystate[a]) && snake.direction != right)
 		snake.direction = left;
 	if ((keystate[rarrow]||keystate[d]) && snake.direction != left) 
 		snake.direction = right;
@@ -128,34 +133,54 @@ function update() {
 		if (snake.direction == right) nx++;
 		if (snake.direction == down) ny++;
 
-		if (nx < 0){
-			nx = grid.width-1;
-		} else if (nx > grid.width-1) {
-			nx = 0;
-		} else if (ny < 0) {
-			ny = grid.height-1;
-		} else if (ny > grid.height-1) {
-			ny = 0;
+		if (nx < grid.width-COLS){
+			nx = COLS-1;
+		} else if (nx > COLS-1) {
+			nx = grid.width-COLS;
+		} else if (ny < grid.height-ROWS) {
+			ny = ROWS-1;
+		} else if (ny > ROWS-1) {
+			ny = grid.height-ROWS;
 		} else if (gameOver(nx, ny)) {
 			return init();
 		}
 
+		hx = nx;
+		hy = ny;
+
 		if (atFruit(nx, ny)) {
 			score+=timer;
 			taken++;
-			setFood(); 
+
+			//uncomment for walled snake
+			if (walled == true && taken%4 == 0){
+				for (i = 0; i < ROWS; i++){
+					grid.set(WALL, COLS-1, i);
+					grid.set(WALL, i, COLS-1);
+					grid.set(WALL, (taken/4)-1, ROWS-i-1);
+					grid.set(WALL, ROWS-i-1, (taken/4)-1);
+				}
+				ROWS--;
+				COLS--;
+			}
+			set(FRUIT);
+			/*set(BOMB);
+			set(BOMB); */
 			var tail = {x:nx, y:ny};
-			for (var i = 1; i < 4; i++){			
+			for (var i = 0; i < 3; i++){			
 				grid.set(SNAKE, tail.x, tail.y);
 				snake.insert(tail.x, tail.y);
 			} 
-			grid.set(BOMB, tail.x, tail.y);
-			snake_length+=4;
+
+			if (bombs == true)
+				grid.set(BOMB, tail.x, tail.y);//uncomment for bombs
+
+			snake_length+=3;
 			if (score > localStorage.getItem("highscore"))
 				localStorage.setItem("highscore", score);
 		} else {
 			var tail = snake.remove();
-			if (grid.get(tail.x, tail.y) != BOMB)
+			if (grid.get(tail.x, tail.y) != BOMB && grid.get(tail.x, tail.y) != WALL)
 				grid.set(EMPTY, tail.x, tail.y);  //remove for infinite snake
 			tail.x = nx;
 			tail.y = ny;
@@ -187,6 +212,13 @@ function atBomb(x, y){
 	return grid.get(x, y) == BOMB;
 }
 
+function atHead(x ,y){
+	return (x == hx && y == hy);
+}
+
+function atWall(x, y){
+	return grid.get(x, y) == WALL;
+}
 function draw() {
 	var tw = canvas.width/grid.width;
 	var th = canvas.height/grid.height;
@@ -195,7 +227,13 @@ function draw() {
 			if (isEmpty(x, y)) ctx.fillStyle = "#fff";
 			if (atSnake(x, y)) ctx.fillStyle = "#0f0";
 			if (atFruit(x, y)) ctx.fillStyle = "#f00";
-			if (atBomb(x, y)) ctx.fillStyle = "#000";
+			if (atBomb(x, y)) {
+				if (invisibombs == true)
+					ctx.fillStyle = "#f00";
+				else ctx.fillStyle = "#000";
+			}
+			if (atHead(x, y)) ctx.fillStyle = "#f00";
+			if (atWall(x ,y)) ctx.fillStyle = "blue";
 			ctx.fillRect(x*tw, y*th, tw, th);
 		}
 	}
@@ -210,6 +248,35 @@ function draw() {
 	ctx.fillText("FRUIT VALUE: " + timer, 10, canvas.height-70);
 }
 
-// start and run the game
+function walled() {
+	walled = true;
+	classic = false;
+	bombs = false;
+	invisibombs = false;
+	main();
+}
 
-main();
+function classic() {
+	classic = true;
+	walled = false;
+	bombs = false;
+	invisibombs = false;
+}
+
+function bombs() {
+	bombs = true;
+	classic = false;
+	walled = false;
+	invisibombs = false;
+	main();
+}
+
+function invisibombs() {
+	invisibombs = true;
+	classic = false;
+	walled = false;
+	bombs = true;
+	main();
+}
+
+// start and run the game

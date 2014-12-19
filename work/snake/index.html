@@ -3,9 +3,18 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel = "stylesheet" type = "text/css" href = "snake.css">
+  	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script type = "text/javascript" src = "start.js"></script>
 	<title>Snake!</title>
 </head>
 <body>
 	<script type = "text/javascript" src = "snake.js"></script>
+	<div id = "game">
+		<button id = "bombs" onclick = bombs()> Bombs </button>
+		<button id = "classic" onclick = main()> Classic </button>
+		<button id = "invisibombs" onclick = invisibombs()> Invisibombs </button>
+		<button id = "walled" onclick = walled()> Walled </button>
+	</div>
+	<div id = "score"></div>
 </body>
 </html>
