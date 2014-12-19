@@ -1,5 +1,5 @@
-var COLS = 26, ROWS = 26;
-var EMPTY = 0, SNAKE = 1, FRUIT = 2;
+var COLS = 40, ROWS = 26;
+var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3;
 var left  = 0, up = 1, right = 2, down  = 3;
 var larrow  = 37, uarrow = 38, rarrow = 39, darrow = 40;
 var a = 65, d = 68, s = 83, w = 87;
@@ -14,6 +14,7 @@ grid = {
 		this.width = c;
 		this.height = r;
 		this._grid = [];
+
 		for (var x=0; x < c; x++) {
 			this._grid.push([]);
 			for (var y=0; y < r; y++) {
@@ -56,7 +57,7 @@ function setFood() {
 	var empty = [];
 	for (var x=0; x < grid.width; x++) {
 		for (var y=0; y < grid.height; y++) {
-			if (grid.get(x, y) === EMPTY) {
+			if (grid.get(x, y) == EMPTY) {
 				empty.push({x:x, y:y});
 			}
 		}
@@ -89,8 +90,10 @@ function init() {
 	score = 0;
 	taken = 0;
 	snake_length = 1;
-	//localStorage.setItem("highscore", score);
+	if (localStorage.getItem("highscore") == null) 
+		localStorage.setItem("highscore", 0);
 	grid.init(EMPTY, COLS, ROWS);
+
 	var sp = {x:Math.floor(COLS/2), y:ROWS-1};
 	snake.init(up, sp.x, sp.y);
 	grid.set(SNAKE, sp.x, sp.y);
@@ -107,11 +110,16 @@ function loop() {
 function update() {
 	frames++;
 
-	if ((keystate[larrow]||keystate[a]) && snake.direction != right) snake.direction = left;
-	if ((keystate[rarrow]||keystate[d]) && snake.direction != left) snake.direction = right;
-	if ((keystate[uarrow]||keystate[w]) && snake.direction != down) snake.direction = up;
-	if ((keystate[darrow]||keystate[s]) && snake.direction != up) snake.direction = down;
-	if (frames%5 === 0){
+	if ((keystate[larrow]||keystate[a]) && snake.direction != right) 
+		snake.direction = left;
+	if ((keystate[rarrow]||keystate[d]) && snake.direction != left) 
+		snake.direction = right;
+	if ((keystate[uarrow]||keystate[w]) && snake.direction != down) 
+		snake.direction = up;
+	if ((keystate[darrow]||keystate[s]) && snake.direction != up) 
+		snake.direction = down;
+
+	if (frames%5 == 0){
 		var nx = snake.last.x;
 		var ny = snake.last.y;
 
@@ -120,7 +128,15 @@ function update() {
 		if (snake.direction == right) nx++;
 		if (snake.direction == down) ny++;
 
-		if (gameOver(nx, ny)) {
+		if (nx < 0){
+			nx = grid.width-1;
+		} else if (nx > grid.width-1) {
+			nx = 0;
+		} else if (ny < 0) {
+			ny = grid.height-1;
+		} else if (ny > grid.height-1) {
+			ny = 0;
+		} else if (gameOver(nx, ny)) {
 			return init();
 		}
 
@@ -129,16 +145,18 @@ function update() {
 			taken++;
 			setFood(); 
 			var tail = {x:nx, y:ny};
-			for (var i = 0; i < 4; i++){			
+			for (var i = 1; i < 4; i++){			
 				grid.set(SNAKE, tail.x, tail.y);
 				snake.insert(tail.x, tail.y);
-			}
+			} 
+			grid.set(BOMB, tail.x, tail.y);
 			snake_length+=4;
 			if (score > localStorage.getItem("highscore"))
 				localStorage.setItem("highscore", score);
 		} else {
 			var tail = snake.remove();
-			grid.set(EMPTY, tail.x, tail.y);
+			if (grid.get(tail.x, tail.y) != BOMB)
+				grid.set(EMPTY, tail.x, tail.y);  //remove for infinite snake
 			tail.x = nx;
 			tail.y = ny;
 			grid.set(SNAKE, tail.x, tail.y);
@@ -148,15 +166,25 @@ function update() {
 }
 
 function gameOver(x, y){
-	if ((x < 0)||(x > grid.width-1)) return true;
-	if ((y < 0)||(y > grid.height-1)) return true;
-	if (grid.get(x,y) === SNAKE) return true;
-
+	if (grid.get(x,y) == SNAKE) return true;
+	if (grid.get(x,y) == BOMB) return true;
 	return false;
 }
 
 function atFruit(x, y){
-	return grid.get(x, y) === FRUIT;
+	return grid.get(x, y) == FRUIT;
+}
+
+function atSnake(x, y){
+	return grid.get(x, y) == SNAKE;
+}
+
+function isEmpty(x, y){
+	return grid.get(x, y) == EMPTY;
+}
+
+function atBomb(x, y){
+	return grid.get(x, y) == BOMB;
 }
 
 function draw() {
@@ -164,9 +192,10 @@ function draw() {
 	var th = canvas.height/grid.height;
 	for (var x=0; x < grid.width; x++) {
 		for (var y=0; y < grid.height; y++) {
-			if (grid.get(x, y) == EMPTY) ctx.fillStyle = "#fff";
-			if (grid.get(x,y) == SNAKE) ctx.fillStyle = "#0ff";
-			if (grid.get(x,y) == FRUIT) ctx.fillStyle = "#f00";
+			if (isEmpty(x, y)) ctx.fillStyle = "#fff";
+			if (atSnake(x, y)) ctx.fillStyle = "#0f0";
+			if (atFruit(x, y)) ctx.fillStyle = "#f00";
+			if (atBomb(x, y)) ctx.fillStyle = "#000";
 			ctx.fillRect(x*tw, y*th, tw, th);
 		}
 	}
@@ -180,5 +209,7 @@ function draw() {
 	ctx.fillText("FRUIT TAKEN: " + taken, 10, canvas.height-50);
 	ctx.fillText("FRUIT VALUE: " + timer, 10, canvas.height-70);
 }
+
 // start and run the game
+
 main();
