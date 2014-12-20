@@ -10,11 +10,17 @@
 <body>
 	<script type = "text/javascript" src = "snake.js"></script>
 	<div id = "game">
-		<button id = "bombs" onclick = bombs()> Bombs </button>
-		<button id = "classic" onclick = main()> Classic </button>
-		<button id = "invisibombs" onclick = invisibombs()> Invisibombs </button>
-		<button id = "walled" onclick = walled()> Walled </button>
+		<button id = "bombs" onclick = setGame('bombs')> Bombs </button>
+		<button id = "classic" onclick = setGame('classic')> Classic </button>
+		<button id = "invisibombs" onclick = setGame('invisibombs')> Invisibombs </button>
+		<button id = "walled" onclick = setGame('walled')> Walled </button>
+		<button id = "infinity" onclick = setGame('infinity')> Infinity Snake </button>
 	</div>
-	<div id = "score"></div>
+	<audio preload id = "fruitsound">
+		<source src = "boop.wav" type = "audio/wav">
+	</audio>
+	<canvas id = "grid"></canvas>
+	<div id = "score"><br> Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</div>
+
 </body>
 </html>

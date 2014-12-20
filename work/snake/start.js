@@ -1,5 +1,5 @@
 $(document).ready(function(){
 	$("button").click(function(){
-		$("div#game").hide();
+		//$("div#game").hide();
 	});
 });

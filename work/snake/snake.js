@@ -2,9 +2,9 @@ var COLS = 26, ROWS = 26;
 var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4;
 var left  = 0, up = 1, right = 2, down  = 3;
 var larrow  = 37, uarrow = 38, rarrow = 39, darrow = 40;
-var a = 65, d = 68, s = 83, w = 87;
+var a = 65, d = 68, s = 83, w = 87, p = 80;
 var canvas, ctx, keystate, frames, score, timer, taken, board;
-var booleans = [];
+var gametype, globalID, gamecounter = 0;
 var hx, hy;
 
 grid = {
@@ -57,8 +57,10 @@ snake = {
 
 function set(value) {
 	var empty = [];
-	for (var x=0; x < grid.width; x++) {
-		for (var y=0; y < grid.height; y++) {
+	var i = 0;
+	if (gametype == "walled") i++;
+	for (var x=grid.width-COLS+i; x < COLS-i; x++) {
+		for (var y=grid.height-ROWS+i; y < ROWS-i; y++) {
 			if (grid.get(x, y) == EMPTY) {
 				empty.push({x:x, y:y});
 			}
@@ -71,7 +73,7 @@ function set(value) {
 
 function main() {
 	//localStorage.clear() //resets high scores
-	canvas = document.createElement("canvas");
+	canvas = document.getElementById("grid");
 	canvas.width = COLS*20;
 	canvas.height = ROWS*20;
 	ctx = canvas.getContext("2d");
@@ -93,23 +95,27 @@ function main() {
 function init() {
 	score = 0;
 	taken = 0;
-	snake_length = 1;
 	COLS = 26, ROWS = 26;
-	if (localStorage.getItem("highscore") == null) 
-		localStorage.setItem("highscore", 0);
+	if (localStorage.getItem(gametype) == null) 
+		localStorage.setItem(gametype, 0);
 	grid.init(EMPTY, COLS, ROWS);
 
 	var sp = {x:Math.floor(COLS/2), y:ROWS-1};
 	snake.init(up, sp.x, sp.y);
-	grid.set(SNAKE, sp.x, sp.y);
+	for (var i = 0; i < 3; i++){
+		grid.set(SNAKE, sp.x, sp.y);
+		snake.insert(sp.x, sp.y);	
+	}
+	snake_length = 4;
 	set(FRUIT);
 }
 
 function loop() {
 	update();
 	draw();
-
-	window.requestAnimationFrame(loop, canvas);
+	
+	//if (gamecounter != 1) window.cancelAnimationFrame(globalID);
+		globalID = window.requestAnimationFrame(loop, canvas);
 }
 
 function update() {
@@ -134,12 +140,16 @@ function update() {
 		if (snake.direction == down) ny++;
 
 		if (nx < grid.width-COLS){
+			if (grid.get(COLS-1, ny) == SNAKE) return init();
 			nx = COLS-1;
 		} else if (nx > COLS-1) {
+			if (grid.get(grid.width-COLS, ny) == SNAKE) return init();
 			nx = grid.width-COLS;
 		} else if (ny < grid.height-ROWS) {
+			if (grid.get(nx, ROWS-1) == SNAKE) return init();
 			ny = ROWS-1;
 		} else if (ny > ROWS-1) {
+			if (grid.get(nx, grid.height-ROWS) == SNAKE) return init();
 			ny = grid.height-ROWS;
 		} else if (gameOver(nx, ny)) {
 			return init();
@@ -149,11 +159,12 @@ function update() {
 		hy = ny;
 
 		if (atFruit(nx, ny)) {
+			document.getElementById("fruitsound").play();
 			score+=timer;
 			taken++;
 
 			//uncomment for walled snake
-			if (walled == true && taken%4 == 0){
+			if (gametype == "walled" && taken%4 == 0){
 				for (i = 0; i < ROWS; i++){
 					grid.set(WALL, COLS-1, i);
 					grid.set(WALL, i, COLS-1);
@@ -163,24 +174,26 @@ function update() {
 				ROWS--;
 				COLS--;
 			}
+
 			set(FRUIT);
+			if (gametype == "infinity") {set(FRUIT); set(FRUIT);}
 			/*set(BOMB);
 			set(BOMB); */
 			var tail = {x:nx, y:ny};
-			for (var i = 0; i < 3; i++){			
+			for (var i = 0; i < 2; i++){			
 				grid.set(SNAKE, tail.x, tail.y);
 				snake.insert(tail.x, tail.y);
 			} 
+			snake_length+=2;
 
-			if (bombs == true)
+			if (gametype == "bombs" || gametype == "invisibombs")
 				grid.set(BOMB, tail.x, tail.y);//uncomment for bombs
 
-			snake_length+=3;
-			if (score > localStorage.getItem("highscore"))
-				localStorage.setItem("highscore", score);
+			if (score > localStorage.getItem(gametype))
+				localStorage.setItem(gametype, score);
 		} else {
 			var tail = snake.remove();
-			if (grid.get(tail.x, tail.y) != BOMB && grid.get(tail.x, tail.y) != WALL)
+			if (grid.get(tail.x, tail.y) != BOMB && grid.get(tail.x, tail.y) != WALL && gametype != "infinity")
 				grid.set(EMPTY, tail.x, tail.y);  //remove for infinite snake
 			tail.x = nx;
 			tail.y = ny;
@@ -222,13 +235,14 @@ function atWall(x, y){
 function draw() {
 	var tw = canvas.width/grid.width;
 	var th = canvas.height/grid.height;
+
 	for (var x=0; x < grid.width; x++) {
 		for (var y=0; y < grid.height; y++) {
 			if (isEmpty(x, y)) ctx.fillStyle = "#fff";
 			if (atSnake(x, y)) ctx.fillStyle = "#0f0";
 			if (atFruit(x, y)) ctx.fillStyle = "#f00";
 			if (atBomb(x, y)) {
-				if (invisibombs == true)
+				if (gametype == "invisibombs")
 					ctx.fillStyle = "#f00";
 				else ctx.fillStyle = "#000";
 			}
@@ -240,43 +254,17 @@ function draw() {
 
 	if (timer > 0)
 		timer--;
-
-	ctx.fillStyle = "green";
-	ctx.fillText("HIGH SCORE: " + localStorage.getItem("highscore"), 10, canvas.height-10);
-	ctx.fillText("CURRENT SCORE: " + score, 10, canvas.height-30);
-	ctx.fillText("FRUIT TAKEN: " + taken, 10, canvas.height-50);
-	ctx.fillText("FRUIT VALUE: " + timer, 10, canvas.height-70);
+	document.getElementById("score").innerHTML = "<span>";
+	document.getElementById("score").innerHTML += "<br>Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
+	document.getElementById("score").innerHTML += "<br><br>HIGH SCORE: " + localStorage.getItem(gametype);
+	document.getElementById("score").innerHTML += "<br> CURRENT SCORE: " + score;
+	document.getElementById("score").innerHTML += "<br> FRUIT TAKEN: " + taken;
+	document.getElementById("score").innerHTML += "<br> FRUIT VALUE: " + timer;
 }
 
-function walled() {
-	walled = true;
-	classic = false;
-	bombs = false;
-	invisibombs = false;
-	main();
+function setGame(game){
+	gametype = game;
+	gamecounter++;
+	if (gamecounter == 1) main();
+	else init();
 }
-
-function classic() {
-	classic = true;
-	walled = false;
-	bombs = false;
-	invisibombs = false;
-}
-
-function bombs() {
-	bombs = true;
-	classic = false;
-	walled = false;
-	invisibombs = false;
-	main();
-}
-
-function invisibombs() {
-	invisibombs = true;
-	classic = false;
-	walled = false;
-	bombs = true;
-	main();
-}
-
-// start and run the game

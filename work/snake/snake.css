@@ -1,27 +1,65 @@
-canvas{
+#game {
 	display: block;
 	position: absolute;
-	border: 1px solid black;
+	margin: auto;
+	top: 0;
+	bottom: 0;
+	right: 900px;
+	left: 0;
+	height: 200px;
+	width: 200px;	
+}
+
+#score {
+	display: block;
+	position: absolute;
+	border: 3px solid black;
 	margin: auto;
 	top: 0;
 	bottom: 0;
 	right: 0;
-	left: 0;
+	left: 680px;
+	width: 350px;
+	height: 500px;
+	font-family: Helvetica;
 }
 
-#game {
-	border: 1px solid black;
-	height: 100px;
-	width: 100px;	
-	margin-left: 50%;
-	margin-top: 20%;
-}
-
-div {
+#grid{
+	display: block;
 	position: absolute;
-	border: 1px solid black;
-	margin-left: 75%;
-	width: 200px;
-	height: 520px;
-	margin-top: 1%;
+	border: 3px solid black;
+	margin: auto;
+	top: 0;
+	bottom: 0;
+	right: 200px;
+	left: 0;
+	height: 500px;
+	width: 500px;
+}
+
+span {
+	margin-left: -1in;
+	margin-right: 10%;
+}
+
+button {
+  -webkit-border-radius: 60;
+  -moz-border-radius: 60;
+  border-radius: 60px;
+  font-family: Courier New;
+  color: #ffffff;
+  font-size: 15px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+button:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+  cursor: pointer;
 }
