@@ -5,7 +5,7 @@ var larrow  = 37, uarrow = 38, rarrow = 39, darrow = 40;
 var a = 65, d = 68, s = 83, w = 87, p = 80;
 var canvas, ctx, keystate, frames, score, timer, taken, board;
 var gametype, gamecounter = 0, growth_rate;
-var hx, hy, fx, fy, reset = false, bomb_reset = false;
+var hx, hy, fx, fy, reset, bomb_reset;
 
 grid = {
 	width: null, 
@@ -103,7 +103,7 @@ function init() {
 		localStorage.setItem(gametype, 0);
 	grid.init(EMPTY, COLS, ROWS);
 
-	var sp = {x:COLS-1, y:Math.floor(COLS/2)};
+	var sp = {x:0, y:Math.floor(COLS/2)};
 	snake.init(right, sp.x, sp.y);
 	for (var i = 0; i < 3; i++){
 		grid.set(SNAKE, sp.x, sp.y);
@@ -111,6 +111,8 @@ function init() {
 	}
 	snake_length = 4;
 	gamecounter++;
+	reset = false;
+	bomb_reset = false;
 	set(FRUIT);
 }
 
@@ -124,16 +126,16 @@ function loop() {
 function update() {
 	frames++;
 
-	if ((keystate[larrow]||keystate[a]) && snake.direction != right)
+	if ((keystate[larrow]||keystate[a]) && snake.direction != right){
 		snake.direction = left;
-	else if ((keystate[rarrow]||keystate[d]) && snake.direction != left) 
+	} else if ((keystate[rarrow]||keystate[d]) && snake.direction != left){
 		snake.direction = right;
-	else if ((keystate[uarrow]||keystate[w]) && snake.direction != down) 
+	} else if ((keystate[uarrow]||keystate[w]) && snake.direction != down){ 
 		snake.direction = up;
-	else if ((keystate[darrow]||keystate[s]) && snake.direction != up) 
+	} else if ((keystate[darrow]||keystate[s]) && snake.direction != up) {
 		snake.direction = down;
-    
-	if (frames%10 == 0 && gametype == "mover"){
+    }
+	if (frames%4 == 0 && gametype == "mover"){
 		if (reset == true) { 
 			grid.set(SNAKE, fx, fy);
 			reset = false;
@@ -144,8 +146,8 @@ function update() {
 			bomb_reset = false;
 		}
 
-		if (frames%20 == 0) fx++;
-		else fx++;
+		if (taken%2 == 0) fx++;
+		else fy++;
 		if (fx == COLS) fx = grid.width-COLS;
 		if (fy == ROWS) fy = grid.height-ROWS;
 		if (grid.get(fx, fy) == SNAKE) 
@@ -155,6 +157,7 @@ function update() {
 			reset = false;	
 		if (fx == snake._queue[snake_length-2].x && fy == snake._queue[snake_length-2].y)
 			reset = false;
+		if (atHead(fx, fy)) { collectedFruit(fx, fy); reset = false; }
 		grid.set(FRUIT, fx, fy);
 	}		
 
@@ -163,9 +166,9 @@ function update() {
 		var ny = snake.last.y;
 
 		if (snake.direction == left) nx--;
-		if (snake.direction == up) ny--;
-		if (snake.direction == right) nx++;
-		if (snake.direction == down) ny++;
+		else if (snake.direction == up) ny--;
+		else if (snake.direction == right) nx++;
+		else if (snake.direction == down) ny++;
 
 		if (nx < grid.width-COLS){
 			if (grid.get(COLS-1, ny) == SNAKE) return init();
@@ -180,45 +183,15 @@ function update() {
 			if (grid.get(nx, grid.height-ROWS) == SNAKE) return init();
 			ny = grid.height-ROWS;
 		} else if (gameOver(nx, ny)) {
+			reset = false;
 			return init();
 		}
 
 		hx = nx;
 		hy = ny;
 
-		if ((atFruit(nx, ny)) || (atHead(fx, fy) && gametype == "mover")) {
-			document.getElementById("fruitsound").play();
-			score+=timer;
-			taken++;
-
-			//uncomment for walled snake
-			if (gametype == "walled" && taken%4 == 0){
-				for (i = 0; i < ROWS; i++){
-					grid.set(WALL, COLS-1, i);
-					grid.set(WALL, i, COLS-1);
-					grid.set(WALL, (taken/4)-1, ROWS-i-1);
-					grid.set(WALL, ROWS-i-1, (taken/4)-1);
-				}
-				ROWS--;
-				COLS--;
-			}
-
-			set(FRUIT);
-			if (gametype == "infinity") { set(FRUIT); set(FRUIT); }
-			/*set(BOMB);
-			set(BOMB); */
-			var tail = {x:nx, y:ny};
-			for (var i = 0; i < growth_rate; i++){			
-				grid.set(SNAKE, tail.x, tail.y);
-				snake.insert(tail.x, tail.y);
-			} 
-			snake_length+=growth_rate;
-
-			if (gametype == "bombs" || gametype == "invisibombs" || gametype == "mover")
-				grid.set(BOMB, tail.x, tail.y);//uncomment for bombs
-
-			if (score > localStorage.getItem(gametype))
-				localStorage.setItem(gametype, score);
+		if (atFruit(nx, ny)) {
+			collectedFruit(nx, ny);
 		} else {
 			var tail = snake.remove();
 			if (grid.get(tail.x, tail.y) != BOMB && grid.get(tail.x, tail.y) != WALL && gametype != "infinity")
@@ -229,6 +202,40 @@ function update() {
 			snake.insert(tail.x, tail.y);
 		}
 	}
+}
+
+function collectedFruit(x, y){document.getElementById("fruitsound").play();
+	score+=timer;
+	taken++;
+
+			//uncomment for walled snake
+	if (gametype == "walled" && taken%4 == 0){
+		for (i = 0; i < ROWS; i++){
+			grid.set(WALL, COLS-1, i);
+			grid.set(WALL, i, COLS-1);
+			grid.set(WALL, (taken/4)-1, ROWS-i-1);
+			grid.set(WALL, ROWS-i-1, (taken/4)-1);
+		}
+		ROWS--;
+		COLS--;
+	}
+
+	set(FRUIT);
+	if (gametype == "infinity") { set(FRUIT); set(FRUIT); }
+	/*set(BOMB);
+	set(BOMB); */
+	var tail = {x:x, y:y};
+	for (var i = 0; i < growth_rate; i++){			
+		grid.set(SNAKE, tail.x, tail.y);
+		snake.insert(tail.x, tail.y);
+	} 
+	snake_length+=growth_rate;
+
+	if (gametype == "bombs" || gametype == "invisibombs" || gametype == "mover")
+		grid.set(BOMB, tail.x, tail.y);//uncomment for bombs
+
+	if (score > localStorage.getItem(gametype))
+		localStorage.setItem(gametype, score);
 }
 
 function gameOver(x, y){
