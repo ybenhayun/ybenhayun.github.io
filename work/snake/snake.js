@@ -126,15 +126,6 @@ function loop() {
 function update() {
 	frames++;
 
-	if ((keystate[larrow]||keystate[a]) && snake.direction != right){
-		snake.direction = left;
-	} else if ((keystate[rarrow]||keystate[d]) && snake.direction != left){
-		snake.direction = right;
-	} else if ((keystate[uarrow]||keystate[w]) && snake.direction != down){ 
-		snake.direction = up;
-	} else if ((keystate[darrow]||keystate[s]) && snake.direction != up) {
-		snake.direction = down;
-    }
 	if (frames%4 == 0 && gametype == "mover"){
 		if (reset == true) { 
 			grid.set(SNAKE, fx, fy);
@@ -145,11 +136,27 @@ function update() {
 			grid.set(BOMB, fx, fy);
 			bomb_reset = false;
 		}
+		var fruit_direction = taken;
+		
+		if (fruit_direction%4 == 0) { 
+			fx--;
+			if (fx == grid.width-COLS-1) fx = COLS-1;
+		}
+		else if (fruit_direction%3 == 0) { 
+			fy--;
+			if (fy == grid.height-ROWS-1) fy = ROWS-1;
+		}
+		else if (fruit_direction%2 == 0) { 
+			fx++;
+			if (fx == COLS) fx = grid.width-COLS;
+		}
+		else { 
+			fy++;
+			if (fy == ROWS) fy = grid.height-ROWS;
+		}
 
-		if (taken%2 == 0) fx++;
-		else fy++;
-		if (fx == COLS) fx = grid.width-COLS;
-		if (fy == ROWS) fy = grid.height-ROWS;
+
+
 		if (grid.get(fx, fy) == SNAKE) 
 			reset = true;
 		if (grid.get(fx, fy) == BOMB) bomb_reset = true;
@@ -164,6 +171,16 @@ function update() {
 	if (frames%5 == 0){
 		var nx = snake.last.x;
 		var ny = snake.last.y;
+
+		if ((keystate[larrow]||keystate[a]) && snake.direction != right){
+			snake.direction = left;
+		} else if ((keystate[rarrow]||keystate[d]) && snake.direction != left){
+			snake.direction = right;
+		} else if ((keystate[uarrow]||keystate[w]) && snake.direction != down){ 
+			snake.direction = up;
+		} else if ((keystate[darrow]||keystate[s]) && snake.direction != up) {
+			snake.direction = down;
+    	}
 
 		if (snake.direction == left) nx--;
 		else if (snake.direction == up) ny--;
