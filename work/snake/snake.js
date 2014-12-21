@@ -122,6 +122,7 @@ function init() {
 	gamecounter++;
 	reset = false;
 	bomb_reset = false;
+	if (gametype == "portal") set(FRUIT); 
 	set(FRUIT);
 }
 
@@ -135,7 +136,7 @@ function loop() {
 function update() {
 	frames++;
 
-	if ((frames%4 == 0) && (gametype == "mover"||gametype == "disoriented")){
+	if ((frames%4 == 0 && gametype == "mover")||(gametype == "disoriented" && frames%8 ==0)){
 		if (reset == true) { 
 			grid.set(SNAKE, fx, fy);
 			reset = false;
@@ -251,10 +252,8 @@ function collectedFruit(x, y){document.getElementById("fruitsound").play();
 		COLS--;
 	}
 
-	set(FRUIT);
 	if (gametype == "infinity") { set(FRUIT); set(FRUIT); }
-	/*set(BOMB);
-	set(BOMB); */
+
 	var tail = {x:x, y:y};
 	for (var i = 0; i < growth_rate; i++){			
 		grid.set(SNAKE, tail.x, tail.y);
@@ -262,13 +261,29 @@ function collectedFruit(x, y){document.getElementById("fruitsound").play();
 	} 
 	snake_length+=growth_rate;
 
+	if (gametype == "portal"){
+		for (var i = 0; i < COLS; i++){
+			for(var j = 0; j < ROWS; j++){
+				if (grid.get(i, j) == FRUIT){
+					snake.last.x = i;
+					snake.last.y = j;
+					grid.set(SNAKE, i, j);
+					break;
+				}
+			}
+		}
+	}
 	if (gametype == "bombs" || gametype == "invisibombs" || gametype == "mover")
-		grid.set(BOMB, tail.x, tail.y);//uncomment for bombs
+		grid.set(BOMB, tail.x, tail.y);
 
 	if (score > localStorage.getItem(gametype))
 		localStorage.setItem(gametype, score);
 	if (taken > localStorage.getItem(gametype+'fruit'))
 		localStorage.setItem(gametype+'fruit', taken);
+
+	if (gametype == "portal") set(FRUIT);
+	set(FRUIT);
+
 }
 
 function gameOver(x, y){
