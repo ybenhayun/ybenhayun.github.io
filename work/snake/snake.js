@@ -1,8 +1,8 @@
 var COLS = 26, ROWS = 26;
 var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4;
 var left  = 0, up = 1, right = 2, down  = 3;
-var larrow  = 37, uarrow = 38, rarrow = 39, darrow = 40;
-var a = 65, d = 68, s = 83, w = 87, p = 80;
+var larrow, uarrow, rarrow, darrow;
+var a, d, s, w;
 var canvas, ctx, keystate, frames, score, timer, taken, board;
 var gametype, gamecounter = 0, growth_rate;
 var hx, hy, fx, fy, reset, bomb_reset;
@@ -80,7 +80,6 @@ function main() {
 	canvas.height = ROWS*20;
 	ctx = canvas.getContext("2d");
 	document.body.appendChild(canvas);
-	ctx.font = "12px Helvetica";
 
 	frames = 0;
 	keystate = {};
@@ -99,8 +98,18 @@ function init() {
 	taken = 0;
 	growth_rate = 2;
 	COLS = 26, ROWS = 26;
+	if (gametype != "disoriented"){
+		larrow  = 37, uarrow = 38, rarrow = 39, darrow = 40;
+		a = 65, d = 68, s = 83, w = 87;
+	} else {
+		larrow = 39, uarrow = 40, rarrow = 37, darrow = 38;
+		a = 68, d = 65, s = 87, w = 83;
+	}
+
 	if (localStorage.getItem(gametype) == null) 
 		localStorage.setItem(gametype, 0);
+	if (localStorage.getItem(gametype+'fruit') == null)
+		localStorage.setItem(gametype+'fruit', 0);
 	grid.init(EMPTY, COLS, ROWS);
 
 	var sp = {x:0, y:Math.floor(COLS/2)};
@@ -126,7 +135,7 @@ function loop() {
 function update() {
 	frames++;
 
-	if (frames%4 == 0 && gametype == "mover"){
+	if ((frames%4 == 0) && (gametype == "mover"||gametype == "disoriented")){
 		if (reset == true) { 
 			grid.set(SNAKE, fx, fy);
 			reset = false;
@@ -136,8 +145,9 @@ function update() {
 			grid.set(BOMB, fx, fy);
 			bomb_reset = false;
 		}
-		var fruit_direction = taken;
-		
+		if (gametype == "mover") fruit_direction = taken;
+		else fruit_direction = Math.floor((Math.random()*15)+1);
+
 		if (fruit_direction%4 == 0) { 
 			fx--;
 			if (fx == grid.width-COLS-1) fx = COLS-1;
@@ -222,7 +232,7 @@ function update() {
 }
 
 function collectedFruit(x, y){document.getElementById("fruitsound").play();
-	score+=timer;
+	score+=Math.floor(timer);
 	taken++;
 
 			//uncomment for walled snake
@@ -253,6 +263,8 @@ function collectedFruit(x, y){document.getElementById("fruitsound").play();
 
 	if (score > localStorage.getItem(gametype))
 		localStorage.setItem(gametype, score);
+	if (taken > localStorage.getItem(gametype+'fruit'))
+		localStorage.setItem(gametype+'fruit', taken);
 }
 
 function gameOver(x, y){
@@ -305,14 +317,20 @@ function draw() {
 		}
 	}
 
-	if (timer > 0)
-		timer--;
+	if (timer > 0){
+		if (gametype == "disoriented")
+			timer-=.2;
+		else timer--;
+	}
 	document.getElementById("score").innerHTML = "<span>";
 	document.getElementById("score").innerHTML += "<br>Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
-	document.getElementById("score").innerHTML += "<br><br>HIGH SCORE: " + localStorage.getItem(gametype);
-	document.getElementById("score").innerHTML += "<br> CURRENT SCORE: " + score;
+	
+	document.getElementById("score").innerHTML += "<br><br> CURRENT SCORE: " + score;
 	document.getElementById("score").innerHTML += "<br> FRUIT TAKEN: " + taken;
-	document.getElementById("score").innerHTML += "<br> FRUIT VALUE: " + timer;
+	document.getElementById("score").innerHTML += "<br> FRUIT VALUE: " + Math.floor(timer);
+	document.getElementById("score").innerHTML += "<br><br>HIGH SCORE: " + localStorage.getItem(gametype);
+	document.getElementById("score").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+'fruit');
+
 }
 
 function setGame(game){
