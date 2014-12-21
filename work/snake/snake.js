@@ -150,19 +150,23 @@ function update() {
 
 		if (fruit_direction%4 == 0) { 
 			fx--;
-			if (fx == grid.width-COLS-1) fx = COLS-1;
+			if (fx == grid.width-COLS-1 && gametype == "mover") fx = COLS-1;
+			else if (fx == grid.width-COLS-1) fx++;
 		}
 		else if (fruit_direction%3 == 0) { 
 			fy--;
-			if (fy == grid.height-ROWS-1) fy = ROWS-1;
+			if (fy == grid.height-ROWS-1 && gametype == "mover") fy = ROWS-1;
+			else if (fy == grid.height-ROWS-1) fy++;
 		}
 		else if (fruit_direction%2 == 0) { 
 			fx++;
-			if (fx == COLS) fx = grid.width-COLS;
+			if (fx == COLS && gametype == "mover") fx = grid.width-COLS;
+			else if (fx == COLS) fx--;
 		}
 		else { 
 			fy++;
-			if (fy == ROWS) fy = grid.height-ROWS;
+			if (fy == ROWS && gametype == "mover") fy = grid.height-ROWS;
+			else if (fy == ROWS) fy--;
 		}
 
 
