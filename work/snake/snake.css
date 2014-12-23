@@ -1,9 +1,9 @@
-#game {
+#games {
 	display: block;
 	position: absolute;
 	margin: auto;
 	top: 0;
-	bottom: 0;
+	bottom: 2in;
 	right: 900px;
 	left: 0;
 	height: 200px;

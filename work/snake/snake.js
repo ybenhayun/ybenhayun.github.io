@@ -61,7 +61,7 @@ function set(value) {
 	if (gametype == "walled") i++;
 	for (var x=grid.width-COLS+i; x < COLS-i; x++) {
 		for (var y=grid.height-ROWS+i; y < ROWS-i; y++) {
-			if (grid.get(x, y) == EMPTY) {
+			if (grid.get(x, y) == EMPTY && x != nx && y != ny) {
 				empty.push({x:x, y:y});
 			}
 		}
@@ -70,7 +70,6 @@ function set(value) {
 	grid.set(value, randpos.x, randpos.y);
 	fx = randpos.x;
 	fy = randpos.y;
-	timer = 250;
 }
 
 function main() {
@@ -96,6 +95,7 @@ function main() {
 function init() {
 	score = 0;
 	taken = 0;
+	timer = 250;
 	growth_rate = 2;
 	COLS = 26, ROWS = 26;
 	if (gametype != "disoriented"){
@@ -118,6 +118,7 @@ function init() {
 		grid.set(SNAKE, sp.x, sp.y);
 		snake.insert(sp.x, sp.y);	
 	}
+	grid.set(EMPTY, ROWS-1, sp.y);
 	snake_length = 4;
 	gamecounter++;
 	reset = false;
@@ -125,14 +126,15 @@ function init() {
 	if (gametype == "mover"||gametype == "speed"||gametype == "invisibombs"||gametype == "bombs")
 		bombs = true;
 	else bombs = false;
-	if (gametype == "portal") set(FRUIT);
+	if (gametype == "portal"||gametype == "tick") set(FRUIT);
 	set(FRUIT);
 }
 
 function loop() {
 	draw();
+
 	update();
-	
+
 	globalID = window.requestAnimationFrame(loop, canvas);
 }
 
@@ -173,18 +175,11 @@ function update() {
 
 function collectedFruit(x, y){document.getElementById("fruitsound").play();
 	score+=Math.floor(timer);
+	timer = 250;
 	taken++;
 
 			//uncomment for walled snake
 	if (gametype == "walled" && taken%4 == 0){
-		/*for (var i = 0; i < COLS; i++){
-			grid.set(WALL, COLS-1, i);
-			grid.set(WALL, COLS-i-1, (taken/4)-1);
-		}
-		for (var i = 0; i < ROWS; i++){
-			grid.set(WALL, (taken/4)-1, ROWS-i-1);
-			grid.set(WALL, i, ROWS-1);
-		}*/
 		for (var i = 0; i < ROWS; i++){
 			grid.set(WALL, (taken/4)-1, i);
 			grid.set(WALL, COLS-1, i);
@@ -289,9 +284,9 @@ function draw() {
 			timer-=.2;
 		else timer-=.5;
 	}
+	if (gametype == "tick" && timer%43 == 0) set(BOMB);
 	document.getElementById("score").innerHTML = "<span>";
 	document.getElementById("score").innerHTML += "<br>Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
-	
 	document.getElementById("score").innerHTML += "<br><br> CURRENT SCORE: " + score;
 	document.getElementById("score").innerHTML += "<br> FRUIT TAKEN: " + taken;
 	document.getElementById("score").innerHTML += "<br> FRUIT VALUE: " + Math.floor(timer);
@@ -314,22 +309,20 @@ function moveSnake(){
 		snake.direction = down;
 		if (gametype == "speed") frames+=3;
    	}
+
+
 	if (snake.direction == left) nx--;
 	else if (snake.direction == up) ny--;
 	else if (snake.direction == right) nx++;
 	else if (snake.direction == down) ny++;
 
-	if (nx < grid.width-COLS){
-		if (grid.get(COLS-1, ny) == SNAKE) return init();
+if (nx < grid.width-COLS){
 		nx = COLS-1;
 	} else if (nx > COLS-1) {
-		if (grid.get(grid.width-COLS, ny) == SNAKE) return init();
 		nx = grid.width-COLS;
 	} else if (ny < grid.height-ROWS) {
-		if (grid.get(nx, ROWS-1) == SNAKE) return init();
 		ny = ROWS-1;
 	} else if (ny > ROWS-1) {
-		if (grid.get(nx, grid.height-ROWS) == SNAKE) return init();
 		ny = grid.height-ROWS;
 	}
 }
