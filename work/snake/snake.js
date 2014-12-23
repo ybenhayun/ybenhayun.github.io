@@ -112,7 +112,7 @@ function init() {
 		localStorage.setItem(gametype+'fruit', 0);
 	grid.init(EMPTY, COLS, ROWS);
 
-	var sp = {x:0, y:Math.floor(COLS/2)};
+	var sp = {x:ROWS-1, y:Math.floor(COLS/2)};
 	snake.init(right, sp.x, sp.y);
 	for (var i = 0; i < 3; i++){
 		grid.set(SNAKE, sp.x, sp.y);
