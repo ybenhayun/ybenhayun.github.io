@@ -5,7 +5,7 @@ var larrow, uarrow, rarrow, darrow;
 var a, d, s, w;
 var canvas, ctx, keystate, frames, score, timer, taken, board;
 var gametype, gamecounter = 0, growth_rate;
-var hx, hy, fx, fy, nx, ny, reset, bomb_reset;
+var hx, hy, fx, fy, nx, ny, reset, bomb_reset, bombs;
 
 grid = {
 	width: null, 
@@ -70,7 +70,7 @@ function set(value) {
 	grid.set(value, randpos.x, randpos.y);
 	fx = randpos.x;
 	fy = randpos.y;
-	timer = 500;
+	timer = 250;
 }
 
 function main() {
@@ -96,7 +96,7 @@ function main() {
 function init() {
 	score = 0;
 	taken = 0;
-	growth_rate = 2;
+	growth_rate = 1;
 	COLS = 26, ROWS = 26;
 	if (gametype != "disoriented"){
 		larrow  = 37, uarrow = 38, rarrow = 39, darrow = 40;
@@ -122,6 +122,9 @@ function init() {
 	gamecounter++;
 	reset = false;
 	bomb_reset = false;
+	if (gametype == "mover"||gametype == "speed"||gametype == "invisibombs"||gametype == "bombs")
+		bombs = true;
+	else bombs = false;
 	if (gametype == "portal") set(FRUIT);
 	set(FRUIT);
 }
@@ -174,11 +177,21 @@ function collectedFruit(x, y){document.getElementById("fruitsound").play();
 
 			//uncomment for walled snake
 	if (gametype == "walled" && taken%4 == 0){
-		for (i = 0; i < ROWS; i++){
+		/*for (var i = 0; i < COLS; i++){
 			grid.set(WALL, COLS-1, i);
-			grid.set(WALL, i, COLS-1);
+			grid.set(WALL, COLS-i-1, (taken/4)-1);
+		}
+		for (var i = 0; i < ROWS; i++){
 			grid.set(WALL, (taken/4)-1, ROWS-i-1);
-			grid.set(WALL, ROWS-i-1, (taken/4)-1);
+			grid.set(WALL, i, ROWS-1);
+		}*/
+		for (var i = 0; i < ROWS; i++){
+			grid.set(WALL, (taken/4)-1, i);
+			grid.set(WALL, COLS-1, i);
+		}
+		for (var i = 0; i < COLS; i++){
+			grid.set(WALL, i, (taken/4)-1);
+			grid.set(WALL, i, ROWS-1);
 		}
 		ROWS--;
 		COLS--;
@@ -187,10 +200,12 @@ function collectedFruit(x, y){document.getElementById("fruitsound").play();
 	if (gametype == "infinity") { set(FRUIT); set(FRUIT); }
 
 	var tail = {x:x, y:y};
+
 	for (var i = 0; i < growth_rate; i++){			
 		grid.set(SNAKE, tail.x, tail.y);
 		snake.insert(tail.x, tail.y);
 	} 
+
 	snake_length+=growth_rate;
 
 	if (gametype == "portal"){
@@ -206,7 +221,7 @@ function collectedFruit(x, y){document.getElementById("fruitsound").play();
 			}
 		}
 	}
-	if (gametype == "bombs" || gametype == "invisibombs" || gametype == "mover")
+	if (bombs)
 		grid.set(BOMB, tail.x, tail.y);
 
 	if (score > localStorage.getItem(gametype))
@@ -254,25 +269,25 @@ function draw() {
 
 	for (var x=0; x < grid.width; x++) {
 		for (var y=0; y < grid.height; y++) {
-			if (isEmpty(x, y)) ctx.fillStyle = "#fff";
+			if (atWall(x ,y)) ctx.fillStyle = "#2b2b2b";
+			else if (isEmpty(x, y)) ctx.fillStyle = "#fff";
 			else if (atHead(x, y)) ctx.fillStyle = "#f00";
 			else if (atFruit(x, y)) ctx.fillStyle = "#f00";
 			else if (atBomb(x, y)) {
-				if (gametype == "invisibombs")
+				if (gametype == "invisibombs"||gametype == "speed")
 					ctx.fillStyle = "#f00";
 				else ctx.fillStyle = "#000";
 			} 
 			else if (atSnake(x, y)) ctx.fillStyle = "#0f0";
-			else if (atWall(x ,y)) ctx.fillStyle = "#2b2b2b";
 
 			ctx.fillRect(x*tw, y*th, tw, th);
 		}
 	}
 
-	if (timer > 0){
+	if (timer > 50){
 		if (gametype == "disoriented")
 			timer-=.2;
-		else timer--;
+		else timer-=.5;
 	}
 	document.getElementById("score").innerHTML = "<span>";
 	document.getElementById("score").innerHTML += "<br>Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
@@ -287,13 +302,17 @@ function draw() {
 
 function moveSnake(){
 	if ((keystate[larrow]||keystate[a]) && snake.direction != right){
-				snake.direction = left;
+		snake.direction = left;
+		if (gametype == "speed") frames+=3;
 	} else if ((keystate[rarrow]||keystate[d]) && snake.direction != left){
 		snake.direction = right;
+		if (gametype == "speed") frames+=3;
 	} else if ((keystate[uarrow]||keystate[w]) && snake.direction != down){ 
 		snake.direction = up;
+		if (gametype == "speed")frames+=3;
 	} else if ((keystate[darrow]||keystate[s]) && snake.direction != up) {
 		snake.direction = down;
+		if (gametype == "speed") frames+=3;
    	}
 	if (snake.direction == left) nx--;
 	else if (snake.direction == up) ny--;
