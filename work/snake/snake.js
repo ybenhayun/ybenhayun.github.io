@@ -96,7 +96,7 @@ function main() {
 function init() {
 	score = 0;
 	taken = 0;
-	growth_rate = 1;
+	growth_rate = 2;
 	COLS = 26, ROWS = 26;
 	if (gametype != "disoriented"){
 		larrow  = 37, uarrow = 38, rarrow = 39, darrow = 40;
