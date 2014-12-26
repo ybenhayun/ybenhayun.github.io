@@ -19,7 +19,7 @@ strong {
 }
 
 h3 {
-	font-size: 26px
+	font-size: 26px;
 }
 
 p {
@@ -147,16 +147,18 @@ ul li a:not(.sec):hover{
 .web a {
 	text-decoration: none;
 	outline: none;
-	margin-left: 23px;
-	margin-right: 30px;
+	margin-right: 35px;
+	margin-left: 0;
 }
 
 .web img {
-	position: absolute;
+	position: relative;
+	margin-bottom: -2px;
+	margin-right: 3px;
 }
 
 .web {
-	margin-left: .25in;
+	margin-left: .35in;
 }
 
 div.euler a:not(.code){
@@ -191,6 +193,3 @@ UI COMMENTS
 -add performance works
 -more projects
 */
-
-
-

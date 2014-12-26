@@ -5,7 +5,7 @@ var larrow, uarrow, rarrow, darrow;
 var a, d, s, w;
 var canvas, ctx, keystate, frames, score, timer, taken, board;
 var gametype, gamecounter = 0, growth_rate;
-var hx, hy, fx, fy, nx, ny, reset, bomb_reset, bombs;
+var hx, hy, nx, ny, reset, bomb_reset, bombs, fruit;
 
 grid = {
 	width: null, 
@@ -68,8 +68,7 @@ function set(value) {
 	}
 	var randpos = empty[Math.round(Math.random()*(empty.length - 1))];
 	grid.set(value, randpos.x, randpos.y);
-	fx = randpos.x;
-	fy = randpos.y;
+	if (value == FRUIT) fruit = {x:randpos.x, y:randpos.y};
 }
 
 function main() {
@@ -329,44 +328,44 @@ if (nx < grid.width-COLS){
 
 function moveFruit(){
 	if (reset == true) { 
-		grid.set(SNAKE, fx, fy);
+		grid.set(SNAKE, fruit.x, fruit.y);
 		reset = false;
-	} else grid.set(EMPTY, fx, fy);
+	} else grid.set(EMPTY, fruit.x, fruit.y);
 
 	if (bomb_reset == true) { 
-		grid.set(BOMB, fx, fy);
+		grid.set(BOMB, fruit.x, fruit.y);
 		bomb_reset = false;
 	}
 	if (gametype == "mover") fruit_direction = taken;
 	else fruit_direction = Math.floor((Math.random()*15)+1);
 
 	if (fruit_direction%4 == 0) { 
-		fx--;
-		if (fx == grid.width-COLS-1 && gametype == "mover") fx = COLS-1;
-		else if (fx == grid.width-COLS-1) fx++;
+		fruit.x--;
+		if (fruit.x == grid.width-COLS-1 && gametype == "mover") fruit.x = COLS-1;
+		else if (fruit.x == grid.width-COLS-1) fruit.x++;
 	} else if (fruit_direction%3 == 0) { 
-		fy--;
-		if (fy == grid.height-ROWS-1 && gametype == "mover") fy = ROWS-1;
-		else if (fy == grid.height-ROWS-1) fy++;
+		fruit.y--;
+		if (fruit.y == grid.height-ROWS-1 && gametype == "mover") fruit.y = ROWS-1;
+		else if (fruit.y == grid.height-ROWS-1) fruit.y++;
 	} else if (fruit_direction%2 == 0) { 
-		fx++;
-		if (fx == COLS && gametype == "mover") fx = grid.width-COLS;
-		else if (fx == COLS) fx--;
+		fruit.x++;
+		if (fruit.x == COLS && gametype == "mover") fruit.x = grid.width-COLS;
+		else if (fruit.x == COLS) fruit.x--;
 	} else { 
-		fy++;
-		if (fy == ROWS && gametype == "mover") fy = grid.height-ROWS;
-		else if (fy == ROWS) fy--;
+		fruit.y++;
+		if (fruit.y == ROWS && gametype == "mover") fruit.y = grid.height-ROWS;
+		else if (fruit.y == ROWS) fruit.y--;
 	}
 
-	if (grid.get(fx, fy) == SNAKE) 
+	if (grid.get(fruit.x, fruit.y) == SNAKE) 
 		reset = true;
-	if (grid.get(fx, fy) == BOMB) bomb_reset = true;
-	if (fx == snake._queue[snake_length-1].x && fy == snake._queue[snake_length-1].y)
+	if (grid.get(fruit.x, fruit.y) == BOMB) bomb_reset = true;
+	if (fruit.x == snake._queue[snake_length-1].x && fruit.y == snake._queue[snake_length-1].y)
 		reset = false;	
-	if (fx == snake._queue[snake_length-2].x && fy == snake._queue[snake_length-2].y)
+	if (fruit.x == snake._queue[snake_length-2].x && fruit.y == snake._queue[snake_length-2].y)
 		reset = false;
-	if (atHead(fx, fy)) { collectedFruit(fx, fy); reset = false; }
-	grid.set(FRUIT, fx, fy);
+	if (atHead(fruit.x, fruit.y)) { collectedFruit(fruit.x, fruit.y); reset = false; }
+	grid.set(FRUIT, fruit.x, fruit.y);
 }
 
 function setGame(game){
