@@ -8,23 +8,14 @@ $(document).ready(function(){
     }
   });*/
    
-   $("a.1").click(function(){
-    $("div.1").toggle();
-    if($("a.1").html() != "(less)"){
-      $("a.1").html("(less)");
+   $(".prob a").click(function(){
+    var myClass = $(this).attr('class');
+    $('div').filter('.'+myClass).toggle();
+    if($(this).html() != "(less)"){
+      $(this).html("(less)");
     } else {
-      $("a.1").html("(more)");
+      $(this).html("(more)");
     }
   });
-
-  $("a.2").click(function(){
-    $("div.2").toggle();
-    if($("a.2").html() != "(less)"){
-      $("a.2").html("(less)");
-    } else {
-      $("a.2").html("(more)");
-    }
-  });
-
   $("div.1, div.2").hide();
  });
