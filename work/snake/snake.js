@@ -4,54 +4,54 @@ var left  = 0, up = 1, right = 2, down  = 3;
 var larrow, uarrow, rarrow, darrow;
 var a, d, s, w;
 var canvas, ctx, keystate, frames, score, timer, taken, board;
-var gametype, gamecounter = 0, growth_rate;
+var gametype, gamecounter = 0, growth_rate, paused;
 var hx, hy, nx, ny, reset, bomb_reset, bombs, fruit;
 
 grid = {
 	width: null, 
 	height: null,
-	_grid: null, 
+	pos: null, 
 
 	init: function(d, c, r) {
 		this.width = c;
 		this.height = r;
-		this._grid = [];
+		this.pos = [];
 
 		for (var x=0; x < c; x++) {
-			this._grid.push([]);
+			this.pos.push([]);
 			for (var y=0; y < r; y++) {
-				this._grid[x].push(d);
+				this.pos[x].push(d);
 			}
 		}
 	},
 
 	set: function(val, x, y) {
-		this._grid[x][y] = val;
+		this.pos[x][y] = val;
 	},
 
 	get: function(x, y) {
-		return this._grid[x][y];
+		return this.pos[x][y];
 	}
 }
 
 snake = {
 	direction: null,
 	last: null,		
-	_queue: null,	
+	s_body: null,	
 
 	init: function(d, x, y) {
 		this.direction = d;
-		this._queue = [];
+		this.s_body = [];
 		this.insert(x, y);
 	},
 
 	insert: function(x, y) {
 		// unshift prepends an element to an array
-		this._queue.unshift({x:x, y:y});
-		this.last = this._queue[0];
+		this.s_body.unshift({x:x, y:y});
+		this.last = this.s_body[0];
 	},
 	remove: function() {
-		return this._queue.pop();
+		return this.s_body.pop();
 	}
 };
 
@@ -66,6 +66,16 @@ function set(value) {
 			}
 		}
 	}
+	if (empty.length == 0) {
+		for (var x=grid.width-COLS+i; x < COLS-i; x++) {
+			for (var y=grid.height-ROWS+i; y < ROWS-i; y++) {
+				if (grid.get(x, y) == EMPTY) {
+					empty.push({x:x, y:y});
+				}
+			}
+		}
+	}
+
 	var randpos = empty[Math.round(Math.random()*(empty.length - 1))];
 	grid.set(value, randpos.x, randpos.y);
 	if (value == FRUIT) fruit = {x:randpos.x, y:randpos.y};
@@ -172,7 +182,10 @@ function update() {
 	}
 }
 
-function collectedFruit(x, y){document.getElementById("fruitsound").play();
+function collectedFruit(x, y){
+	document.getElementById("fruitsound").pause();
+	document.getElementById("fruitsound").currentTime = 0;
+	document.getElementById("fruitsound").play();
 	score+=Math.floor(timer);
 	timer = 250;
 	taken++;
@@ -229,9 +242,14 @@ function collectedFruit(x, y){document.getElementById("fruitsound").play();
 }
 
 function gameOver(x, y){
-	if (grid.get(x,y) == SNAKE) return true;
-	if (grid.get(x,y) == BOMB) return true;
-	return false;
+	if (grid.get(x,y) != SNAKE && grid.get(x,y) != BOMB) return false;
+
+	paused = setTimeout(function(){}, 1000/60);
+	return true;
+}
+
+function stopPause() {
+		clearInterval(paused);
 }
 
 function atFruit(x, y){
@@ -272,9 +290,11 @@ function draw() {
 					ctx.fillStyle = "#f00";
 				else ctx.fillStyle = "#000";
 			} 
-			else if (atSnake(x, y)) ctx.fillStyle = "#0f0";
+			else if (atSnake(x, y)) ctx.fillStyle = "orange";
 
 			ctx.fillRect(x*tw, y*th, tw, th);
+			//ctx.rect(x*tw, y*th, tw, th);
+			ctx.stroke();
 		}
 	}
 
@@ -286,10 +306,10 @@ function draw() {
 	if (gametype == "tick" && timer%43 == 0) set(BOMB);
 	document.getElementById("inst").innerHTML = "<span id = 'inst'>";
 	document.getElementById("inst").innerHTML += "Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
-	document.getElementById("inst").innerHTML += "<br><br> CURRENT SCORE: " + score;
+	document.getElementById("inst").innerHTML += "<br><br><br> CURRENT SCORE: " + score;
 	document.getElementById("inst").innerHTML += "<br> FRUIT TAKEN: " + taken;
 	document.getElementById("inst").innerHTML += "<br> FRUIT VALUE: " + Math.floor(timer);
-	document.getElementById("inst").innerHTML += "<br><br>HIGH SCORE: " + localStorage.getItem(gametype);
+	document.getElementById("inst").innerHTML += "<br><br><br>HIGH SCORE: " + localStorage.getItem(gametype);
 	document.getElementById("inst").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+'fruit') + "</span>";
 
 }
@@ -360,9 +380,9 @@ function moveFruit(){
 	if (grid.get(fruit.x, fruit.y) == SNAKE) 
 		reset = true;
 	if (grid.get(fruit.x, fruit.y) == BOMB) bomb_reset = true;
-	if (fruit.x == snake._queue[snake_length-1].x && fruit.y == snake._queue[snake_length-1].y)
+	if (fruit.x == snake.s_body[snake_length-1].x && fruit.y == snake.s_body[snake_length-1].y)
 		reset = false;	
-	if (fruit.x == snake._queue[snake_length-2].x && fruit.y == snake._queue[snake_length-2].y)
+	if (fruit.x == snake.s_body[snake_length-2].x && fruit.y == snake.s_body[snake_length-2].y)
 		reset = false;
 	if (atHead(fruit.x, fruit.y)) { collectedFruit(fruit.x, fruit.y); reset = false; }
 	grid.set(FRUIT, fruit.x, fruit.y);
