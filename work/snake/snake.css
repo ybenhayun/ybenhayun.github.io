@@ -2,12 +2,13 @@
 	display: block;
 	position: absolute;
 	margin: auto;
-	top: 0;
+	top: 30px;
 	bottom: 2in;
 	right: 900px;
 	left: 0;
 	height: 200px;
-	width: 200px;	
+	width: 200px;
+	margin-left: 0in;	
 }
 
 #score {
@@ -21,45 +22,50 @@
 	left: 680px;
 	width: 350px;
 	height: 500px;
-	font-family: Helvetica;
+	font-family: Courier;
+	margin-left: .4in;
 }
 
 #grid{
 	display: block;
 	position: absolute;
-	border: 3px solid #2b2b2b;
 	margin: auto;
 	top: 0;
 	bottom: 0;
+	right: 0;
+	width: 350px;
+	height: 500px;	
+	border: 3px solid #2b2b2b;
 	right: 200px;
 	left: 0;
-	height: 500px;
+	margin-left: 2.15in;
 	width: 500px;
 }
 
-span {
-	margin-left: -1in;
-	margin-right: 10%;
+span#inst {
+	margin-left: .15in;
+	margin-right: .25in;
+	float: left;
 }
 
 button {
-  -webkit-border-radius: 60;
-  -moz-border-radius: 60;
-  border-radius: 60px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0px;
   font-family: Courier New;
-  color: #ffffff;
-  font-size: 15px;
-  padding: 10px 20px 10px 20px;
+  color: #fafafa;
+  font-size: 18px;
+  background: #485157;
+  padding: 4px 8px 4px 8px;
+  border: solid #1f628d 0px;
   text-decoration: none;
+  margin-left: 50px;
+  margin-bottom: 10px;
+  float: right;
 }
 
 button:hover {
-  background: #3cb0fd;
-  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  background: #607480;
   text-decoration: none;
   cursor: pointer;
 }

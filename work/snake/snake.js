@@ -284,13 +284,13 @@ function draw() {
 		else timer-=.5;
 	}
 	if (gametype == "tick" && timer%43 == 0) set(BOMB);
-	document.getElementById("score").innerHTML = "<span>";
-	document.getElementById("score").innerHTML += "<br>Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
-	document.getElementById("score").innerHTML += "<br><br> CURRENT SCORE: " + score;
-	document.getElementById("score").innerHTML += "<br> FRUIT TAKEN: " + taken;
-	document.getElementById("score").innerHTML += "<br> FRUIT VALUE: " + Math.floor(timer);
-	document.getElementById("score").innerHTML += "<br><br>HIGH SCORE: " + localStorage.getItem(gametype);
-	document.getElementById("score").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+'fruit');
+	document.getElementById("inst").innerHTML = "<span id = 'inst'>";
+	document.getElementById("inst").innerHTML += "Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
+	document.getElementById("inst").innerHTML += "<br><br> CURRENT SCORE: " + score;
+	document.getElementById("inst").innerHTML += "<br> FRUIT TAKEN: " + taken;
+	document.getElementById("inst").innerHTML += "<br> FRUIT VALUE: " + Math.floor(timer);
+	document.getElementById("inst").innerHTML += "<br><br>HIGH SCORE: " + localStorage.getItem(gametype);
+	document.getElementById("inst").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+'fruit') + "</span>";
 
 }
 
