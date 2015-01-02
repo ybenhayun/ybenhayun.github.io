@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$("button").hover(
+	$("button").mouseover(
 		function(){
 			$('.descr').empty();
 			var description;
@@ -16,9 +16,12 @@ $(document).ready(function(){
 			if ($(this).attr('id') == "speed") description = "<span class = 'descr'> <br><br> This snake doesn't wait for no man. Be careful around corners with him.<br><br>"
 			if ($(this).attr('id') == "tick") description = "<span class = 'descr'> <br><br> If you can pick up your fruit quickly, this game will be a breeze. Otherwise...<br><br>"
 
+			if (localStorage.getItem($(this).attr('id')) == null){
+				localStorage.setItem($(this.attr('id')), 0);
+				localStoarge.setItem($(this.attr('id'))+'fruit');
+			}
 			description += "<br><br>HIGH SCORE: " + localStorage.getItem($(this).attr('id')) + "<br> MOST FRUIT: " + localStorage.getItem($(this).attr('id')+'fruit') + "</span>";
 			$("#inst").append(description);
-		}, function(){
 			//$('.descr').empty();
 		});
 });
