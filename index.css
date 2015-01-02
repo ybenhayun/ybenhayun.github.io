@@ -176,7 +176,7 @@ div.code {
 	margin-bottom: 10px;
 	font-style: italic;
 }
-div.indent {
+.indent {
 	margin-left: .25in;
 }
 
@@ -185,6 +185,13 @@ a.code {
 	font-size: 16px;
 }
 
+.snake {
+	margin-bottom: -15px;
+}
+
+h4.euler {
+	margin-bottom: -15px;
+}
 /*
 UI COMMENTS
 -contact me make one word
