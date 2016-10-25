@@ -6,6 +6,7 @@ var a, d, s, w;
 var canvas, ctx, keystate, frames, score, timer, taken, board;
 var gametype, gamecounter = 0, growth_rate, paused;
 var hx, hy, nx, ny, reset, bomb_reset, bombs, fruit;
+var flash = false;
 
 grid = {
 	width: null, 
@@ -59,14 +60,16 @@ function set(value) {
 	var empty = [];
 	var i = 0;
 	if (gametype == "walled") i++;
-	for (var x=grid.width-COLS+i; x < COLS-i; x++) {
-		for (var y=grid.height-ROWS+i; y < ROWS-i; y++) {
-			if (grid.get(x, y) == EMPTY && x != nx && y != ny) {
-				empty.push({x:x, y:y});
+	if (value == BOMB){
+		for (var x=grid.width-COLS+i; x < COLS-i; x++) {
+			for (var y=grid.height-ROWS+i; y < ROWS-i; y++) {
+				if (grid.get(x, y) == EMPTY && x != nx && y != ny) {
+					empty.push({x:x, y:y});
+				}
 			}
 		}
 	}
-	if (empty.length == 0) {
+	if (value == FRUIT) {
 		for (var x=grid.width-COLS+i; x < COLS-i; x++) {
 			for (var y=grid.height-ROWS+i; y < ROWS-i; y++) {
 				if (grid.get(x, y) == EMPTY) {
@@ -132,7 +135,7 @@ function init() {
 	gamecounter++;
 	reset = false;
 	bomb_reset = false;
-	if (gametype == "mover"||gametype == "speed"||gametype == "invisibombs"||gametype == "bombs")
+	if (gametype == "mover"||gametype == "speed"||gametype == "invisibombs"||gametype == "bombs"||gametype == "flash")
 		bombs = true;
 	else bombs = false;
 	if (gametype == "portal"||gametype == "tick") set(FRUIT);
@@ -279,6 +282,7 @@ function draw() {
 	var tw = canvas.width/grid.width;
 	var th = canvas.height/grid.height;
 
+	if (frames%50 == 0 && gametype == "flash") flash = !flash; 
 	for (var x=0; x < grid.width; x++) {
 		for (var y=0; y < grid.height; y++) {
 			if (atWall(x ,y)) ctx.fillStyle = "#2b2b2b";
@@ -288,6 +292,8 @@ function draw() {
 			else if (atBomb(x, y)) {
 				if (gametype == "invisibombs"||gametype == "speed")
 					ctx.fillStyle = "#f00";
+				else if (flash)
+					ctx.fillStyle = "fff";
 				else ctx.fillStyle = "#000";
 			} 
 			else if (atSnake(x, y)) ctx.fillStyle = "orange";
