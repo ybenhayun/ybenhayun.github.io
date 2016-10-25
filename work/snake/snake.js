@@ -6,7 +6,7 @@ var a, d, s, w;
 var canvas, ctx, keystate, frames, score, timer, taken, board;
 var gametype, gamecounter = 0, growth_rate, paused;
 var hx, hy, nx, ny, reset, bomb_reset, bombs, fruit;
-var flash, speed;
+var flash;
 
 grid = {
 	width: null, 
@@ -108,7 +108,7 @@ function init() {
 	score = 0;
 	taken = 0;
 	timer = 250;
-	speed = 1;
+
 	growth_rate = 2;
 	flash = false;
 	COLS = 26, ROWS = 26;
@@ -153,7 +153,7 @@ function loop() {
 }
 
 function update() {
-	frames += speed;
+	frames++;
 
 	if ((frames%4 == 0 && gametype == "mover")||(gametype == "disoriented" && frames%8 ==0)){
 		moveFruit();
