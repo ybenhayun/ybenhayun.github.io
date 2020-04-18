@@ -13,7 +13,7 @@ $(document).ready(function(){
 			if ($(this).attr('id') == "mover") description = "<span class = 'descr'> <br><br> This snake doesn't mind chasing after the food he wants. And the food isn't going to stop moving anytime soon.<br>";
 			if ($(this).attr('id') == "disoriented") description = "<span class = 'descr'> <br><br> You're snake's a little disoriented. So is the food you're trying to eat. And so are you. Basically, nobody has any idea what they're doing.";
 			if ($(this).attr('id') == "portal") description = "<span class = 'descr'> <br><br> This snake is years ahead of its time, and perfectly capable of bending time and space at will!<br><br>";
-			if ($(this).attr('id') == "speed") description = "<span class = 'descr'> <br><br> This snake doesn't wait for no man. Be careful around corners with him.<br><br>";
+			if ($(this).attr('id') == "dodge") description = "<span class = 'descr'> <br><br> Dodge test.<br><br>";
 			if ($(this).attr('id') == "tick") description = "<span class = 'descr'> <br><br> If you can pick up your fruit quickly, this game will be a breeze. Otherwise...<br><br>";
 			if ($(this).attr('id') == "flash") description = "<span class = 'descr'> <br><br> I hope you have a good memory...<br><br><br><br>";
 			if (localStorage.getItem($(this).attr('id')) == null){

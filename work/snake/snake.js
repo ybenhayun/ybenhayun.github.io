@@ -5,7 +5,7 @@ var larrow, uarrow, rarrow, darrow;
 var a, d, s, w;
 var canvas, ctx, keystate, frames, score, timer, taken, board;
 var gametype, gamecounter = 0, growth_rate, paused;
-var hx, hy, nx, ny, reset, bomb_reset, bombs, fruit;
+var hx, hy, nx, ny, reset, bomb_reset, bombs, fruit, fruit_reset;
 var flash;
 
 grid = {
@@ -137,7 +137,7 @@ function init() {
 	gamecounter++;
 	reset = false;
 	bomb_reset = false;
-	if (gametype == "mover"||gametype == "speed"||gametype == "invisibombs"||gametype == "bombs"||gametype == "flash")
+	if (gametype == "mover"||gametype == "dodge"||gametype == "invisibombs"||gametype == "bombs"||gametype == "flash")
 		bombs = true;
 	else bombs = false;
 	if (gametype == "portal"||gametype == "tick") set(FRUIT);
@@ -158,6 +158,9 @@ function update() {
 	if ((frames%4 == 0 && gametype == "mover")||(gametype == "disoriented" && frames%8 ==0)){
 		moveFruit();
 	}		
+
+	if (frames%50 == 0 && gametype == "dodge")
+		moveBombs();
 
 	if (frames%5 == 0){
 		nx = snake.last.x;
@@ -292,7 +295,7 @@ function draw() {
 			else if (atHead(x, y)) ctx.fillStyle = "#f00";
 			else if (atFruit(x, y)) ctx.fillStyle = "#f00";
 			else if (atBomb(x, y)) {
-				if (gametype == "invisibombs"||gametype == "speed")
+				if (gametype == "invisibombs")
 					ctx.fillStyle = "#f00";
 				else if (flash)
 					ctx.fillStyle = "fff";
@@ -325,16 +328,16 @@ function draw() {
 function moveSnake(){
 	if ((keystate[larrow]||keystate[a]) && snake.direction != right){
 		snake.direction = left;
-		if (gametype == "speed") frames+=3;
+		//if (gametype == "speed") frames+=3;
 	} else if ((keystate[rarrow]||keystate[d]) && snake.direction != left){
 		snake.direction = right;
-		if (gametype == "speed") frames+=3;
+		//if (gametype == "speed") frames+=3;
 	} else if ((keystate[uarrow]||keystate[w]) && snake.direction != down){ 
 		snake.direction = up;
-		if (gametype == "speed")frames+=3;
+		//if (gametype == "speed")frames+=3;
 	} else if ((keystate[darrow]||keystate[s]) && snake.direction != up) {
 		snake.direction = down;
-		if (gametype == "speed") frames+=3;
+		//if (gametype == "speed") frames+=3;
    	}
 
 
@@ -343,14 +346,31 @@ function moveSnake(){
 	else if (snake.direction == right) nx++;
 	else if (snake.direction == down) ny++;
 
-if (nx < grid.width-COLS){
-		nx = COLS-1;
+	if (nx < grid.width-COLS){
+			nx = COLS-1;
 	} else if (nx > COLS-1) {
-		nx = grid.width-COLS;
+			nx = grid.width-COLS;
 	} else if (ny < grid.height-ROWS) {
-		ny = ROWS-1;
+			ny = ROWS-1;
 	} else if (ny > ROWS-1) {
-		ny = grid.height-ROWS;
+			ny = grid.height-ROWS;
+	}
+}
+
+function moveBombs(){
+
+	for (var i = 0; i < COLS; i++) {
+		for (var j = 0; j < ROWS; j++){
+			if (grid.get(i, j) == BOMB){
+				grid.set(EMPTY, i, j);
+				if (i == 0) i = COLS-1;
+				if (grid.get(i-1, j) == FRUIT) fruit_reset = true;
+				else fruit_reset = false;
+				grid.set(BOMB, i-1, j);
+
+				if (fruit_reset == true) grid.set(FRUIT, i-1, j);
+			}
+		}
 	}
 }
 
