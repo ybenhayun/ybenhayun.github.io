@@ -348,6 +348,7 @@ function draw() {
 	document.getElementById("inst").innerHTML += "<br> FRUIT VALUE: " + Math.floor(timer);
 	document.getElementById("inst").innerHTML += "<br><br><br>HIGH SCORE: " + localStorage.getItem(gametype);
 	document.getElementById("inst").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+'fruit') + "</span>";
+	document.getElementById("inst").innerHTML += "<br>SNAKE LENGTH: " + snake_length + " pieces long";
 }
 
 function setMissiles () {
@@ -384,8 +385,9 @@ function moveMissiles () {
 				document.getElementById("fruitsound").play();
 
 				//for (var i = 0; i < growth_rate; i++){			
-					grid.set(SNAKE, snake.last.x, snake.last.y);
-					snake.insert(snake.last.x, snake.last.y);
+				grid.set(SNAKE, snake.last.x, snake.last.y);
+				snake.insert(snake.last.x, snake.last.y);
+				snake_length++;
 				//} 
 
 				missiles.splice(i, 0);
