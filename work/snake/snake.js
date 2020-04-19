@@ -335,11 +335,8 @@ function draw() {
 		}
 	}
 
-	if (timer > 50){
-		if (gametype == "disoriented" || gametype == "nogod")
-			timer-=.2;
-		else timer-=.5;
-	}
+	if (timer > 50) timer-=.5;
+
 	if (gametype == "tick" && timer%43 == 0) set(BOMB);
 
 	if ((gametype == "missiles" || gametype == "nogod") && frames%20 == 0) setMissiles();
