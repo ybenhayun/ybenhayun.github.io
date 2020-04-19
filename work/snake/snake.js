@@ -137,7 +137,7 @@ function init() {
 	gamecounter++;
 	reset = false;
 	bomb_reset = false;
-	if (gametype == "mover"||gametype == "dodge"||gametype == "invisibombs"||gametype == "bombs"||gametype == "flash"||gametype=="disoriented")
+	if (gametype == "mover"||gametype == "dodge"||gametype == "invisibombs"||gametype == "bombs"||gametype == "flash"||gametype=="disoriented" || gametype == "nogod")
 		bombs = true;
 	else bombs = false;
 	if (gametype == "portal"||gametype == "tick") set(FRUIT);
@@ -155,14 +155,14 @@ function loop() {
 function update() {
 	frames++;
 
-	if ((frames%4 == 0 && gametype == "mover")||(gametype == "disoriented" && frames%8 ==0)){
+	if ((frames%4 == 0 && gametype == "mover")||((gametype == "disoriented" || gametype == "nogod") && frames%8 ==0)){
 		moveFruit();
 	}		
 
-	if (frames%20 == 0 && (gametype == "dodge" || gametype=="disoriented"))
+	if (frames%20 == 0 && (gametype == "dodge" || gametype=="disoriented" || gametype == "nogod"))
 		moveBombs();
 
-	if (frames%5 == 0 && gametype == "missiles") 
+	if (frames%5 == 0 && (gametype == "missiles" || gametype == "nogod")) 
 		moveMissiles();
 
 	if (frames%5 == 0){
@@ -321,7 +321,7 @@ function draw() {
 			else if (atHead(x, y)) ctx.fillStyle = "#f00";
 			else if (atFruit(x, y)) ctx.fillStyle = "#f00";
 			else if (atBomb(x, y)) {
-				if (gametype == "invisibombs" || gametype == "disoriented")
+				if (gametype == "invisibombs" || gametype == "disoriented" || gametype == "nogod")
 					ctx.fillStyle = "#f00";
 				else if (flash)
 					ctx.fillStyle = "fff";
@@ -336,13 +336,13 @@ function draw() {
 	}
 
 	if (timer > 50){
-		if (gametype == "disoriented")
+		if (gametype == "disoriented" || gametype == "nogod")
 			timer-=.2;
 		else timer-=.5;
 	}
 	if (gametype == "tick" && timer%43 == 0) set(BOMB);
 
-	if (gametype == "missiles" && frames%20 == 0) setMissiles();
+	if ((gametype == "missiles" || gametype == "nogod") && frames%20 == 0) setMissiles();
 
 	document.getElementById("inst").innerHTML = "<span id = 'inst'>";
 	document.getElementById("inst").innerHTML += "Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
