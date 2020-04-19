@@ -151,7 +151,7 @@ function loop() {
 
 	globalID = window.requestAnimationFrame(loop, canvas);
 }
-
+/*
 function update() {
 	frames++;
 
@@ -165,7 +165,7 @@ function update() {
 	if (frames%5 == 0 && (gametype == "missiles" || gametype == "nogod")) 
 		moveMissiles();
 
-	if (frames%5 == 0){
+	if (frames%1 == 0){
 		nx = snake.last.x;
 		ny = snake.last.y;
 
@@ -193,6 +193,7 @@ function update() {
 		}
 	}
 }
+*/
 
 function collectedFruit(x, y){
 	document.getElementById("fruitsound").pause();
@@ -272,9 +273,9 @@ function gameOver(x, y){
 	if (x >= COLS) x = 0;
 	if (y >= ROWS) y = 0;
 
-	if (grid.get(x,y) != SNAKE && grid.get(x,y) != BOMB) return false;
+	if (grid.get(x,y) == SNAKE || grid.get(x,y) == BOMB) return true;
 
-	return true;
+	return false;
 }
 
 function stopPause() {
@@ -360,6 +361,8 @@ function setMissiles () {
 		}
 	}
 
+	if (empty == []) return;
+
 	var randpos = empty[Math.round(Math.random()*(empty.length - 1))];
 	grid.set(MISSILE, 0, randpos.y);
 }
@@ -384,11 +387,9 @@ function moveMissiles () {
 				document.getElementById("fruitsound").currentTime = 0;
 				document.getElementById("fruitsound").play();
 
-				//for (var i = 0; i < growth_rate; i++){			
 				grid.set(SNAKE, snake.last.x, snake.last.y);
 				snake.insert(snake.last.x, snake.last.y);
 				snake_length++;
-				//} 
 
 				missiles.splice(i, 0);
 
@@ -403,57 +404,7 @@ function moveMissiles () {
 	} 	
 }
 
-function moveSnake(){
-	if ((keystate[larrow]||keystate[a]) && snake.direction != right){
-		snake.direction = left;
-		//if (gametype == "speed") frames+=3;
-	} else if ((keystate[rarrow]||keystate[d]) && snake.direction != left){
-		snake.direction = right;
-		//if (gametype == "speed") frames+=3;
-	} else if ((keystate[uarrow]||keystate[w]) && snake.direction != down){ 
-		snake.direction = up;
-		//if (gametype == "speed")frames+=3;
-	} else if ((keystate[darrow]||keystate[s]) && snake.direction != up) {
-		snake.direction = down;
-		//if (gametype == "speed") frames+=3;
-   	}
-
-	if (snake.direction == left) nx--;
-	else if (snake.direction == up) ny--;
-	else if (snake.direction == right) nx++;
-	else if (snake.direction == down) ny++;
-
-
-
-	if (nx < grid.width-COLS){
-			nx = COLS-1;
-	} else if (nx > COLS-1) {
-			nx = grid.width-COLS;
-	} else if (ny < grid.height-ROWS) {
-			ny = ROWS-1;
-	} else if (ny > ROWS-1) {
-			ny = grid.height-ROWS;
-	}
-}
-
-
 function moveBombs(){
-/*
-	for (var i = 0; i < COLS; i++) {
-		for (var j = 0; j < ROWS; j++){
-			if (grid.get(i, j) == BOMB){
-				grid.set(EMPTY, i, j);
-				if (i == 0) i = COLS-1;
-				if (grid.get(i-1, j) == FRUIT) fruit_reset = true;
-				else fruit_reset = false;
-				grid.set(BOMB, i-1, j);
-
-				if (fruit_reset == true) grid.set(FRUIT, i-1, j);
-			}
-		}
-	}
-	*/
-	//console.log(bomblist.length);
 	for (var i = 1; i <= bombcount; i++) {
 
 		grid.set(EMPTY, bomblist[i*3-3], bomblist[i*3-2]);
