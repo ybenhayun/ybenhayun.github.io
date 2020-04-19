@@ -1,5 +1,5 @@
 var COLS = 26, ROWS = 26;
-var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4, MARKED = 5;
+var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4, MARKED = 5, MISSILE = 6;
 var left  = 0, up = 1, right = 2, down  = 3;
 var larrow, uarrow, rarrow, darrow;
 var a, d, s, w;
@@ -162,6 +162,9 @@ function update() {
 	if (frames%20 == 0 && (gametype == "dodge" || gametype=="disoriented"))
 		moveBombs();
 
+	if (frames%5 == 0 && gametype == "missiles") 
+		moveMissiles();
+
 	if (frames%5 == 0){
 		nx = snake.last.x;
 		ny = snake.last.y;
@@ -301,6 +304,11 @@ function atHead(x ,y){
 function atWall(x, y){
 	return grid.get(x, y) == WALL;
 }
+
+function atMissile(x, y){
+	return grid.get(x, y) == MISSILE;
+}
+
 function draw() {
 	var tw = canvas.width/grid.width;
 	var th = canvas.height/grid.height;
@@ -319,7 +327,7 @@ function draw() {
 					ctx.fillStyle = "fff";
 				else ctx.fillStyle = "#000";
 			} 
-			else if (atSnake(x, y)) ctx.fillStyle = "orange";
+			else if (atSnake(x, y) || atMissile(x, y)) ctx.fillStyle = "orange";
 
 			ctx.fillRect(x*tw, y*th, tw, th);
 			//ctx.rect(x*tw, y*th, tw, th);
@@ -333,6 +341,9 @@ function draw() {
 		else timer-=.5;
 	}
 	if (gametype == "tick" && timer%43 == 0) set(BOMB);
+
+	if (gametype == "missiles" && frames%20 == 0) setMissiles();
+
 	document.getElementById("inst").innerHTML = "<span id = 'inst'>";
 	document.getElementById("inst").innerHTML += "Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
 	document.getElementById("inst").innerHTML += "<br><br><br> CURRENT SCORE: " + score;
@@ -340,7 +351,57 @@ function draw() {
 	document.getElementById("inst").innerHTML += "<br> FRUIT VALUE: " + Math.floor(timer);
 	document.getElementById("inst").innerHTML += "<br><br><br>HIGH SCORE: " + localStorage.getItem(gametype);
 	document.getElementById("inst").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+'fruit') + "</span>";
+}
 
+function setMissiles () {
+	var empty = [];
+
+	for (var y = 0; y < ROWS; y++) {
+		if (grid.get(0, y) == EMPTY) {
+			empty.push({y:y});
+		}
+	}
+
+	var randpos = empty[Math.round(Math.random()*(empty.length - 1))];
+	grid.set(MISSILE, 0, randpos.y);
+}
+
+function moveMissiles () {
+	var missiles = []
+
+	for (var x = 0; x < COLS; x++) {
+		for (var y = 0; y < ROWS; y++) {
+			if (atMissile(x, y)) {
+				grid.set(EMPTY, x, y);
+				missiles.push({x:x, y:y});
+			}
+		}
+	}
+
+	for (var i = 0; i < missiles.length; i++) {
+		if (missiles[i].x < COLS-1) {
+			missiles[i].x++;
+			if (atSnake(missiles[i].x, missiles[i].y) || atHead(missiles[i].x, missiles[i].y)) {
+				document.getElementById("fruitsound").pause();
+				document.getElementById("fruitsound").currentTime = 0;
+				document.getElementById("fruitsound").play();
+
+				//for (var i = 0; i < growth_rate; i++){			
+					grid.set(SNAKE, snake.last.x, snake.last.y);
+					snake.insert(snake.last.x, snake.last.y);
+				//} 
+
+				missiles.splice(i, 0);
+
+			} else {
+				if (atFruit(missiles[i].x, missiles[i].y)) { 
+					set(FRUIT);
+					missiles.push({x:missiles[i].x, y:missiles[i].y});
+				}
+				grid.set(MISSILE, missiles[i].x, missiles[i].y);
+			}
+		}
+	} 	
 }
 
 function moveSnake(){
