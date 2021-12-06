@@ -11,8 +11,6 @@ var bombcount;
 
 let bomblist = new Array();
 
-//EMAIL CHANGE
-
 grid = {
 	width: null, 
 	height: null,
