@@ -11,6 +11,8 @@ var bombcount;
 
 let bomblist = new Array();
 
+//TEST TO SEE IF THIS WORKS
+
 grid = {
 	width: null, 
 	height: null,
