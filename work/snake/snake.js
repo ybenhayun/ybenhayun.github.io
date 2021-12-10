@@ -90,7 +90,7 @@ function set(value) {
 }
 
 function main() {
-	localStorage.clear() //resets high scores
+	localStorage.clear() //resets high scores work please
 	canvas = document.getElementById("grid");
 	canvas.width = COLS*20;
 	canvas.height = ROWS*20;
