@@ -120,10 +120,10 @@ function init() {
 	larrow  = 37, uarrow = 38, rarrow = 39, darrow = 40;
 	a = 65, d = 68, s = 83, w = 87;
 
-	if (localStorage.getItem(gametype) == null) 
-		localStorage.setItem(gametype, 0);
-	if (localStorage.getItem(gametype+'fruit') == null)
-		localStorage.setItem(gametype+'fruit', 0);
+	if (localStorage.getItem(gametype+location.pathname) == null) 
+		localStorage.setItem(gametype+location.pathname, 0);
+	if (localStorage.getItem(gametype+location.pathname+'fruit') == null)
+		localStorage.setItem(gametype+location.pathname+'fruit', 0);
 	grid.init(EMPTY, COLS, ROWS);
 
 	var sp = {x:ROWS-1, y:Math.floor(COLS/2)};
@@ -257,12 +257,10 @@ function collectedFruit(x, y){
 		bomblist[bombcount*3-3] = tail.x //sets x value for bomb 
 	}
 
-	if (score > localStorage.getItem(gametype))
-		localStorage.setItem(gametype, score);
-	if (taken > localStorage.getItem(gametype+'fruit'))
-		localStorage.setItem(gametype+'fruit', taken);
-
-	console.log(location.pathname);
+	if (score > localStorage.getItem(gametype+location.pathname))
+		localStorage.setItem(gametype+location.pathname, score);
+	if (taken > localStorage.getItem(gametype+location.pathname+'fruit'))
+		localStorage.setItem(gametype+location.pathname+'fruit', taken);
 
 	if (gametype == "portal") set(FRUIT);
 	set(FRUIT);
@@ -349,8 +347,8 @@ function draw() {
 	document.getElementById("inst").innerHTML += "<br><br><br> CURRENT SCORE: " + score;
 	document.getElementById("inst").innerHTML += "<br> FRUIT TAKEN: " + taken;
 	document.getElementById("inst").innerHTML += "<br> FRUIT VALUE: " + Math.floor(timer);
-	document.getElementById("inst").innerHTML += "<br><br><br>HIGH SCORE: " + localStorage.getItem(gametype);
-	document.getElementById("inst").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+'fruit') + "</span>";
+	document.getElementById("inst").innerHTML += "<br><br><br>HIGH SCORE: " + localStorage.getItem(gametype+location.pathname);
+	document.getElementById("inst").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+location.pathname+'fruit') + "</span>";
 	document.getElementById("inst").innerHTML += "<br>SNAKE LENGTH: " + snake_length + " pieces long";
 }
 
