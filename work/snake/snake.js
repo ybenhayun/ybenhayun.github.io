@@ -264,7 +264,7 @@ function collectedFruit(x, y){
 	if (taken > localStorage.getItem(gametype+location.pathname+'fruit'))
 		localStorage.setItem(gametype+location.pathname+'fruit', taken);
 
-	//alert(location.pathname); //twice
+	////alert(location.pathname); //twice
 
 	if (gametype == "portal") set(FRUIT);
 	set(FRUIT);
