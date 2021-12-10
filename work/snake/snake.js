@@ -262,6 +262,8 @@ function collectedFruit(x, y){
 	if (taken > localStorage.getItem(gametype+'fruit'))
 		localStorage.setItem(gametype+'fruit', taken);
 
+	console.log(location.pathname);
+
 	if (gametype == "portal") set(FRUIT);
 	set(FRUIT);
 
