@@ -1,3 +1,5 @@
+//WORK PLEASE
+
 var COLS = 26, ROWS = 26;
 var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4, MARKED = 5, MISSILE = 6;
 var left  = 0, up = 1, right = 2, down  = 3;
