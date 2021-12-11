@@ -1,4 +1,3 @@
-//WORK PLEASE
 
 var COLS = 26, ROWS = 26;
 var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4, MARKED = 5, MISSILE = 6;
@@ -264,7 +263,6 @@ function collectedFruit(x, y){
 	if (taken > localStorage.getItem(gametype+location.pathname+'fruit'))
 		localStorage.setItem(gametype+location.pathname+'fruit', taken);
 
-	//this works now? it doesnt. one last time then im going to sleep sleep again!
 	if (gametype == "portal") set(FRUIT);
 	set(FRUIT);
 
