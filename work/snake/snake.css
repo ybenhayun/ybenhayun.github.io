@@ -49,23 +49,23 @@ span#inst {
 }
 
 button {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0px;
-  font-family: Courier New;
-  color: #fafafa;
-  font-size: 15px;
-  background: #485157;
-  padding: 4px 8px 4px 8px;
-  border: solid #1f628d 0px;
-  text-decoration: none;
-  margin-left: 50px;
-  margin-bottom: 10px;
-  float: right;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0px;
+	font-family: Courier New;
+	color: #fafafa;
+	font-size: 15px;
+	background: #485157;
+	padding: 4px 8px 4px 8px;
+	border: solid #1f628d 0px;
+	text-decoration: none;
+	margin-left: 50px;
+	margin-bottom: 10px;
+	float: right;
 }
 
 #nogod {
-	font-size: smaller;
+	width: 160px;
 }
 
 button:hover {
