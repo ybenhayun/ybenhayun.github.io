@@ -64,6 +64,10 @@ button {
   float: right;
 }
 
+#nogod {
+	font-size: smaller;
+}
+
 button:hover {
   background: #607480;
   text-decoration: none;
