@@ -12,6 +12,8 @@ var bombcount;
 
 let bomblist = new Array();
 
+//iwosefjowiefj//
+
 grid = {
 	width: null, 
 	height: null,
