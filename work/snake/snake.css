@@ -72,4 +72,15 @@ button:hover {
   background: #607480;
   text-decoration: none;
   cursor: pointer;
+  pointer-events: auto;
 }
+
+button:disabled {
+	color: black;
+	background-color: black;
+}
+
+button:disabled:hover {
+	cursor: not-allowed;
+}
+
