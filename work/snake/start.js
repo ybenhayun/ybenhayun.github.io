@@ -19,9 +19,12 @@ $(document).ready(function(){
 			if ($(this).attr('id') == "disoriented") description = "<span class = 'descr'> <br><br> Good luck making sense of this one. <br><br><br>";
 			if ($(this).attr('id') == "missiles") description = "<span class = 'descr'> <br><br> I hope your snake is wearing some body armor. <br><br><br>";
 			if ($(this).attr('id') == "nogod") description = "<span class = 'descr'> <br><br> This is the end... sorry. <br><br><br><br>";
-			if (localStorage.getItem($(this).attr('id')+location.pathname+'fruit') == null){
+			if (localStorage.getItem($(this).attr('id')+location.pathname) == null){
 				localStorage.setItem($(this).attr('id')+location.pathname, 0);
-				localStoarge.setItem($(this).attr('id')+location.pathname+'fruit', 0);
+			}
+			
+			if (localStorage.getItem($(this).attr('id') + location.pathname + 'fruit') == null) {
+				localStorage.setItem($(this).attr('id')+location.pathname +'fruit', 0);
 			}
 			description += "<br><br>HIGH SCORE: " + localStorage.getItem($(this).attr('id') + location.pathname) + "<br> MOST FRUIT: " + localStorage.getItem($(this).attr('id')+location.pathname+'fruit') + "</span>";
 			$("#inst").append(description);
