@@ -161,7 +161,7 @@ function draw() {
 	if ((isGame("missiles") || isGame("nogod")) && frames%20 == 0) set(MISSILE, 0, -1);
 
 	document.getElementById("inst").innerHTML = "<span id = 'inst'>";
-	document.getElementById("inst").innerHTML += "Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!</span>";
+	document.getElementById("inst").innerHTML += "Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
 	document.getElementById("inst").innerHTML += "<br><br><br> CURRENT SCORE: " + score;
 	document.getElementById("inst").innerHTML += "<br> FRUIT TAKEN: " + taken;
 	document.getElementById("inst").innerHTML += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);

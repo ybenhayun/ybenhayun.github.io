@@ -4,7 +4,7 @@ $(document).ready(function(){
 			$('.descr').empty();
 			var description;
 
-			var initial = "Use WASD or the arrows keys to move around the grid. Collect as many fruit as you can without dying. Good luck!"
+			//var initial = "Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!"
 			if ($(this).attr('id') == "classic") description = "<span class = 'descr'> <br><br> No tricks here. This is the same classic game you played on your Nokia cell phone.<br><br>";
 			if ($(this).attr('id') == "bombs") description = "<span class = 'descr'> <br><br> This little snake loves fruit, but he seems to leave some nasty things behind as he slithers around...<br>";
 			if ($(this).attr('id') == "invis") description = "<span class = 'descr'> <br><br> This guy loves to eat so much, that sometimes he forgets what he should and shouldn't be putting into his mouth.<br>";
