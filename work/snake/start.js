@@ -16,11 +16,11 @@ $(document).ready(function(){
 			if ($(this).attr('id') == "dodge") description = "<span class = 'descr'> <br><br> Dodge test.<br><br>";
 			if ($(this).attr('id') == "tick") description = "<span class = 'descr'> <br><br> If you can pick up your fruit quickly, this game will be a breeze. Otherwise...<br><br>";
 			if ($(this).attr('id') == "flash") description = "<span class = 'descr'> <br><br> I hope you have a good memory...<br><br><br><br>";
-			if (localStorage.getItem($(this).attr('id')) == null){
-				localStorage.setItem($(this.attr('id')), 0);
-				localStoarge.setItem($(this.attr('id'))+'fruit');
+			if (localStorage.getItem($(this).attr('id')+location.pathname+'fruit') == null){
+				localStorage.setItem($(this).attr('id')+location.pathname, 0);
+				localStoarge.setItem($(this).attr('id')+location.pathname+'fruit', 0);
 			}
-			description += "<br><br>HIGH SCORE: " + localStorage.getItem($(this).attr('id')) + "<br> MOST FRUIT: " + localStorage.getItem($(this).attr('id')+'fruit') + "</span>";
+			description += "<br><br>HIGH SCORE: " + localStorage.getItem($(this).attr('id') + location.pathname) + "<br> MOST FRUIT: " + localStorage.getItem($(this).attr('id')+location.pathname+'fruit') + "</span>";
 			$("#inst").append(description);
 			//$('.descr').empty();
 		});
