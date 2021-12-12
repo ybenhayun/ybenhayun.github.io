@@ -165,9 +165,10 @@ function draw() {
 	document.getElementById("inst").innerHTML += "<br><br><br> CURRENT SCORE: " + score;
 	document.getElementById("inst").innerHTML += "<br> FRUIT TAKEN: " + taken;
 	document.getElementById("inst").innerHTML += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
+	document.getElementById("inst").innerHTML += "<br>SNAKE LENGTH: " + snake_length + " pieces long";
+
 	document.getElementById("inst").innerHTML += "<br><br><br>HIGH SCORE: " + localStorage.getItem(gametype+location.pathname);
 	document.getElementById("inst").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+location.pathname+'fruit') + "</span>";
-	document.getElementById("inst").innerHTML += "<br>SNAKE LENGTH: " + snake_length + " pieces long";
 }
 
 function update() {
