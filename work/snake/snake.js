@@ -4,13 +4,10 @@ var COLS = 26, ROWS = 26;
 var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4, MARKED = 5, MISSILE = 6, HEAD = 7;
 var left  = 0, up = 1, right = 2, down  = 3;
 var larrow = 37, uarrow = 38, rarrow = 39, darrow = 40;
-var canvas, ctx, keystate, frames, score, fruitvalue, taken, board;
-var gametype, gamecounter = 0, paused;
+var canvas, ctx, keystate, frames, score, fruitvalue, taken;
+var gametype, gamecounter = 0;
 var nx, ny, bomb;
 var flash;
-var bombcount;
-
-let bomblist = new Array();
 
 grid = {
 	width: null, 
@@ -121,8 +118,8 @@ function init() {
 		bomb = true;
 	else bomb = false;
 
-	if (isGame(["portal", "tick"])) set(FRUIT, -1, -1);
-	set(FRUIT, -1, -1);
+	if (isGame(["portal", "tick"])) set(FRUIT);
+	set(FRUIT);
 }
 
 function loop() {
@@ -157,8 +154,8 @@ function draw() {
 	}
 
 	if (fruitvalue > 50) fruitvalue-=.5;
-	if (isGame("tick") && frames%30 == 0 && fruitvalue < 200) set(BOMB, -1, -1);
-	if ((isGame("missiles") || isGame("nogod")) && frames%20 == 0) set(MISSILE, 0, -1);
+	if (isGame("tick") && frames%30 == 0 && fruitvalue < 200) set(BOMB);
+	if ((isGame("missiles") || isGame("nogod")) && frames%20 == 0) set(MISSILE, 0);
 
 	document.getElementById("inst").innerHTML = "<span id = 'inst'>";
 	document.getElementById("inst").innerHTML += "Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
@@ -223,7 +220,7 @@ function at(value, x, y) {
 }
 
 function set(value, a, b) {
-	if (a == -1 || b == -1) { //place at a random spot
+	if (a == null || b == null) { //place at a random spot
 		var empty = [];
 		var i = 0;
 		if (isGame("walled")) i++;   //don't place fruit on edge of map during walled
@@ -237,8 +234,8 @@ function set(value, a, b) {
 		}
 	
 		var randpos = empty[Math.round(Math.random()*(empty.length - 1))];
-		if (a == -1) a = randpos.x; 
-		if (b == -1) b = randpos.y;
+		if (a == null) a = randpos.x; 
+		if (b == null) b = randpos.y;
 	}
 
 	if (value == FRUIT) fruit = {x:a, y:b};
@@ -263,9 +260,9 @@ function collectedFruit(x, y){
 
 	checkHighScores();
 
-	if (isGame("infinity")) { set(FRUIT, -1, -1); set(FRUIT, -1, -1); }
-	if (isGame("portal")) set(FRUIT, -1, -1);
-	set(FRUIT, -1, -1);
+	if (isGame("infinity")) { set(FRUIT); set(FRUIT); }
+	if (isGame("portal")) set(FRUIT);
+	set(FRUIT);
 
 }
 
