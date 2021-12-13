@@ -34,7 +34,7 @@ grid = {
 	get: function(x, y) {
 		return this.pos[x][y];
 	}
-}
+};
 
 snake = {
 	direction: null,
@@ -97,7 +97,7 @@ function init() {
 	bombs = [];
 	over = false;
 
-	if (localStorage.getItem(gametype+location.pathname) == null) { //set scores to 0 if not yet played
+	if (getScore(gametype) == null) { //set scores to 0 if not yet played
 		localStorage.setItem(gametype+location.pathname, 0);
 		localStorage.setItem(gametype+location.pathname+'fruit', 0);
 	}
@@ -156,17 +156,33 @@ function draw() {
 
 	if (fruitvalue > 50) fruitvalue-=.5;
 	if (isGame("tick") && frames%30 == 0 && fruitvalue < 200) set(BOMB);
-	if ((isGame("missiles") || isGame("nogod")) && frames%20 == 0) set(MISSILE, 0);
+	if (isGame(["missiles", "nogod"]) && frames%20 == 0) set(MISSILE, 0);
 
-	document.getElementById("inst").innerHTML = "<span id = 'inst'>";
-	document.getElementById("inst").innerHTML += "Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
-	document.getElementById("inst").innerHTML += "<br><br><br> CURRENT SCORE: " + score;
-	document.getElementById("inst").innerHTML += "<br> FRUIT TAKEN: " + taken;
-	document.getElementById("inst").innerHTML += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
-	document.getElementById("inst").innerHTML += "<br>SNAKE LENGTH: " + snake_length + " pieces long";
+	document.getElementById("score").innerHTML = "<span id = 'inst'>";
+	document.getElementById("inst").innerHTML += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
+	document.getElementById("inst").innerHTML += "<span id = 'descr'><br> CURRENT SCORE: " + score;
+	document.getElementById("descr").innerHTML += "<br> FRUIT TAKEN: " + taken;
+	document.getElementById("descr").innerHTML += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
+	document.getElementById("descr").innerHTML += "<br>SNAKE LENGTH: " + snake_length + " pieces long</span>";
 
-	document.getElementById("inst").innerHTML += "<br><br><br>HIGH SCORE: " + localStorage.getItem(gametype+location.pathname);
-	document.getElementById("inst").innerHTML += "<br>MOST FRUIT: " + localStorage.getItem(gametype+location.pathname+'fruit') + "</span>";
+	document.getElementById("descr").innerHTML += "<br><span id ='best'>HIGH SCORE: " + getScore(gametype);
+	document.getElementById("best").innerHTML += "<br>MOST FRUIT: " + getFruitScore(gametype) + "</span>";
+
+
+	if (!isGame("nogod") && getFruitScore(gametype) < scoreToContinue(gametype))
+		document.getElementById("inst").innerHTML += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span></span>";
+}
+
+function scoreToContinue(gametype) {
+	return games[games.map(function(e) { return e.name; }).indexOf(gametype)+1].score;
+}
+
+function getScore(gametype) {
+	return localStorage.getItem(gametype + location.pathname);
+}
+
+function getFruitScore(gametype) {
+	return localStorage.getItem(gametype + location.pathname + 'fruit');
 }
 
 function update() {
@@ -373,9 +389,9 @@ function lengthenSnake(tail, growth_rate) {
 }
 
 function checkHighScores() {
-	if (score > localStorage.getItem(gametype+location.pathname))
+	if (score > getScore(gametype))
 		localStorage.setItem(gametype+location.pathname, score);
-	if (taken > localStorage.getItem(gametype+location.pathname+'fruit'))
+	if (taken > getFruitScore(gametype))
 		localStorage.setItem(gametype+location.pathname+'fruit', taken);
 }
 

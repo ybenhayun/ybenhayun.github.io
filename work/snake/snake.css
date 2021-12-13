@@ -53,6 +53,22 @@ span#name {
 	text-decoration: underline;
 }
 
+span#req {
+	position: absolute;
+	bottom: 5px;
+	font-weight: bold;
+}
+
+span#descr {
+	position: relative;
+	top: 85px;
+}
+
+span#best {
+	position: fixed;
+	bottom: 365px;
+}
+
 button {
 	-webkit-border-radius: 0;
 	-moz-border-radius: 0;
