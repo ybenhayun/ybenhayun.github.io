@@ -48,6 +48,11 @@ span#inst {
 	float: left;
 }
 
+span#name {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
 button {
 	-webkit-border-radius: 0;
 	-moz-border-radius: 0;

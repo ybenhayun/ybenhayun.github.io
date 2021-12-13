@@ -179,7 +179,7 @@ function update() {
 
 	if (frames > 50) resetBoard();
 
-	if ((frames%snakespeed)-2 == 0){
+	if ((frames+2)%snakespeed == 0){
 		nx = snake.last.x;
 		ny = snake.last.y;
 

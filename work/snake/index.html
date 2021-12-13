@@ -13,8 +13,8 @@
 	<div id = "games">
 		<button id = "classic" onclick = setGame('classic')> Classic </button>
 		<button id = "bombs" onclick = setGame('bombs')> Bombs <span class ="needed"><script>scoreNeeded('bombs');</script></span></button>
-		<button id = "invis" onclick = setGame('invis')> Invisibombs <span class ="needed"><script>scoreNeeded('invis');</script></span></button>
-		<button id = "walled" onclick = setGame('walled')> Walled <span class ="needed"><script>scoreNeeded('walled');</script></span></button>
+		<button id = "invis" onclick = setGame('invis')> Colorblind <span class ="needed"><script>scoreNeeded('invis');</script></span></button>
+		<button id = "walled" onclick = setGame('walled')> Boxed In <span class ="needed"><script>scoreNeeded('walled');</script></span></button>
 		<button id = "infinity" onclick = setGame('infinity')> Infinity <span class ="needed"><script>scoreNeeded('infinity');</script></span></button>
 		<button id = "mover" onclick = setGame('mover')> Movers <span class ="needed"><script>scoreNeeded('mover');</script></span></button>
 		<button id = "portal" onclick = setGame('portal')> Portal <span class ="needed"><script>scoreNeeded('portal');</script></span></button>
@@ -31,7 +31,6 @@
 		<source src = "boop.wav" type = "audio/wav">
 	</audio>
 	<canvas id = "grid"></canvas>
-	<div id = "score"><br> <span id = "inst">Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>
-	</div>
+	<div id = "score"><br> <span id = "inst">Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span></div>
 </body>
 </html>
