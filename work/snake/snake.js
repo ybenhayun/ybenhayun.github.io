@@ -285,7 +285,7 @@ function moveMissiles() {
 			missiles[i].x++;
 			if (at(SNAKE, missiles[i].x, missiles[i].y) || at(HEAD, missiles[i].x, missiles[i].y)) {
 				playSound();
-				lengthenSnake({x:snake.last.x, y:snake.last.y}, 1);
+				lengthenSnake({x:snake.last.x, y:snake.last.y}, 2);
 
 				missiles.splice(i, 0);
 			} else {
