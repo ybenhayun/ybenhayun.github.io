@@ -78,7 +78,6 @@ function main() {
 	ctx = canvas.getContext("2d");
 	document.body.appendChild(canvas);
 
-	frames = 0;
 	keystate = {};
 	document.addEventListener("keydown", function(evt) {
 		keystate[evt.keyCode] = true;
@@ -91,6 +90,7 @@ function main() {
 }
 
 function init() {
+	frames = 0;
 	score = 0;
 	taken = 0;
 	fruitvalue = 250;
@@ -177,7 +177,7 @@ function update() {
 	if (frames%4 == 0 && (frames % 100 >  30 && frames % 100 < 60) && isGame("frogger")) { moveBombs(); moveFruit(); }
 	if (frames%5 == 0 && (isGame("missiles") || isGame("nogod"))) moveMissiles();
 
-	if (frames > 20) resetBoard();
+	if (frames > 50) resetBoard();
 
 	if (frames%snakespeed == 0){
 		nx = snake.last.x;
