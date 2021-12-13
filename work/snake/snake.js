@@ -179,7 +179,7 @@ function update() {
 
 	if (frames > 50) resetBoard();
 
-	if (frames%snakespeed == 0){
+	if ((frames%snakespeed)-2 == 0){
 		nx = snake.last.x;
 		ny = snake.last.y;
 
@@ -306,11 +306,17 @@ function moveBombs(){
 			bombs[i].x++;
 			if (bombs[i].x >= COLS) bombs[i].x = 0;
 	   } else if (bombs[i].direction == up) {
-		   bombs[i].y--;
+		   	bombs[i].y--;
 			if (bombs[i].y < 0) bombs[i].y = ROWS-1;
 	   } else if (bombs[i].direction == down) {
-		   bombs[i].y++;
+		   	bombs[i].y++;
 			if (bombs[i].y >= ROWS) bombs[i].y = 0;
+	   }
+
+	   if (at(HEAD, bombs[i].x, bombs[i].y)){
+			unlockGames();
+			if (confirm("Press OK to play again. Press cancel to pick another level.")) return init();
+			else location.reload();
 	   }
 
 	   set(BOMB, bombs[i].x, bombs[i].y);
