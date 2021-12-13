@@ -27,7 +27,7 @@ $(document).ready(function(){
 			if ($(this).attr('id') == "classic") description += "<span id = 'descr'> <br><span id = 'name'>CLASSIC:</span> No tricks here. This is the same classic game you played on your Nokia cell phone.";
 			if ($(this).attr('id') == "bombs") description += "<span id = 'descr'> <br><span id = 'name'>BOMBS:</span> This little snake loves fruit, but he seems to leave some nasty things behind as he slithers around...";
 			if ($(this).attr('id') == "invis") description += "<span id = 'descr'> <br><span id = 'name'>COLORBLIND:</span> This guy loves to eat so much, that sometimes he forgets what he should and shouldn't be putting into his mouth.";
-			if ($(this).attr('id') == "noeyes") description += "<span id = 'descr'> <br><span id = 'name'>20/20 VISION:</span> You might that the title of this game means your snake has really good eyesight. You'd be wrong.";
+			if ($(this).attr('id') == "noeyes") description += "<span id = 'descr'> <br><span id = 'name'>20/20 VISION:</span> You might think that the title of this game means your snake has really good eyesight. You'd be wrong.";
 			if ($(this).attr('id') == "walled") description += "<span id = 'descr'> <br><span id = 'name'>BOXED IN:</span> I really hope you're not claustrophobic.";
 			if ($(this).attr('id') == "infinity") description += "<span id = 'descr'> <br><span id = 'name'>INFINITY:</span> You want a really long snake? Well, here you go.";
 			if ($(this).attr('id') == "mover") description += "<span id = 'descr'> <br><span id = 'name'>MOVERS:</span> This snake doesn't mind chasing after the food he wants. And the food isn't going to stop moving anytime soon.";
