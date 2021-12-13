@@ -35,8 +35,8 @@ $(document).ready(function(){
 	//localStorage.clear();
 });
 
-var bombscore = 30, invisscore = 20, wallscore = 20, infinscore = 20, movscore = 30, portscore = 20, 
-	tickscore = 30, flashscore = 25, dodgescore = 15, frogscore = 15, disscore = 12, missilescore = 12, 
+var bombscore = 35, invisscore = 25, wallscore = 20, infinscore = 25, movscore = 30, portscore = 18, 
+	tickscore = 30, flashscore = 28, dodgescore = 18, frogscore = 15, disscore = 13, missilescore = 13, 
 	nogodscore = 25;
 
 function unlockGames() {
