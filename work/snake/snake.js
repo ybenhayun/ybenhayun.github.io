@@ -95,6 +95,7 @@ function init() {
 	taken = 0;
 	fruitvalue = 250;
 	bombs = [];
+	over = false;
 
 	if (localStorage.getItem(gametype+location.pathname) == null) { //set scores to 0 if not yet played
 		localStorage.setItem(gametype+location.pathname, 0);
@@ -185,9 +186,9 @@ function update() {
 		moveSnake();
 		
 		if (gameOver(nx, ny)) {
-			window.alert("sorry");
 			unlockGames();
-			return init();
+			if (confirm("Press OK to play again. Press cancel to pick another level.")) return init();
+			else location.reload();
 		}
 
 		if (at(FRUIT, nx, ny)) {
@@ -202,47 +203,6 @@ function update() {
 			snake.insert(tail.x, tail.y);
 		}
 	}
-}
-
-function unlockGames() {
-	if (localStorage.getItem('classic' + location.pathname + 'fruit') > 8) document.getElementById("bombs").disabled = false;
-	else document.getElementById("bombs").disabled = true;
-
-	if (localStorage.getItem('bombs' + location.pathname + 'fruit') > 8) document.getElementById("invis").disabled = false;
-	else document.getElementById("invis").disabled = true;
-
-	if (localStorage.getItem('invis' + location.pathname + 'fruit') > 8) document.getElementById("walled").disabled = false;
-	else document.getElementById("walled").disabled = true;
-
-	if (localStorage.getItem('walled' + location.pathname + 'fruit') > 8) document.getElementById("infinity").disabled = false;
-	else document.getElementById("infinity").disabled = true;
-
-	if (localStorage.getItem('infinity' + location.pathname + 'fruit') > 8) document.getElementById("mover").disabled = false;
-	else document.getElementById("mover").disabled = true;
-
-	if (localStorage.getItem('mover' + location.pathname + 'fruit') > 8) document.getElementById("portal").disabled = false;
-	else document.getElementById("portal").disabled = true;
-
-	if (localStorage.getItem('portal' + location.pathname + 'fruit') > 8) document.getElementById("tick").disabled = false;
-	else document.getElementById("tick").disabled = true;
-
-	if (localStorage.getItem('tick' + location.pathname + 'fruit') > 8) document.getElementById("flash").disabled = false;
-	else document.getElementById("flash").disabled = true;
-	
-	if (localStorage.getItem('flash' + location.pathname + 'fruit') > 8) document.getElementById("dodge").disabled = false;
-	else document.getElementById("dodge").disabled = true;
-
-	if (localStorage.getItem('dodge' + location.pathname + 'fruit') > 8) document.getElementById("frogger").disabled = false;
-	else document.getElementById("frogger").disabled = true;
-
-	if (localStorage.getItem('frogger' + location.pathname + 'fruit') > 8) document.getElementById("disoriented").disabled = false;
-	else document.getElementById("disoriented").disabled = true;
-
-	if (localStorage.getItem('disoriented' + location.pathname + 'fruit') > 8) document.getElementById("missiles").disabled = false;
-	else document.getElementById("missiles").disabled = true;
-
-	if (localStorage.getItem('missiles' + location.pathname + 'fruit') > 8) document.getElementById("nogod").disabled = false;
-	else document.getElementById("nogod").disabled = true;
 }
 
 function gameOver(x, y){
