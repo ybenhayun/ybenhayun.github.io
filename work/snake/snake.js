@@ -96,8 +96,8 @@ function init() {
 	for (i = larrow; i <= darrow; i++) keystate[i] = false;
 
 	if (getScore(gametype) == null) { //set scores to 0 if not yet played
-		localStorage.setItem(gametype+location.pathname, 0);
-		localStorage.setItem(gametype+location.pathname+'fruit', 0);
+		setScore(gametype, 0);
+		setFruitScore(gametype, 0);
 	}
 
 	grid.init(EMPTY, COLS, ROWS);
@@ -113,11 +113,14 @@ function init() {
 	snake_length = 4;
 	gamecounter++;
 
-	if (isGame(["mover", "dodge", "bombs", "invis", "flash", "disoriented", "nogod", "frogger"]))
+	if (isGame(["mover", "dodge", "bombs", "invis", "flash", "disoriented", "nogod", "frogger", "noeyes"]))
 		bomb = true;
 	else bomb = false;
 
-	if (isGame(["portal", "tick"])) set(FRUIT);
+	if (isGame("noeyes")) grade = true;
+	else grade = false;
+
+	if (isGame("portal")) set(FRUIT);
 	set(FRUIT);
 }
 
@@ -139,7 +142,7 @@ function draw() {
 			if (at(WALL, x ,y)) ctx.fillStyle = "#2b2b2b";
 			else if (at(EMPTY, x, y)) ctx.fillStyle = "#fff";
 			else if (at(HEAD, x, y)) ctx.fillStyle = "#f00";
-			else if (at(FRUIT, x, y)) ctx.fillStyle = "#f00";
+			else if (at(FRUIT, x, y)) ctx.fillStyle = "#f" + getGrade();
 			else if (at(BOMB, x, y)) {
 				if (isGame(["invis", "disoriented", "nogod"])) ctx.fillStyle = "#f00";
 				else if (isGame("flash") && flash) ctx.fillStyle = "fff";
@@ -153,9 +156,25 @@ function draw() {
 	}
 
 	if (fruitvalue > 50) fruitvalue-=.5;
-	if (isGame("tick") && frames%30 == 0 && fruitvalue < 200) set(BOMB);
+	if (isGame("tick") && frames%30 == 0 && fruitvalue < 175) set(BOMB);
 	if (isGame(["missiles", "nogod"]) && frames%20 == 0) set(MISSILE, 0);
 
+	updateScoreboard();
+}
+
+function getGrade() {
+
+	if (!grade) return "00";
+	if (fruitvalue < 205) return "ff";
+	
+	return (+(Math.ceil((250 - fruitvalue)/3)%16)).toString(16) + (+(Math.ceil((250 - fruitvalue)/3)%16)).toString(16);
+}
+
+function scoreToContinue(gametype) {
+	return games[games.map(function(e) { return e.name; }).indexOf(gametype)+1].score;
+}
+
+function updateScoreboard() {
 	document.getElementById("score").innerHTML = "<span id = 'inst'>";
 	document.getElementById("inst").innerHTML += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
 	document.getElementById("inst").innerHTML += "<span id = 'descr'><br> CURRENT SCORE: " + score;
@@ -171,25 +190,13 @@ function draw() {
 		document.getElementById("inst").innerHTML += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span></span>";
 }
 
-function scoreToContinue(gametype) {
-	return games[games.map(function(e) { return e.name; }).indexOf(gametype)+1].score;
-}
-
-function getScore(gametype) {
-	return localStorage.getItem(gametype + location.pathname);
-}
-
-function getFruitScore(gametype) {
-	return localStorage.getItem(gametype + location.pathname + 'fruit');
-}
-
 function update() {
 	frames++;
 
-	if ((frames%4 == 0 && isGame("mover"))||((isGame("disoriented") || isGame("nogod")) && frames%8 ==0)) moveFruit();
-	if (frames%20 == 0 && taken > 0 && (isGame("dodge") || isGame("disoriented") || isGame("nogod"))) moveBombs();
+	if ((frames%4 == 0 && isGame("mover"))||(isGame(["disoriented", "nogod"]) && frames%8 ==0)) moveFruit();
+	if (frames%20 == 0 && taken > 0 && isGame(["dodge", "disoriented", "nogod"])) moveBombs();
 	if (frames%4 == 0 && (frames % 100 >  30 && frames % 100 < 60) && isGame("frogger")) { moveBombs(); moveFruit(); }
-	if (frames%5 == 0 && (isGame("missiles") || isGame("nogod"))) moveMissiles();
+	if (frames%5 == 0 && isGame(["missiles", "nogod"])) moveMissiles();
 
 	if (frames > 50) resetBoard();
 
@@ -200,9 +207,7 @@ function update() {
 		moveSnake();
 		
 		if (gameOver(nx, ny)) {
-			unlockGames();
-			if (confirm("Press OK to play again. Press cancel to pick another level.")) return init();
-			else location.reload();
+			gameReset();
 		}
 
 		if (at(FRUIT, nx, ny)) {
@@ -217,6 +222,12 @@ function update() {
 			snake.insert(tail.x, tail.y);
 		}
 	}
+}
+
+function gameReset() {
+	unlockGames();
+	if (confirm("Press OK to play again. Press cancel to pick another level.")) return init();
+	else location.reload();
 }
 
 function gameOver(x, y){
@@ -316,37 +327,36 @@ function moveBombs(){
 		if (bombs[i].direction == left) {
 			bombs[i].x--;
 			if (bombs[i].x < 0) bombs[i].x = COLS-1;
-	   } else if (bombs[i].direction == right) {
+	   	} else if (bombs[i].direction == right) {
 			bombs[i].x++;
 			if (bombs[i].x >= COLS) bombs[i].x = 0;
-	   } else if (bombs[i].direction == up) {
+	   	} else if (bombs[i].direction == up) {
 		   	bombs[i].y--;
 			if (bombs[i].y < 0) bombs[i].y = ROWS-1;
-	   } else if (bombs[i].direction == down) {
+	   	} else if (bombs[i].direction == down) {
 		   	bombs[i].y++;
 			if (bombs[i].y >= ROWS) bombs[i].y = 0;
-	   }
+	   	}
 
-	   if (at(HEAD, bombs[i].x, bombs[i].y)){
-			unlockGames();
-			if (confirm("Press OK to play again. Press cancel to pick another level.")) return init();
-			else location.reload();
-	   }
+	   	if (at(HEAD, bombs[i].x, bombs[i].y)){
+			gameReset();
+			return init();
+	   	}
 
-	   set(BOMB, bombs[i].x, bombs[i].y);
+	   	set(BOMB, bombs[i].x, bombs[i].y);
 	}
 }
 
 function resetBoard() {
 	for (var i = 0; i < snake.s_body.length; i++) {
-		if (at(EMPTY, snake.s_body[i].x, snake.s_body[i].y)) set(SNAKE, snake.s_body[i].x, snake.s_body[i].y);
+		if (!at(FRUIT, snake.s_body[i].x, snake.s_body[i].y)) set(SNAKE, snake.s_body[i].x, snake.s_body[i].y);
 	}
+
+	if (!at(BOMB, fruit.x, fruit.y)) set(FRUIT, fruit.x, fruit.y);
 
 	for (var i = 0; i < bombs.length; i++) {
-		if (at(EMPTY, bombs[i].x, bombs[i].y)) set(BOMB, bombs[i].x, bombs[i].y);
+		if (!at(SNAKE, bombs[i].x, bombs[i].y)) set(BOMB, bombs[i].x, bombs[i].y);
 	}
-
-	if (at(EMPTY, fruit.x, fruit.y)) set(FRUIT, fruit.x, fruit.y);
 }
 
 function moveFruit(){
@@ -388,9 +398,9 @@ function lengthenSnake(tail, growth_rate) {
 
 function checkHighScores() {
 	if (score > getScore(gametype))
-		localStorage.setItem(gametype+location.pathname, score);
+		setScore(gametype, score);
 	if (taken > getFruitScore(gametype))
-		localStorage.setItem(gametype+location.pathname+'fruit', taken);
+		setFruitScore(gametype, taken);
 }
 
 function shrinkBoard() {
@@ -434,5 +444,21 @@ function teleportSnake() {
 
 function oppDirection(direction) {
 	return (direction + 2) % 4;
+}
+
+function getScore(gametype) {
+	return localStorage.getItem(gametype + location.pathname);
+}
+
+function getFruitScore(gametype) {
+	return localStorage.getItem(gametype + location.pathname + 'fruit');
+}
+
+function setScore(gametype, value) {
+	localStorage.setItem(gametype + location.pathname, value);
+}
+
+function setFruitScore(gametype, value) {
+	localStorage.setItem(gametype + location.pathname + 'fruit', value);
 }
 
