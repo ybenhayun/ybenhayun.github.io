@@ -83,7 +83,7 @@ function main() {
 		keystate[evt.keyCode] = true;
 	});
 	document.addEventListener("keyup", function(evt) {
-		delete keystate[evt.keyCode];
+		keystate[evt.keyCode] = false;
 	});
 	init();
 	loop();
@@ -96,6 +96,8 @@ function init() {
 	fruitvalue = 250;
 	bombs = [];
 	over = false;
+
+	for (i = larrow; i <= darrow; i++) keystate[i] = false;
 
 	if (getScore(gametype) == null) { //set scores to 0 if not yet played
 		localStorage.setItem(gametype+location.pathname, 0);
