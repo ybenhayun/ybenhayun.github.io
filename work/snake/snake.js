@@ -175,6 +175,24 @@ function scoreToContinue(gametype) {
 }
 
 function updateScoreboard() {
+	var d;
+	d = "<span id = 'inst'>";
+	d += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
+	d += "<span id = 'overview'><span id = 'descr'><br> CURRENT SCORE: " + score;
+	d += "<br> FRUIT TAKEN: " + taken;
+	d += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
+	d += "<br>SNAKE LENGTH: " + snake_length + " pieces long</span>";
+
+	d += "<br><span id ='best'>HIGH SCORE: " + getScore(gametype);
+	d += "<br>MOST FRUIT: " + getFruitScore(gametype) + "</span>";
+
+
+	if (!isGame("nogod") && getFruitScore(gametype) < scoreToContinue(gametype))
+		d += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span>";
+	d += "</span></div>"
+	
+	document.getElementById("score").innerHTML = d;
+	/*
 	document.getElementById("score").innerHTML = "<span id = 'inst'>";
 	document.getElementById("inst").innerHTML += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
 	document.getElementById("inst").innerHTML += "<span id = 'overview'><span id = 'descr'><br> CURRENT SCORE: " + score;
@@ -188,7 +206,7 @@ function updateScoreboard() {
 
 	if (!isGame("nogod") && getFruitScore(gametype) < scoreToContinue(gametype))
 		document.getElementById("inst").innerHTML += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span>";
-	document.getElementById("overview").innerHTML += "</span></div>"
+	document.getElementById("overview").innerHTML += "</span></div>"*/
 }
 
 function update() {
