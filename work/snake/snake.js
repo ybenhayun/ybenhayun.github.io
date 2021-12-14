@@ -175,7 +175,7 @@ function scoreToContinue(gametype) {
 }
 
 function updateScoreboard() {
-	document.getElementById("score").innerHTML = "<span id = 'inst'>";
+	document.getElementById("score").innerHTML = "<br><span id = 'inst'>";
 	document.getElementById("inst").innerHTML += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
 	document.getElementById("inst").innerHTML += "<spand id = 'overview'><span id = 'descr'><br> CURRENT SCORE: " + score;
 	document.getElementById("descr").innerHTML += "<br> FRUIT TAKEN: " + taken;
@@ -188,7 +188,7 @@ function updateScoreboard() {
 
 	if (!isGame("nogod") && getFruitScore(gametype) < scoreToContinue(gametype))
 		document.getElementById("inst").innerHTML += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span>";
-	document.getElementById("overview").innerHTML += "</span>"
+	document.getElementById("overview").innerHTML += "</span></div>"
 }
 
 function update() {
