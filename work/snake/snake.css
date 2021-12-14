@@ -66,7 +66,7 @@ span#descr {
 
 span#best {
 	position: relative;
-	bottom: 150px;
+	top: 150px;
 }
 
 button {
