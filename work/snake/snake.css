@@ -67,6 +67,7 @@ span#descr {
 span#best {
 	position: absolute;
 	bottom: 150px;
+	font-weight: bold;
 }
 
 button {
