@@ -177,7 +177,7 @@ function scoreToContinue(gametype) {
 function updateScoreboard() {
 	var d;
 	d = "<span id = 'inst'>";
-	d += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
+	d += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!";
 	d += "<span id = 'overview'><span id = 'descr'><br> CURRENT SCORE: " + score;
 	d += "<br> FRUIT TAKEN: " + taken;
 	d += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
@@ -189,7 +189,7 @@ function updateScoreboard() {
 
 	if (!isGame("nogod") && getFruitScore(gametype) < scoreToContinue(gametype))
 		d += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span>";
-	d += "</span></div>"
+	d += "</span></span></div>"
 	
 	document.getElementById("score").innerHTML = d;
 	/*
