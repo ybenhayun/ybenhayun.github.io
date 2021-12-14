@@ -65,7 +65,7 @@ span#descr {
 }
 
 span#best {
-	position: absolute;
+	position: static;
 	bottom: 100px;
 }
 
