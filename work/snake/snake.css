@@ -48,6 +48,12 @@ span#inst {
 	float: left;
 }
 
+span#overview {
+	margin-left: .15in;
+	margin-right: .25in;
+	float: left;
+}
+
 span#name {
 	font-weight: bold;
 	text-decoration: underline;
