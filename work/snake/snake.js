@@ -177,7 +177,7 @@ function scoreToContinue(gametype) {
 function updateScoreboard() {
 	document.getElementById("score").innerHTML = "<span id = 'inst'>";
 	document.getElementById("inst").innerHTML += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
-	document.getElementById("inst").innerHTML += "<spand id = 'overview'><span id = 'descr'><br> CURRENT SCORE: " + score;
+	document.getElementById("inst").innerHTML += "<span id = 'overview'><span id = 'descr'><br> CURRENT SCORE: " + score;
 	document.getElementById("descr").innerHTML += "<br> FRUIT TAKEN: " + taken;
 	document.getElementById("descr").innerHTML += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
 	document.getElementById("descr").innerHTML += "<br>SNAKE LENGTH: " + snake_length + " pieces long</span>";
