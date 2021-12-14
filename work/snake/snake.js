@@ -182,7 +182,7 @@ function updateScoreboard() {
 	document.getElementById("descr").innerHTML += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
 	document.getElementById("descr").innerHTML += "<br>SNAKE LENGTH: " + snake_length + " pieces long</span>";
 
-	document.getElementById("descr").innerHTML += "<br><br><span id ='best'>HIGH SCORE: " + getScore(gametype);
+	document.getElementById("descr").innerHTML += "<br><span id ='best'>HIGH SCORE: " + getScore(gametype);
 	document.getElementById("best").innerHTML += "<br>MOST FRUIT: " + getFruitScore(gametype) + "</span>";
 
 
