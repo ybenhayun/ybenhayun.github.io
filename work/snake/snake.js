@@ -1,12 +1,12 @@
 var snakespeed = 5;
 
 var COLS = 26, ROWS = 26;
-var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4, MARKED = 5, MISSILE = 6, HEAD = 7;
+var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4, MARKED = 5, MISSILE = 6, HEAD = 7, CLONE = 8;
 var left  = 0, up = 1, right = 2, down  = 3;
 var larrow = 37, uarrow = 38, rarrow = 39, darrow = 40;
 var canvas, ctx, keystate, frames, score, fruitvalue, taken;
 var gametype, gamecounter = 0;
-var nx, ny, bomb;
+var nx, ny, cx, cy, bomb;
 var flash;
 
 grid = {
@@ -37,6 +37,27 @@ grid = {
 };
 
 snake = {
+	direction: null,
+	last: null,		
+	s_body: null,	
+
+	init: function(d, x, y) {
+		this.direction = d;
+		this.s_body = [];
+		this.insert(x, y);
+	},
+
+	insert: function(x, y) {
+		// unshift prepends an element to an array
+		this.s_body.unshift({x:x, y:y});
+		this.last = this.s_body[0];
+	},
+	remove: function() {
+		return this.s_body.pop();
+	}
+};
+
+clone = {
 	direction: null,
 	last: null,		
 	s_body: null,	
@@ -108,13 +129,15 @@ function init() {
 		set(SNAKE, sp.x, sp.y);
 		snake.insert(sp.x, sp.y);	
 	}
+
+	if (isGame("ghost")) initClone();
+	else { cx = null; cy = null; }
 	set(EMPTY, ROWS-1, sp.y);
 
 	snake_length = 4;
 	gamecounter++;
 
-	if (isGame(["mover", "dodge", "bombs", "invis", "flash", "disoriented", "nogod", "frogger", "noeyes"]))
-		bomb = true;
+	if (isGame(["mover", "dodge", "bombs", "invis", "flash", "disoriented", "nogod", "frogger", "noeyes"])) bomb = true;
 	else bomb = false;
 
 	if (isGame("noeyes")) grade = true;
@@ -122,6 +145,49 @@ function init() {
 
 	if (isGame("portal")) set(FRUIT);
 	set(FRUIT);
+}
+
+function initClone() {
+	var sp = {x:ROWS-1, y:0};
+	clone.init(right, sp.x, sp.y);
+	for (var i = 0; i < 3; i++){
+		set(CLONE, sp.x, sp.y);
+		clone.insert(sp.x, sp.y);	
+	}
+	set(EMPTY, ROWS-1, sp.y);
+
+}
+
+function moveClone() {
+	if (fruit.x < cx) {
+		if (Math.abs(fruit.x - cx) < COLS/2 && fruit.x != cx) clone.direction = left;
+		else clone.direction = right;
+	} else if (fruit.x > cx) { 
+		if (Math.abs(fruit.x - cx) < COLS/2 && fruit.x != cx) clone.direction = right;
+		else clone.direction = left
+	} else if (fruit.y < cy) {
+		if (Math.abs(fruit.y - cy) < ROWS/2 && fruit.y != cy) clone.direction = up;
+		else clone.direction = down;
+	} else if (fruit.y > cy) {
+		if (Math.abs(fruit.y - cy) < ROWS/2 && fruit.y != cy) clone.direction = down;
+		else clone.direction = up;
+	}
+	
+	if (clone.direction == left) cx--;
+	else if (clone.direction == up) cy--;
+	else if (clone.direction == right) cx++;
+	else if (clone.direction == down) cy++;
+
+	if (cx < grid.width-COLS){
+		cx = COLS-1;
+	} else if (cx > COLS-1) {
+		cx = grid.width-COLS;
+	} else if (cy < grid.height-ROWS) {
+		cy = ROWS-1;
+	} else if (cy > ROWS-1) {
+		cy = grid.height-ROWS;
+	}
+
 }
 
 function loop() {
@@ -140,6 +206,8 @@ function draw() {
 	for (var x=0; x < grid.width; x++) {
 		for (var y=0; y < grid.height; y++) {
 			if (at(WALL, x ,y)) ctx.fillStyle = "#2b2b2b";
+			else if (x == cx && y == cy) ctx.fillStyle = "black";
+			else if (at(CLONE, x, y)) ctx.fillStyle = "gray";
 			else if (at(EMPTY, x, y)) ctx.fillStyle = "#fff";
 			else if (at(HEAD, x, y)) ctx.fillStyle = "#f00";
 			else if (at(FRUIT, x, y)) ctx.fillStyle = "#f" + getGrade();
@@ -156,7 +224,7 @@ function draw() {
 	}
 
 	if (fruitvalue > 50) fruitvalue-=.5;
-	if (isGame("tick") && frames%30 == 0 && fruitvalue < 175) set(BOMB);
+	if (isGame("tick") && frames%50 == 0 && fruitvalue < 175) set(BOMB);
 	if (isGame(["missiles", "nogod"]) && frames%20 == 0) set(MISSILE, 0);
 
 	updateScoreboard();
@@ -187,26 +255,11 @@ function updateScoreboard() {
 	d += "<br>MOST FRUIT: " + getFruitScore(gametype) + "</span>";
 
 
-	if (!isGame("nogod") && getFruitScore(gametype) < scoreToContinue(gametype))
+	if (gametype != games.at(-1).name && getFruitScore(gametype) < scoreToContinue(gametype))
 		d += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span>";
 	d += "</span></span></div>"
 	
 	document.getElementById("score").innerHTML = d;
-	/*
-	document.getElementById("score").innerHTML = "<span id = 'inst'>";
-	document.getElementById("inst").innerHTML += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
-	document.getElementById("inst").innerHTML += "<span id = 'overview'><span id = 'descr'><br> CURRENT SCORE: " + score;
-	document.getElementById("descr").innerHTML += "<br> FRUIT TAKEN: " + taken;
-	document.getElementById("descr").innerHTML += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
-	document.getElementById("descr").innerHTML += "<br>SNAKE LENGTH: " + snake_length + " pieces long</span>";
-
-	document.getElementById("descr").innerHTML += "<br><span id ='best'>HIGH SCORE: " + getScore(gametype);
-	document.getElementById("best").innerHTML += "<br>MOST FRUIT: " + getFruitScore(gametype) + "</span>";
-
-
-	if (!isGame("nogod") && getFruitScore(gametype) < scoreToContinue(gametype))
-		document.getElementById("inst").innerHTML += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span>";
-	document.getElementById("overview").innerHTML += "</span></div>"*/
 }
 
 function update() {
@@ -219,6 +272,28 @@ function update() {
 
 	if (frames > 50) resetBoard();
 
+	if (frames%(snakespeed+8) == 0 && isGame("ghost")) {
+		cx = clone.last.x;
+		cy = clone.last.y;
+
+		moveClone();
+
+		if (at(FRUIT, cx, cy)) {
+			playSound();
+			set(BOMB, cx, cy);
+			bombs.push({direction:oppDirection(clone.direction), x:cx, y:cy});
+			set(FRUIT);
+		} 
+		
+		var tail = clone.remove();
+		set(EMPTY, tail.x, tail.y);  
+		tail.x = cx;
+		tail.y = cy;
+		set(CLONE, tail.x, tail.y);
+		clone.insert(tail.x, tail.y);
+		
+	}
+
 	if ((frames+2)%snakespeed == 0){
 		nx = snake.last.x;
 		ny = snake.last.y;
@@ -227,6 +302,7 @@ function update() {
 		
 		if (gameOver(nx, ny)) {
 			gameReset();
+			return init();
 		}
 
 		if (at(FRUIT, nx, ny)) {
@@ -245,8 +321,7 @@ function update() {
 
 function gameReset() {
 	unlockGames();
-	if (confirm("Press OK to play again. Press cancel to pick another level.")) return init();
-	else location.reload();
+	if (!confirm("Press OK to play again. Press cancel to pick another level.")) location.reload();
 }
 
 function gameOver(x, y){
@@ -375,6 +450,12 @@ function resetBoard() {
 
 	for (var i = 0; i < bombs.length; i++) {
 		if (!at(SNAKE, bombs[i].x, bombs[i].y)) set(BOMB, bombs[i].x, bombs[i].y);
+	}
+
+	if (isGame("ghost")) {
+		for (var i = 0; i < clone.s_body.length; i++) {
+			set(CLONE, clone.s_body[i].x, clone.s_body[i].y);
+		}
 	}
 }
 

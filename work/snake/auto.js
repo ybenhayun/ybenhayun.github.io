@@ -1,6 +1,6 @@
 function moveSnake() {
 	snakespeed = 1; //speed up snake for snakebot
-
+	/*
 	if (fruit.x < nx && canGo(nx-1, ny)) snake.direction = left;
 	else if (fruit.x > nx && canGo(nx+1, ny)) snake.direction = right;
 	else if (fruit.y < ny && canGo(nx, ny-1)) snake.direction = up;
@@ -33,7 +33,28 @@ function moveSnake() {
 			ny = ROWS-1;
 	} else if (ny > ROWS-1) {
 			ny = grid.height-ROWS;
+	}*/
+
+	if (fruit.x < nx && snake.direction != right) snake.direction = left;
+	else if (fruit.x > nx && snake.direction != left) snake.direction = right;
+	else if (fruit.y < ny && snake.direction != down) snake.direction = up;
+	else if (fruit.y > ny && snake.direction != up) snake.direction = down;
+
+	if (snake.direction == left) nx--;
+	else if (snake.direction == up) ny--;
+	else if (snake.direction == right) nx++;
+	else if (snake.direction == down) ny++;
+
+	if (nx < grid.width-COLS){
+		nx = COLS-1;
+	} else if (nx > COLS-1) {
+		nx = grid.width-COLS;
+	} else if (ny < grid.height-ROWS) {
+		ny = ROWS-1;
+	} else if (ny > ROWS-1) {
+		ny = grid.height-ROWS;
 	}
+
 }
 
 function canGo(x, y){

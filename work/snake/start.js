@@ -14,11 +14,18 @@ games = [
 	{ name: "disoriented", score: 13 },
 	{ name: "missiles", score: 13 },
 	{ name: "nogod", score: 22 },
+	{ name: "ghost", score: 0 }
 ];
 
-$(document).ready(function(){
-	unlockGames();
+var text;
 
+$(document).ready(function(){
+
+	
+	unlockGames();
+	readDescriptions();
+
+	
 	$("button").mouseover(
 		function(){
 			$('span#overview').empty();
@@ -39,6 +46,10 @@ $(document).ready(function(){
 			if ($(this).attr('id') == "disoriented") description += "<span id = 'descr'> <br><span id = 'name'>GOOD LUCK:</span> Good luck making sense of this one. ";
 			if ($(this).attr('id') == "missiles") description += "<span id = 'descr'> <br><span id = 'name'>SHOTS FIRED:</span> I hope your snake is wearing some body armor. ";
 			if ($(this).attr('id') == "nogod") description += "<span id = 'descr'> <br><span id = 'name'>NO SURVIVORS:</span> This is the end... sorry.";
+			if ($(this).attr('id') == "ghost") description += "<span id = 'descr'> <br><span id = 'name'>THE PHANTOM:</span> Ghosty Ghosty oOOooOoO";
+
+			
+			description += text[0];
 			
 			if (getScore($(this).attr('id')) == null){
 				localStorage.setItem($(this).attr('id')+location.pathname, 0);
@@ -49,7 +60,7 @@ $(document).ready(function(){
 			
 			description += "</span><br><span id = 'best'>HIGH SCORE: " + localStorage.getItem($(this).attr('id') + location.pathname) + "<br> MOST FRUIT: " + localStorage.getItem($(this).attr('id')+location.pathname+'fruit') + "</span>";
 			
-			if ($(this).attr('id') != "nogod")
+			if ($(this).attr('id') != games.at(-1).name)
 				if (getFruitScore($(this).attr('id')) < scoreToContinue($(this).attr('id')))
 					description += "<br><span id = 'req'> Collect " + scoreToContinue($(this).attr('id')) + " fruit to progress.</span>";
 			
@@ -58,8 +69,22 @@ $(document).ready(function(){
 			$("#inst").append(description);
 		});
 
-	//localStorage.clear();
+	localStorage.clear();
 });
+function readDescriptions() {
+	var txtFile = new XMLHttpRequest();
+	txtFile.open("GET", "https://cors-anywhere.herokuapp.com/descriptions.txt", true);
+	txtFile.onreadystatechange = function() {
+  		if (txtFile.readyState === 4) {  // document is ready to parse.
+    		if (txtFile.status === 200) {  // file is found
+      			allText = txtFile.responseText; 
+      			text = txtFile.responseText.split("\n");
+    		}
+  		}
+	}
+
+	txtFile.send(null);
+}
 
 function unlockGames() {
 	for (i = 0; i < games.length-1; i++) {
