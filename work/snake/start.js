@@ -73,7 +73,7 @@ $(document).ready(function(){
 });
 function readDescriptions() {
 	var txtFile = new XMLHttpRequest();
-	txtFile.open("GET", "https://cors-anywhere.herokuapp.com/descriptions.txt", true);
+	txtFile.open("GET", "descriptions.txt", true);
 	txtFile.onreadystatechange = function() {
   		if (txtFile.readyState === 4) {  // document is ready to parse.
     		if (txtFile.status === 200) {  // file is found
