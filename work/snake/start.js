@@ -36,10 +36,10 @@ $(document).ready(function(){
 			if (text != null) description = text[0] + text[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))+1];
 			else description = "<span id = 'inst'><br>You're in local mode!  This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>" + "<span id = 'descr'><br><span id = 'name'> NAME:</span> This is where your description would go!</span>";
 
-			if (getScore($(this).attr('id')) == null) localStorage.setItem($(this).attr('id')+location.pathname, 0);
-			if (getFruitScore($(this).attr('id')) == null) localStorage.setItem($(this).attr('id')+location.pathname +'fruit', 0);
+			if (getScore($(this).attr('id')) == null) setScore($(this).attr('id'), 0);
+			if (getFruitScore($(this).attr('id')) == null) setFruitScore($(this).attr('id'), 0);
 						
-			description += "<br><span id = 'best'>HIGH SCORE: " + localStorage.getItem($(this).attr('id') + location.pathname) + "<br> MOST FRUIT: " + localStorage.getItem($(this).attr('id')+location.pathname+'fruit') + "</span>";
+			description += "<br><span id = 'best'>HIGH SCORE: " + getScore($(this).attr('id')) + "<br> MOST FRUIT: " + getFruitScore($(this).attr('id')) + "</span>";
 			
 			if ($(this).attr('id') != games.at(-1).name)
 				if (getFruitScore($(this).attr('id')) < scoreToContinue($(this).attr('id')))
@@ -94,4 +94,20 @@ function scoreNeeded(gametype) {
 	var points = games.find(games => { return games.name === gametype }).score;
 
 	document.getElementById(gametype).children[0].innerHTML = "Locked. Collect " + points + " fruit from the previous level to progress."
+}
+
+function getScore(gametype) {
+	return localStorage.getItem(gametype + location.pathname);
+}
+
+function getFruitScore(gametype) {
+	return localStorage.getItem(gametype + location.pathname + 'fruit');
+}
+
+function setScore(gametype, value) {
+	localStorage.setItem(gametype + location.pathname, value);
+}
+
+function setFruitScore(gametype, value) {
+	localStorage.setItem(gametype + location.pathname + 'fruit', value);
 }

@@ -85,6 +85,7 @@ fruit = {
 };
 
 bombs = [];
+missiles = [];
 
 function setGame(game){
 	gametype = game;
@@ -113,7 +114,7 @@ function main() {
 function init() {
 	frames = 0, score = 0, taken = 0, fruitvalue = 250;
 	COLS = 26, ROWS = 26;
-	bombs = [];
+	bombs = [], missiles = [];
 
 	for (i = larrow; i <= darrow; i++) keystate[i] = false;
 
@@ -192,8 +193,8 @@ function moveClone() {
 }
 
 function loop() {
-	draw();
 	update();
+	draw();
 
 	globalID = window.requestAnimationFrame(loop, canvas);
 }
@@ -226,7 +227,7 @@ function draw() {
 
 	if (fruitvalue > 50) fruitvalue-=.5;
 	if (isGame("Tick_Tock") && frames%50 == 0 && fruitvalue < 175) set(BOMB);
-	if (isGame(["Shots_Fired", "No_Survivors"]) && frames%20 == 0) set(MISSILE, 0);
+	if (isGame(["Shots_Fired", "No_Survivors"]) && frames%20 == 0) { set(MISSILE, 0); }
 
 	updateScoreboard();
 }
@@ -271,7 +272,10 @@ function update() {
 	if (frames%4 == 0 && (frames % 100 >  30 && frames % 100 < 60) && isGame("Frogger")) { moveBombs(); moveFruit(); }
 	if (frames%5 == 0 && isGame(["Shots_Fired", "No_Survivors"])) moveMissiles();
 
-	if (frames > 50) resetBoard();
+	draw();
+
+	if (frames > 100) resetBoard();
+
 
 	if (frames%(snakespeed+8) == 0 && isGame("Phantom_Snake")) {
 		cx = clone.last.x;
@@ -295,7 +299,7 @@ function update() {
 		
 	}
 
-	if ((frames+2)%snakespeed == 0){
+	if (frames%snakespeed == 0){
 		nx = snake.last.x;
 		ny = snake.last.y;
 
@@ -361,6 +365,7 @@ function set(value, a, b) {
 	}
 
 	if (value == FRUIT) fruit = {x:a, y:b};
+	if (value == MISSILE) missiles.push({x:a, y:b});
 	grid.set(value, a, b);
 }
 
@@ -389,30 +394,18 @@ function collectedFruit(x, y){
 }
 
 function moveMissiles() {
-	var missiles = []
-
-	for (var x = 0; x < COLS; x++) {
-		for (var y = 0; y < ROWS; y++) {
-			if (at(MISSILE, x, y)) {
-				set(EMPTY, x, y);
-				missiles.push({x:x, y:y});
-			}
+	for (var i = 0; i < missiles.length; i++) {
+		if (at(SNAKE, missiles[i].x, missiles[i].y)) {
+			playSound();
+			lengthenSnake({x:snake.last.x, y:snake.last.y}, 2);
+			missiles.splice(i, 1);
+		} else { 
+			set(EMPTY, missiles[i].x, missiles[i].y);
+			missiles[i].x++;
+			if (missiles[i].x > COLS-1) missiles.splice(i, 1);
+			else grid.set(MISSILE, missiles[i].x, missiles[i].y);
 		}
 	}
-
-	for (var i = 0; i < missiles.length; i++) {
-		if (missiles[i].x < COLS-1) {
-			missiles[i].x++;
-			if (at(SNAKE, missiles[i].x, missiles[i].y) || at(HEAD, missiles[i].x, missiles[i].y)) {
-				playSound();
-				lengthenSnake({x:snake.last.x, y:snake.last.y}, 2);
-
-				missiles.splice(i, 0);
-			} else {
-				set(MISSILE, missiles[i].x, missiles[i].y);
-			}
-		}
-	} 	
 }
 
 function moveBombs(){
@@ -546,20 +539,3 @@ function teleportSnake() {
 function oppDirection(direction) {
 	return (direction + 2) % 4;
 }
-
-function getScore(gametype) {
-	return localStorage.getItem(gametype + location.pathname);
-}
-
-function getFruitScore(gametype) {
-	return localStorage.getItem(gametype + location.pathname + 'fruit');
-}
-
-function setScore(gametype, value) {
-	localStorage.setItem(gametype + location.pathname, value);
-}
-
-function setFruitScore(gametype, value) {
-	localStorage.setItem(gametype + location.pathname + 'fruit', value);
-}
-
