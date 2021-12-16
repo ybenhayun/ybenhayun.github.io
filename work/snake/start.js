@@ -23,7 +23,8 @@ $(document).ready(function(){
 	readDescriptions();
 	createButtons();
 	unlockGames();
-	
+	console.log(text[0]);
+
 	if (text != null) description = text[0];
 	else description = "<span id = 'inst'><br>You're in local mode! This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>";
 
