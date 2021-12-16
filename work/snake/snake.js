@@ -444,7 +444,7 @@ function moveBombs(){
 
 function resetBoard() {
 	for (var i = 0; i < snake.s_body.length; i++) {
-		if (!at(FRUIT, snake.s_body[i].x, snake.s_body[i].y)) set(SNAKE, snake.s_body[i].x, snake.s_body[i].y);
+		if (!at(FRUIT, snake.s_body[i].x, snake.s_body[i].y) && !at(WALL, snake.s_body[i].x, snake.s_body[i].y)) set(SNAKE, snake.s_body[i].x, snake.s_body[i].y);
 	}
 
 	if (!at(BOMB, fruit.x, fruit.y)) set(FRUIT, fruit.x, fruit.y);
