@@ -31,7 +31,7 @@ $(document).ready(function(){
 			$('span#overview').empty();
 			var description = "<span id = 'overview'>";
 
-			if ($(this).attr('id') == "classic") description += "<span id = 'descr'> <br><span id = 'name'>CLASSIC:</span> No tricks here. This is the same classic game you played on your Nokia cell phone.";
+			/*if ($(this).attr('id') == "classic") description += "<span id = 'descr'> <br><span id = 'name'>CLASSIC:</span> No tricks here. This is the same classic game you played on your Nokia cell phone.";
 			if ($(this).attr('id') == "bombs") description += "<span id = 'descr'> <br><span id = 'name'>BOMBS:</span> This little snake loves fruit, but he seems to leave some nasty things behind as he slithers around...";
 			if ($(this).attr('id') == "invis") description += "<span id = 'descr'> <br><span id = 'name'>COLORBLIND:</span> This guy loves to eat so much, that sometimes he forgets what he should and shouldn't be putting into his mouth.";
 			if ($(this).attr('id') == "noeyes") description += "<span id = 'descr'> <br><span id = 'name'>20/20 VISION:</span> You might think that the title of this game means your snake has really good eyesight. You'd be wrong.";
@@ -47,9 +47,9 @@ $(document).ready(function(){
 			if ($(this).attr('id') == "missiles") description += "<span id = 'descr'> <br><span id = 'name'>SHOTS FIRED:</span> I hope your snake is wearing some body armor. ";
 			if ($(this).attr('id') == "nogod") description += "<span id = 'descr'> <br><span id = 'name'>NO SURVIVORS:</span> This is the end... sorry.";
 			if ($(this).attr('id') == "ghost") description += "<span id = 'descr'> <br><span id = 'name'>THE PHANTOM:</span> Ghosty Ghosty oOOooOoO";
-
+			*/
 			
-			description += text[0];
+			description += text[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))];
 			
 			if (getScore($(this).attr('id')) == null){
 				localStorage.setItem($(this).attr('id')+location.pathname, 0);
