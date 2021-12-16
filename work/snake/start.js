@@ -69,7 +69,7 @@ $(document).ready(function(){
 			$("#inst").append(description);
 		});
 
-	localStorage.clear();
+	//localStorage.clear();
 });
 function readDescriptions() {
 	var txtFile = new XMLHttpRequest();
