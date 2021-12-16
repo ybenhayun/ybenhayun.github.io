@@ -20,9 +20,7 @@ games = [
 var text = null;
 
 $(document).ready(function(){
-	console.log("before");
 	readDescriptions();
-	console.log("after");
 	createButtons();
 	unlockGames();
 
@@ -70,7 +68,7 @@ function createButtons() {
 }
 
 function readDescriptions() {
-	console.log("during");
+
 	var txtFile = new XMLHttpRequest();
 	txtFile.open("GET", "descriptions.txt", true);
 	txtFile.onreadystatechange = function() {
@@ -81,8 +79,6 @@ function readDescriptions() {
     		}
   		}
 	}
-
-	console.log(text[0]);
 
 	txtFile.send(null);
 }
