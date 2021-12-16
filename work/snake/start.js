@@ -20,7 +20,9 @@ games = [
 var text = null;
 
 $(document).ready(function(){
+	console.log("before");
 	readDescriptions();
+	console.log("after");
 	createButtons();
 	unlockGames();
 	console.log(text[0]);
@@ -34,7 +36,6 @@ $(document).ready(function(){
 		function(){
 			$('#overview').empty();
 
-			console.log(text[0]);
 			if (text != null) description = text[0] + text[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))+1];
 			else description = "<span id = 'inst'><br>You're in local mode!  This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>" + "<span id = 'descr'><br><span id = 'name'> NAME:</span> This is where your description would go!</span>";
 
@@ -70,6 +71,7 @@ function createButtons() {
 }
 
 function readDescriptions() {
+	console.log("during");
 	var txtFile = new XMLHttpRequest();
 	txtFile.open("GET", "descriptions.txt", true);
 	txtFile.onreadystatechange = function() {
