@@ -1,20 +1,20 @@
 games = [
-	{ name: "classic", score: 0 },
-	{ name: "bombs", score: 30 },
-	{ name: "invis", score: 20 },
-	{ name: "noeyes", score: 18 },
-	{ name: "walled", score: 18 },
-	{ name: "infinity", score: 25 },
-	{ name: "mover", score: 30 },
-	{ name: "portal", score: 16 },
-	{ name: "tick", score: 30 },
-	{ name: "flash", score: 26 },
-	{ name: "dodge", score: 18 },
-	{ name: "frogger", score: 15 },
-	{ name: "disoriented", score: 13 },
-	{ name: "missiles", score: 13 },
-	{ name: "nogod", score: 22 },
-	{ name: "ghost", score: 0 }
+	{ name: "classic", score: 0},
+	{ name: "bombs", score: 0 },
+	{ name: "invis", score: 0 },
+	{ name: "noeyes", score: 0 },
+	{ name: "walled", score: 0 },
+	{ name: "infinity", score: 0 },
+	{ name: "mover", score: 0 },
+	{ name: "portal", score: 0 },
+	{ name: "tick", score: 0 },
+	{ name: "flash", score: 0 },
+	{ name: "dodge", score: 0 },
+	{ name: "frogger", score: 0 },
+	{ name: "disoriented", score: 0 },
+	{ name: "missiles", score: 0 },
+	{ name: "nogod", score: 0 },
+	{ name: "ghost", score: 0}
 ];
 
 var text;
