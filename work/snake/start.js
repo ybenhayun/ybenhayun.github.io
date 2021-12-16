@@ -25,7 +25,7 @@ $(document).ready(function(){
 	unlockGames();
 
 	if (text != null) description = text[0];
-	else description = "<span id = 'inst'><br>You're in local mode! This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>";
+	else description = "<span id = 'inst'><br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
 
 	$("#overview").html(description);
 
