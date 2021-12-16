@@ -34,6 +34,7 @@ $(document).ready(function(){
 		function(){
 			$('#overview').empty();
 
+			console.log(text[0]);
 			if (text != null) description = text[0] + text[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))+1];
 			else description = "<span id = 'inst'><br>You're in local mode!  This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>" + "<span id = 'descr'><br><span id = 'name'> NAME:</span> This is where your description would go!</span>";
 
