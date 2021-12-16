@@ -9,9 +9,9 @@
 <span id = 'descr'> <br><span id = 'name'>PORTAL:</span> This snake is years ahead of its time, and perfectly capable of bending time and space at will!</span>
 <span id = 'descr'> <br><span id = 'name'>TICK TOCK:</span> If you can pick up your fruit quickly, this game will be a breeze. Otherwise...</span>
 <span id = 'descr'> <br><span id = 'name'>FLASH:</span> I hope you have a good memory...</span>
+<span id = 'descr'> <br><span id = 'name'>PHANTOM SNAKE:</span> Ghosty Ghosty oOOooOoO</span>
 <span id = 'descr'> <br><span id = 'name'>DODGE:</span> If you can dodge a bomb, you can dodge a ball.</span>
 <span id = 'descr'> <br><span id = 'name'>FROGGER:</span> Keep an eye out for traffic.</span>
 <span id = 'descr'> <br><span id = 'name'>GOOD LUCK:</span> Good luck making sense of this one. </span>
 <span id = 'descr'> <br><span id = 'name'>SHOTS FIRED:</span> I hope your snake is wearing some body armor. </span>
 <span id = 'descr'> <br><span id = 'name'>NO SURVIVORS:</span> This is the end... sorry.</span>
-<span id = 'descr'> <br><span id = 'name'>THE PHANTOM:</span> Ghosty Ghosty oOOooOoO</span>
