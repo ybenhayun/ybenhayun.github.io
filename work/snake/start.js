@@ -25,7 +25,6 @@ $(document).ready(function(){
 	console.log("after");
 	createButtons();
 	unlockGames();
-	console.log(text[0]);
 
 	if (text != null) description = text[0];
 	else description = "<span id = 'inst'><br>You're in local mode! This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>";
@@ -82,6 +81,8 @@ function readDescriptions() {
     		}
   		}
 	}
+
+	console.log(text[0]);
 
 	txtFile.send(null);
 }
