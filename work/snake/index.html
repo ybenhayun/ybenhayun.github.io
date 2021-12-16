@@ -11,28 +11,11 @@
 </head>
 <body>
 	<div id = "games">
-		<button id = "classic" onclick = setGame($(this).attr('id'))> Classic </button>
-		<button id = "bombs" onclick = setGame('bombs')> Bombs <span class ="needed"><script>scoreNeeded('bombs');</script></span></button>
-		<button id = "invis" onclick = setGame('invis')> Colorblind <span class ="needed"><script>scoreNeeded('invis');</script></span></button>
-		<button id = "noeyes" onclick = setGame('noeyes')> 20/20 Vision <span class ="needed"><script>scoreNeeded('noeyes');</script></span></button>
-		<button id = "walled" onclick = setGame('walled')> Boxed In <span class ="needed"><script>scoreNeeded('walled');</script></span></button>
-		<button id = "infinity" onclick = setGame('infinity')> Infinity <span class ="needed"><script>scoreNeeded('infinity');</script></span></button>
-		<button id = "mover" onclick = setGame('mover')> Movers <span class ="needed"><script>scoreNeeded('mover');</script></span></button>
-		<button id = "portal" onclick = setGame('portal')> Portal <span class ="needed"><script>scoreNeeded('portal');</script></span></button>
-		<button id = "tick" onclick = setGame('tick')> Tick Tock <span class ="needed"><script>scoreNeeded('tick');</script></span></button>
-		<button id = "flash" onclick = setGame('flash')> Flash <span class ="needed"><script>scoreNeeded('flash');</script></span></button>
-		<button id = "dodge" onclick = setGame('dodge')> Dodge <span class ="needed"><script>scoreNeeded('dodge');</script></span></button>
-		<button id = "frogger" onclick = setGame('frogger')> Frogger <span class ="needed"><script>scoreNeeded('frogger');</script></span></button>
-		<button id = "disoriented" onclick = setGame('disoriented')> Good Luck <span class ="needed"><script>scoreNeeded('disoriented');</script></span></button>
-		<button id = "missiles" onclick = setGame('missiles')> Shots Fired <span class ="needed"><script>scoreNeeded('missiles');</script></span></button>
-		<button id = "nogod" onclick = setGame('nogod')> No Survivors <span class ="needed"><script>scoreNeeded('nogod');</script></span></button>
-		<button id = "ghost" onclick = setGame($(this).attr('id'))> The Phantom <span class ="needed"><script>scoreNeeded('ghost');</script></span></button>
-
 	</div>
 	<audio preload id = "fruitsound">
 		<source src = "boop.wav" type = "audio/wav">
 	</audio>
 	<canvas id = "grid"></canvas>
-	<div id = "score"><br> <span id = "inst">Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span></div>
+	<div id = "score"><span id = "overview"></span></div>
 </body>
 </html>

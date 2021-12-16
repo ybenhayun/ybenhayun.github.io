@@ -42,7 +42,7 @@
 	width: 500px;
 }
 
-span#inst {
+span#overview {
 	margin-left: .15in;
 	margin-right: .25in;
 	float: left;
@@ -61,7 +61,7 @@ span#req {
 
 span#descr {
 	position: relative;
-	top: 85px;
+	top: 75px;
 }
 
 span#best {

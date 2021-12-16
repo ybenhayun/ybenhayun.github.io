@@ -1,16 +1,17 @@
-<span id = 'descr'> <br><span id = 'name'>CLASSIC:</span> No tricks here. This is the same classic game you played on your Nokia cell phone.
-<span id = 'descr'> <br><span id = 'name'>BOMBS:</span> This little snake loves fruit, but he seems to leave some nasty things behind as he slithers around...
-<span id = 'descr'> <br><span id = 'name'>COLORBLIND:</span> This guy loves to eat so much, that sometimes he forgets what he should and shouldn't be putting into his mouth.
-<span id = 'descr'> <br><span id = 'name'>20/20 VISION:</span> You might think that the title of this game means your snake has really good eyesight. You'd be wrong.
-<span id = 'descr'> <br><span id = 'name'>BOXED IN:</span> I really hope you're not claustrophobic.
-<span id = 'descr'> <br><span id = 'name'>INFINITY:</span> You want a really long snake? Well, here you go.
-<span id = 'descr'> <br><span id = 'name'>MOVERS:</span> This snake doesn't mind chasing after the food he wants. And the food isn't going to stop moving anytime soon.
-<span id = 'descr'> <br><span id = 'name'>PORTAL:</span> This snake is years ahead of its time, and perfectly capable of bending time and space at will!
-<span id = 'descr'> <br><span id = 'name'>TICK TOCK:</span> If you can pick up your fruit quickly, this game will be a breeze. Otherwise...
-<span id = 'descr'> <br><span id = 'name'>FLASH:</span> I hope you have a good memory...
-<span id = 'descr'> <br><span id = 'name'>DODGE:</span> If you can dodge a bomb, you can dodge a ball.
-<span id = 'descr'> <br><span id = 'name'>FROGGER:</span> Keep an eye out for traffic.
-<span id = 'descr'> <br><span id = 'name'>GOOD LUCK:</span> Good luck making sense of this one. 
-<span id = 'descr'> <br><span id = 'name'>SHOTS FIRED:</span> I hope your snake is wearing some body armor. 
-<span id = 'descr'> <br><span id = 'name'>NO SURVIVORS:</span> This is the end... sorry.
-<span id = 'descr'> <br><span id = 'name'>THE PHANTOM:</span> Ghosty Ghosty oOOooOoO
+<span id = 'inst'><br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>
+<span id = 'descr'> <br><span id = 'name'>CLASSIC:</span> No tricks here. This is the same classic game you played on your Nokia cell phone.</span>
+<span id = 'descr'> <br><span id = 'name'>BOMBS:</span> This little snake loves fruit, but he seems to leave some nasty things behind as he slithers around...</span>
+<span id = 'descr'> <br><span id = 'name'>COLORBLIND:</span> This guy loves to eat so much, that sometimes he forgets what he should and shouldn't be putting into his mouth.</span>
+<span id = 'descr'> <br><span id = 'name'>20/20 VISION:</span> You might think that the title of this game means your snake has really good eyesight. You'd be wrong.</span>
+<span id = 'descr'> <br><span id = 'name'>BOXED IN:</span> I really hope you're not claustrophobic.</span>
+<span id = 'descr'> <br><span id = 'name'>INFINITY:</span> You want a really long snake? Well, here you go.</span>
+<span id = 'descr'> <br><span id = 'name'>MOVERS:</span> This snake doesn't mind chasing after the food he wants. And the food isn't going to stop moving anytime soon.</span>
+<span id = 'descr'> <br><span id = 'name'>PORTAL:</span> This snake is years ahead of its time, and perfectly capable of bending time and space at will!</span>
+<span id = 'descr'> <br><span id = 'name'>TICK TOCK:</span> If you can pick up your fruit quickly, this game will be a breeze. Otherwise...</span>
+<span id = 'descr'> <br><span id = 'name'>FLASH:</span> I hope you have a good memory...</span>
+<span id = 'descr'> <br><span id = 'name'>DODGE:</span> If you can dodge a bomb, you can dodge a ball.</span>
+<span id = 'descr'> <br><span id = 'name'>FROGGER:</span> Keep an eye out for traffic.</span>
+<span id = 'descr'> <br><span id = 'name'>GOOD LUCK:</span> Good luck making sense of this one. </span>
+<span id = 'descr'> <br><span id = 'name'>SHOTS FIRED:</span> I hope your snake is wearing some body armor. </span>
+<span id = 'descr'> <br><span id = 'name'>NO SURVIVORS:</span> This is the end... sorry.</span>
+<span id = 'descr'> <br><span id = 'name'>THE PHANTOM:</span> Ghosty Ghosty oOOooOoO</span>

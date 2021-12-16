@@ -130,20 +130,20 @@ function init() {
 		snake.insert(sp.x, sp.y);	
 	}
 
-	if (isGame("ghost")) initClone();
+	if (isGame("Phantom_Snake")) initClone();
 	else { cx = null; cy = null; }
 	set(EMPTY, ROWS-1, sp.y);
 
 	snake_length = 4;
 	gamecounter++;
 
-	if (isGame(["mover", "dodge", "bombs", "invis", "flash", "disoriented", "nogod", "frogger", "noeyes"])) bomb = true;
+	if (isGame(["Movers", "Dodge", "Bombs", "Colorblind", "Flash", "Good_Luck", "No_Survivors", "Frogger", "20/20_Vision"])) bomb = true;
 	else bomb = false;
 
-	if (isGame("noeyes")) grade = true;
+	if (isGame("20/20_Vision")) grade = true;
 	else grade = false;
 
-	if (isGame("portal")) set(FRUIT);
+	if (isGame("Portal")) set(FRUIT);
 	set(FRUIT);
 }
 
@@ -201,7 +201,7 @@ function draw() {
 	var tw = canvas.width/grid.width;
 	var th = canvas.height/grid.height;
 
-	if (frames%50 == 0 && isGame("flash")) flash = !flash; //turns bomb visibility on & off
+	if (frames%50 == 0 && isGame("Flash")) flash = !flash; //turns bomb visibility on & off
 
 	for (var x=0; x < grid.width; x++) {
 		for (var y=0; y < grid.height; y++) {
@@ -212,8 +212,8 @@ function draw() {
 			else if (at(HEAD, x, y)) ctx.fillStyle = "#f00";
 			else if (at(FRUIT, x, y)) ctx.fillStyle = "#f" + getGrade();
 			else if (at(BOMB, x, y)) {
-				if (isGame(["invis", "disoriented", "nogod"])) ctx.fillStyle = "#f00";
-				else if (isGame("flash") && flash) ctx.fillStyle = "fff";
+				if (isGame(["Colorblind", "Good_Luck", "No_Survivors"])) ctx.fillStyle = "#f00";
+				else if (isGame("Flash") && flash) ctx.fillStyle = "fff";
 				else ctx.fillStyle = "#000";
 			} 
 			else if (at(SNAKE, x, y) || at(MISSILE, x, y)) ctx.fillStyle = "orange";
@@ -224,8 +224,8 @@ function draw() {
 	}
 
 	if (fruitvalue > 50) fruitvalue-=.5;
-	if (isGame("tick") && frames%50 == 0 && fruitvalue < 175) set(BOMB);
-	if (isGame(["missiles", "nogod"]) && frames%20 == 0) set(MISSILE, 0);
+	if (isGame("Tick_Tock") && frames%50 == 0 && fruitvalue < 175) set(BOMB);
+	if (isGame(["Shots_Fired", "No_Survivors"]) && frames%20 == 0) set(MISSILE, 0);
 
 	updateScoreboard();
 }
@@ -243,10 +243,11 @@ function scoreToContinue(gametype) {
 }
 
 function updateScoreboard() {
-	var d;
-	d = "<span id = 'inst'>";
-	d += "<br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!";
-	d += "<span id = 'overview'><span id = 'descr'><br> CURRENT SCORE: " + score;
+	var d = "";
+	if (text != null) d += text[0];
+	else d += "<span id = 'inst'><br>You're in local mode! This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>"
+	
+	d += "<span id = 'descr'><br> CURRENT SCORE: " + score;
 	d += "<br> FRUIT TAKEN: " + taken;
 	d += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
 	d += "<br>SNAKE LENGTH: " + snake_length + " pieces long</span>";
@@ -254,25 +255,24 @@ function updateScoreboard() {
 	d += "<br><span id ='best'>HIGH SCORE: " + getScore(gametype);
 	d += "<br>MOST FRUIT: " + getFruitScore(gametype) + "</span>";
 
-
 	if (gametype != games.at(-1).name && getFruitScore(gametype) < scoreToContinue(gametype))
 		d += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span>";
-	d += "</span></span></div>"
 	
-	document.getElementById("score").innerHTML = d;
+	
+	document.getElementById("overview").innerHTML = d;
 }
 
 function update() {
 	frames++;
 
-	if ((frames%4 == 0 && isGame("mover"))||(isGame(["disoriented", "nogod"]) && frames%8 ==0)) moveFruit();
-	if (frames%20 == 0 && taken > 0 && isGame(["dodge", "disoriented", "nogod"])) moveBombs();
-	if (frames%4 == 0 && (frames % 100 >  30 && frames % 100 < 60) && isGame("frogger")) { moveBombs(); moveFruit(); }
-	if (frames%5 == 0 && isGame(["missiles", "nogod"])) moveMissiles();
+	if ((frames%4 == 0 && isGame("Movers"))||(isGame(["Good_Luck", "No_Survivors"]) && frames%8 ==0)) moveFruit();
+	if (frames%20 == 0 && taken > 0 && isGame(["Dodge", "Good_Luck", "No_Survivors"])) moveBombs();
+	if (frames%4 == 0 && (frames % 100 >  30 && frames % 100 < 60) && isGame("Frogger")) { moveBombs(); moveFruit(); }
+	if (frames%5 == 0 && isGame(["Shots_Fired", "No_Survivors"])) moveMissiles();
 
 	if (frames > 50) resetBoard();
 
-	if (frames%(snakespeed+8) == 0 && isGame("ghost")) {
+	if (frames%(snakespeed+8) == 0 && isGame("Phantom_Snake")) {
 		cx = clone.last.x;
 		cy = clone.last.y;
 
@@ -309,7 +309,7 @@ function update() {
 			collectedFruit(nx, ny);
 		} else {
 			var tail = snake.remove();
-			if (!at(BOMB, tail.x, tail.y) && !at(WALL, tail.x, tail.y) && !isGame("infinity"))
+			if (!at(BOMB, tail.x, tail.y) && !at(WALL, tail.x, tail.y) && !isGame("Infinity"))
 				set(EMPTY, tail.x, tail.y);  //remove for infinite snake
 			tail.x = nx;
 			tail.y = ny;
@@ -344,7 +344,7 @@ function set(value, a, b) {
 	if (a == null || b == null) { //place at a random spot
 		var empty = [];
 		var i = 0;
-		if (isGame("walled")) i++;   //don't place fruit on edge of map during walled
+		if (isGame("Boxed_In")) i++;   //don't place fruit on edge of map during Boxed_In
 	
 		for (var x=grid.width-COLS+i; x < COLS-i; x++) {
 			for (var y=grid.height-ROWS+i; y < ROWS-i; y++) {
@@ -372,8 +372,8 @@ function collectedFruit(x, y){
 	updateScore();
 	lengthenSnake({x:x, y:y}, 2);
 
-	if (isGame("walled") && taken%4 == 0) shrinkBoard();
-	if (isGame("portal")) teleportSnake();
+	if (isGame("Boxed_In") && taken%4 == 0) shrinkBoard();
+	if (isGame("Portal")) teleportSnake();
 	if (bomb) {
 		set(BOMB, x, y); 
 		bombs.push({direction:oppDirection(snake.direction), x:x, y:y});
@@ -381,8 +381,8 @@ function collectedFruit(x, y){
 
 	checkHighScores();
 
-	if (isGame("infinity")) { set(FRUIT); set(FRUIT); }
-	if (isGame("portal")) set(FRUIT);
+	if (isGame("Infinity")) { set(FRUIT); set(FRUIT); }
+	if (isGame("Portal")) set(FRUIT);
 	set(FRUIT);
 
 }
@@ -452,7 +452,7 @@ function resetBoard() {
 		if (!at(SNAKE, bombs[i].x, bombs[i].y)) set(BOMB, bombs[i].x, bombs[i].y);
 	}
 
-	if (isGame("ghost")) {
+	if (isGame("Phantom_Snake")) {
 		for (var i = 0; i < clone.s_body.length; i++) {
 			set(CLONE, clone.s_body[i].x, clone.s_body[i].y);
 		}
@@ -462,24 +462,24 @@ function resetBoard() {
 function moveFruit(){
 	set(EMPTY, fruit.x, fruit.y);
 
-	if (isGame(["mover", "frogger"])) fruit.direction = taken;
+	if (isGame(["Movers", "Frogger"])) fruit.direction = taken;
 	else fruit.direction = Math.floor((Math.random()*15)+1);
 
 	if (fruit.direction%4 == 0) { 
 		fruit.x--;
-		if (fruit.x == grid.width-COLS-1 && isGame(["mover", "frogger"])) fruit.x = COLS-1;
+		if (fruit.x == grid.width-COLS-1 && isGame(["Movers", "Frogger"])) fruit.x = COLS-1;
 		else if (fruit.x == grid.width-COLS-1) fruit.x++;
 	} else if (fruit.direction%3 == 0) { 
 		fruit.y--;
-		if (fruit.y == grid.height-ROWS-1 && isGame(["mover", "frogger"])) fruit.y = ROWS-1;
+		if (fruit.y == grid.height-ROWS-1 && isGame(["Movers", "Frogger"])) fruit.y = ROWS-1;
 		else if (fruit.y == grid.height-ROWS-1) fruit.y++;
 	} else if (fruit.direction%2 == 0) { 
 		fruit.x++;
-		if (fruit.x == COLS && isGame(["mover", "frogger"])) fruit.x = grid.width-COLS;
+		if (fruit.x == COLS && isGame(["Movers", "Frogger"])) fruit.x = grid.width-COLS;
 		else if (fruit.x == COLS) fruit.x--;
 	} else { 
 		fruit.y++;
-		if (fruit.y == ROWS && isGame(["mover", "frogger"])) fruit.y = grid.height-ROWS;
+		if (fruit.y == ROWS && isGame(["Movers", "Frogger"])) fruit.y = grid.height-ROWS;
 		else if (fruit.y == ROWS) fruit.y--;
 	}
 
