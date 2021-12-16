@@ -3,7 +3,7 @@ games = [
 	{ name: "Bombs", score: 30 },
 	{ name: "Colorblind", score: 20 },
 	{ name: "20/20_Vision", score: 18 },
-	{ name: "Boxed_In", score: 18 },
+	{ name: "Boxed_In", score: 0 },
 	{ name: "Infinity", score: 22 },
 	{ name: "Movers", score: 30 },
 	{ name: "Portal", score: 16 },

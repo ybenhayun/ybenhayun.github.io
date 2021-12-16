@@ -112,6 +112,7 @@ function main() {
 
 function init() {
 	frames = 0, score = 0, taken = 0, fruitvalue = 250;
+	COLS = 26, ROWS = 26;
 	bombs = [];
 
 	for (i = larrow; i <= darrow; i++) keystate[i] = false;
