@@ -1,20 +1,20 @@
 games = [
-	{ name: "Classic", score: 0},
-	{ name: "Bombs", score: 0 },
-	{ name: "Colorblind", score: 0 },
-	{ name: "20/20_Vision", score: 0 },
-	{ name: "Boxed_In", score: 0 },
-	{ name: "Infinity", score: 0 },
-	{ name: "Movers", score: 0 },
-	{ name: "Portal", score: 0 },
-	{ name: "Tick_Tock", score: 0 },
-	{ name: "Flash", score: 0 },
-	{ name: "Phantom_Snake", score: 0 },
-	{ name: "Dodge", score: 0 },
-	{ name: "Frogger", score: 0 },
-	{ name: "Good_Luck", score: 0 },
-	{ name: "Shots_Fired", score: 0 },
-	{ name: "No_Survivors", score: 0 },
+	{ name: "Classic", score: 0, title: "Classic" },
+	{ name: "Bombs", score: 0, title: "Bombs" },
+	{ name: "Colorblind", score: 0, title: "Colorblind" },
+	{ name: "20/20_Vision", score: 0, title: "20/20 Vision" },
+	{ name: "Boxed_In", score: 0, title: "Boxed In" },
+	{ name: "Infinity", score: 0, title: "Infinity" },
+	{ name: "Movers", score: 0, title: "Movers" },
+	{ name: "Portal", score: 0, title: "Portal" },
+	{ name: "Tick_Tock", score: 0, title: "Tick Tock" },
+	{ name: "Flash", score: 0, title: "Flash" },
+	{ name: "Phantom_Snake", score: 0, title: "Phantom Snake" },
+	{ name: "Dodge", score: 0, title: "Dodge" },
+	{ name: "Frogger", score: 0, title: "Frogger" },
+	{ name: "Good_Luck", score: 0, title: "Good Luck" },
+	{ name: "Shots_Fired", score: 0, title: "Shots Fired" },
+	{ name: "No_Survivors", score: 0, title: "No Survivors" },
 ];
 
 var text = null;
@@ -58,7 +58,7 @@ $(document).ready(function(){
 function createButtons() {
 	for (var i = 0; i < games.length; i++) {
 		document.getElementById("games").innerHTML += "<button id = '" + games[i].name + 
-		"' onclick = setGame('" + games[i].name + "')> " + games[i].name.replace(/_/g, ' ') + " <span class ='needed'></span></button>";
+		"' onclick = setGame('" + games[i].name + "')> " + games[i].title + " <span class ='needed'></span></button>";
 	}
 
 	for (var i = 0; i < games.length; i++) {

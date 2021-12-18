@@ -5,7 +5,6 @@ var left  = 0, up = 1, right = 2, down  = 3;
 var larrow = 37, uarrow = 38, rarrow = 39, darrow = 40;
 var canvas, ctx, keystate, frames, score, fruitvalue, taken;
 var gametype, gamecounter = 0;
-//var snake[0].last.x, snake[0].last.y, snake[1].last.x, snake[1].last.y;
 var bomb, reset, flash, grade, tick, frog, clone, movebombs, movefruit, hasmissiles;
 
 grid = {
