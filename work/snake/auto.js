@@ -1,15 +1,15 @@
 function moveSnake() {
 	snakespeed = 1; //speed up snake for snakebot
 	
-	if (fruit[0].x < nx && canGo(nx-1, ny)) snake.direction = left;
-	else if (fruit[0].x > nx && canGo(nx+1, ny)) snake.direction = right;
-	else if (fruit[0].y < ny && canGo(nx, ny-1)) snake.direction = up;
-	else if (fruit[0].y > ny && canGo(nx, ny+1)) snake.direction = down;
+	if (fruit[0].x < snake[0].last.x && canGo(snake[0].last.x-1, snake[0].last.y)) snake.direction = left;
+	else if (fruit[0].x > snake[0].last.x && canGo(snake[0].last.x+1, snake[0].last.y)) snake.direction = right;
+	else if (fruit[0].y < snake[0].last.y && canGo(snake[0].last.x, snake[0].last.y-1)) snake.direction = up;
+	else if (fruit[0].y > snake[0].last.y && canGo(snake[0].last.x, snake[0].last.y+1)) snake.direction = down;
 
-	else if (canGo(nx-1, ny)) snake.direction = left;
-	else if (canGo(nx+1, ny)) snake.direction = right;
-	else if (canGo(nx, ny-1)) snake.direction = up;
-	else if (canGo(nx, ny+1)) snake.direction = down;
+	else if (canGo(snake[0].last.x-1, snake[0].last.y)) snake.direction = left;
+	else if (canGo(snake[0].last.x+1, snake[0].last.y)) snake.direction = right;
+	else if (canGo(snake[0].last.x, snake[0].last.y-1)) snake.direction = up;
+	else if (canGo(snake[0].last.x, snake[0].last.y+1)) snake.direction = down;
 	else console.log("help");
 	
 
@@ -19,20 +19,20 @@ function moveSnake() {
 		}
 	}
 
-	if (snake.direction == left) nx--;
-	else if (snake.direction == up) ny--;
-	else if (snake.direction == right) nx++;
-	else if (snake.direction == down) ny++;
+	if (snake.direction == left) snake[0].last.x--;
+	else if (snake.direction == up) snake[0].last.y--;
+	else if (snake.direction == right) snake[0].last.x++;
+	else if (snake.direction == down) snake[0].last.y++;
 
 
-	if (nx < grid.width-COLS){
-			nx = COLS-1;
-	} else if (nx > COLS-1) {
-			nx = grid.width-COLS;
-	} else if (ny < grid.height-ROWS) {
-			ny = ROWS-1;
-	} else if (ny > ROWS-1) {
-			ny = grid.height-ROWS;
+	if (snake[0].last.x < grid.width-COLS){
+			snake[0].last.x = COLS-1;
+	} else if (snake[0].last.x > COLS-1) {
+			snake[0].last.x = grid.width-COLS;
+	} else if (snake[0].last.y < grid.height-ROWS) {
+			snake[0].last.y = ROWS-1;
+	} else if (snake[0].last.y > ROWS-1) {
+			snake[0].last.y = grid.height-ROWS;
 	}
 }
 
