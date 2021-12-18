@@ -1,13 +1,12 @@
 var snakespeed = 5;
-
 var COLS = 26, ROWS = 26;
-var EMPTY = 0, SNAKE = 1, FRUIT = 2, BOMB = 3, WALL = 4, MARKED = 5, MISSILE = 6, HEAD = 7, CLONE = 8;
+var EMPTY = 0, SNAKE = 10, FRUIT = 2, BOMB = 3, WALL = 4, MARKED = 5, MISSILE = 6, HEAD = 7, CLONE = 11, CLONEHEAD = 9;
 var left  = 0, up = 1, right = 2, down  = 3;
 var larrow = 37, uarrow = 38, rarrow = 39, darrow = 40;
 var canvas, ctx, keystate, frames, score, fruitvalue, taken;
 var gametype, gamecounter = 0;
-var nx, ny, cx, cy, bomb;
-var flash;
+//var snake[0].last.x, snake[0].last.y, snake[1].last.x, snake[1].last.y;
+var bomb, reset, flash, grade, tick, frog, clone, movebombs, movefruit, hasmissiles;
 
 grid = {
 	width: null, 
@@ -36,7 +35,7 @@ grid = {
 	}
 };
 
-snake = {
+snake = [{
 	direction: null,
 	last: null,		
 	s_body: null,	
@@ -55,35 +54,9 @@ snake = {
 	remove: function() {
 		return this.s_body.pop();
 	}
-};
+}];
 
-clone = {
-	direction: null,
-	last: null,		
-	s_body: null,	
-
-	init: function(d, x, y) {
-		this.direction = d;
-		this.s_body = [];
-		this.insert(x, y);
-	},
-
-	insert: function(x, y) {
-		// unshift prepends an element to an array
-		this.s_body.unshift({x:x, y:y});
-		this.last = this.s_body[0];
-	},
-	remove: function() {
-		return this.s_body.pop();
-	}
-};
-
-fruit = {
-	direction: null,
-	x: null,
-	y: null
-};
-
+fruit = [];
 bombs = [];
 missiles = [];
 
@@ -114,82 +87,81 @@ function main() {
 function init() {
 	frames = 0, score = 0, taken = 0, fruitvalue = 250;
 	COLS = 26, ROWS = 26;
-	bombs = [], missiles = [];
+	bombs = [], missiles = [], fruit = [];
+	reset = false;
 
 	for (i = larrow; i <= darrow; i++) keystate[i] = false;
-
-	if (getScore(gametype) == null) { //set scores to 0 if not yet played
-		setScore(gametype, 0);
-		setFruitScore(gametype, 0);
-	}
-
 	grid.init(EMPTY, COLS, ROWS);
-
-	var sp = {x:ROWS-1, y:Math.floor(COLS/2)};
-	snake.init(right, sp.x, sp.y);
-	for (var i = 0; i < 3; i++){
-		set(SNAKE, sp.x, sp.y);
-		snake.insert(sp.x, sp.y);	
-	}
-
-	if (isGame("Phantom_Snake")) initClone();
-	else { cx = null; cy = null; }
-	set(EMPTY, ROWS-1, sp.y);
 
 	snake_length = 4;
 	gamecounter++;
 
-	if (isGame(["Movers", "Dodge", "Bombs", "Colorblind", "Flash", "Good_Luck", "No_Survivors", "Frogger", "20/20_Vision"])) bomb = true;
-	else bomb = false;
+	getGameAttributes();
+	initSnakes();
 
-	if (isGame("20/20_Vision")) grade = true;
-	else grade = false;
-
-	if (isGame("Portal")) set(FRUIT);
+	if (portal) set(FRUIT);
 	set(FRUIT);
 }
 
-function initClone() {
-	var sp = {x:ROWS-1, y:0};
-	clone.init(right, sp.x, sp.y);
-	for (var i = 0; i < 3; i++){
-		set(CLONE, sp.x, sp.y);
-		clone.insert(sp.x, sp.y);	
-	}
-	set(EMPTY, ROWS-1, sp.y);
+function getGameAttributes() {
+	bomb = isGame(["Movers", "Dodge", "Bombs", "Colorblind", "Flash", "Good_Luck", "No_Survivors", "Frogger", "20/20_Vision"]);
+	movefruit = isGame(["Movers", "Frogger", "Good_Luck", "No_Survivors"]);
+	movebombs = isGame(["Dodge", "Good_Luck", "No_Survivors", "Frogger"]);
+	hasmissiles = isGame(["Shots_Fired", "No_Survivors"]);
+	flash = isGame("Flash");
+	grade = isGame("20/20_Vision");
+	redbombs = isGame(["Colorblind", "Good_Luck", "No_Survivors"]);
+	tick = isGame("Tick_Tock");
+	frog = isGame("Frogger");
+	clone = isGame("Phantom_Snake");
+	walls = isGame("Boxed_In");
+	infinite = isGame("Infinity");
+	portal = isGame("Portal");
+}
 
+function initSnakes() {
+	if (clone) count = 2;
+	else count = 1;
+	if (snake.length > 1) snake.pop(); //max 2 snakes in array
+
+	for (var s = 0; s < count; s++) {
+		if (s > 0) { 
+			var double = Object.create(snake[0]);
+			snake.push(double);
+			body = CLONE;
+		} else body = SNAKE;
+
+		var sp = {x:ROWS-1, y:Math.round(Math.random()*COLS-1)};
+		snake[s].init(right, sp.x, sp.y);
+		for (var i = 0; i < snake_length; i++){
+			set(body, sp.x, sp.y);
+			snake[s].insert(sp.x, sp.y);	
+		}
+		set(EMPTY, ROWS-1, sp.y);
+	}
 }
 
 function moveClone() {
-	if (fruit.x < cx) {
-		if (Math.abs(fruit.x - cx) < COLS/2 && fruit.x != cx) clone.direction = left;
-		else clone.direction = right;
-	} else if (fruit.x > cx) { 
-		if (Math.abs(fruit.x - cx) < COLS/2 && fruit.x != cx) clone.direction = right;
-		else clone.direction = left
-	} else if (fruit.y < cy) {
-		if (Math.abs(fruit.y - cy) < ROWS/2 && fruit.y != cy) clone.direction = up;
-		else clone.direction = down;
-	} else if (fruit.y > cy) {
-		if (Math.abs(fruit.y - cy) < ROWS/2 && fruit.y != cy) clone.direction = down;
-		else clone.direction = up;
-	}
-	
-	if (clone.direction == left) cx--;
-	else if (clone.direction == up) cy--;
-	else if (clone.direction == right) cx++;
-	else if (clone.direction == down) cy++;
+	var lastdir = snake[1].direction;
 
-	if (cx < grid.width-COLS){
-		cx = COLS-1;
-	} else if (cx > COLS-1) {
-		cx = grid.width-COLS;
-	} else if (cy < grid.height-ROWS) {
-		cy = ROWS-1;
-	} else if (cy > ROWS-1) {
-		cy = grid.height-ROWS;
-	}
+	if (fruit[0].y < snake[1].last.y && frames > 30) {
+		if (Math.abs(fruit[0].y - snake[1].last.y) < ROWS/2 && fruit[0].y != snake[1].last.y) snake[1].direction = up;
+		else snake[1].direction = down;
+	} else if (fruit[0].y > snake[1].last.y && frames > 30) {
+		if (Math.abs(fruit[0].y - snake[1].last.y) < ROWS/2 && fruit[0].y != snake[1].last.y) snake[1].direction = down;
+		else snake[1].direction = up;
+	} else if (fruit[0].x < snake[1].last.x) {
+		if (Math.abs(fruit[0].x - snake[1].last.x) < COLS/2 && fruit[0].x != snake[1].last.x) snake[1].direction = left;
+		else snake[1].direction = right;
+	} else if (fruit[0].x > snake[1].last.x) { 
+		if (Math.abs(fruit[0].x - snake[1].last.x) < COLS/2 && fruit[0].x != snake[1].last.x) snake[1].direction = right;
+		else snake[1].direction = left
+	} 
 
+	if (snake[1].direction == oppDirection(lastdir)) snake[1].direction = (snake[1].direction+1)%4  //cant turn 180º
+
+	snake[1].last.x = newPosition(CLONE, snake[1].direction, snake[1].last.x, snake[1].last.y).x
+	snake[1].last.y = newPosition(CLONE, snake[1].direction, snake[1].last.x, snake[1].last.y).y
 }
 
 function loop() {
@@ -200,25 +172,26 @@ function loop() {
 }
 
 function draw() {
+	resetBoard();
+
 	var tw = canvas.width/grid.width;
 	var th = canvas.height/grid.height;
-
-	if (frames%50 == 0 && isGame("Flash")) flash = !flash; //turns bomb visibility on & off
 
 	for (var x=0; x < grid.width; x++) {
 		for (var y=0; y < grid.height; y++) {
 			if (at(WALL, x ,y)) ctx.fillStyle = "#2b2b2b";
-			else if (x == cx && y == cy) ctx.fillStyle = "black";
-			else if (at(CLONE, x, y)) ctx.fillStyle = "gray";
 			else if (at(EMPTY, x, y)) ctx.fillStyle = "#fff";
 			else if (at(HEAD, x, y)) ctx.fillStyle = "#f00";
 			else if (at(FRUIT, x, y)) ctx.fillStyle = "#f" + getGrade();
 			else if (at(BOMB, x, y)) {
-				if (isGame(["Colorblind", "Good_Luck", "No_Survivors"])) ctx.fillStyle = "#f00";
-				else if (isGame("Flash") && flash) ctx.fillStyle = "fff";
+				if (redbombs) ctx.fillStyle = "#f00";
+				else if (flash && frames%100 > 50 && frames%100 < 99) ctx.fillStyle = "fff";
 				else ctx.fillStyle = "#000";
-			} 
-			else if (at(SNAKE, x, y) || at(MISSILE, x, y)) ctx.fillStyle = "orange";
+			} else if (at(SNAKE, x, y) || at(MISSILE, x, y)) ctx.fillStyle = "orange";
+			else if (clone) {
+				if (at(CLONEHEAD, x, y)) ctx.fillStyle = "black";
+				else if (at(CLONE, x, y)) ctx.fillStyle = "gray";
+			}
 
 			ctx.fillRect(x*tw, y*th, tw, th);
 			ctx.stroke();
@@ -226,14 +199,13 @@ function draw() {
 	}
 
 	if (fruitvalue > 50) fruitvalue-=.5;
-	if (isGame("Tick_Tock") && frames%50 == 0 && fruitvalue < 175) set(BOMB);
-	if (isGame(["Shots_Fired", "No_Survivors"]) && frames%20 == 0) { set(MISSILE, 0); }
+	if (tick && frames%50 == 0 && fruitvalue < 175) set(BOMB);
+	if (hasmissiles && frames%20 == 0) set(MISSILE, 0, Math.round(Math.random()*COLS-1));
 
 	updateScoreboard();
 }
 
 function getGrade() {
-
 	if (!grade) return "00";
 	if (fruitvalue < 205) return "ff";
 	
@@ -260,100 +232,79 @@ function updateScoreboard() {
 	if (gametype != games.at(-1).name && getFruitScore(gametype) < scoreToContinue(gametype))
 		d += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span>";
 	
-	
 	document.getElementById("overview").innerHTML = d;
+}
+
+function timeToMove(object) {
+	if (object == SNAKE) return frames%snakespeed == 0;
+	if (object == CLONE) return frames%(snakespeed+8) == 0;
+	if (object == MISSILE) return frames%5 == 0;
+
+	if (object == BOMB) {
+		if (frog) return (frames+2)%5 == 0 && frames%100 > 30 && frames%100 < 60;
+		return ((frames+2)%20 == 0); 
+	} 
+
+	if (object == FRUIT) {
+		if (frog) return frames%4 == 0 && frames%100 > 30 && frames%100 < 60;
+		return frames%4 == 0;
+	}
 }
 
 function update() {
 	frames++;
 
-	if ((frames%4 == 0 && isGame("Movers"))||(isGame(["Good_Luck", "No_Survivors"]) && frames%8 ==0)) moveFruit();
-	if (frames%20 == 0 && taken > 0 && isGame(["Dodge", "Good_Luck", "No_Survivors"])) moveBombs();
-	if (frames%4 == 0 && (frames % 100 >  30 && frames % 100 < 60) && isGame("Frogger")) { moveBombs(); moveFruit(); }
-	if (frames%5 == 0 && isGame(["Shots_Fired", "No_Survivors"])) moveMissiles();
+	if (movefruit && timeToMove(FRUIT)) move(FRUIT);
+	if (movebombs && timeToMove(BOMB)) move(BOMB);
+	if (hasmissiles && timeToMove(MISSILE)) move(MISSILE);
+	if (reset) return init();
 
-	draw();
+	for (var i = 0; i < snake.length; i++) {
+		if ((timeToMove(SNAKE) && i == 0) || (timeToMove(CLONE) && i == 1)) {
+			move(SNAKE+i);
+			if (gameOver(snake[i].last.x, snake[i].last.y) && i == 0 || reset) {
+				gameReset();
+				return init();
+			}
 
-	if (frames > 100) resetBoard();
+			if (at(FRUIT, snake[i].last.x, snake[i].last.y)) {
+				collectedFruit(snake[i].last.x, snake[i].last.y, i);
+				if (bomb || i != 0) set(BOMB, snake[i].last.x, snake[i].last.y);
+			} 
 
-
-	if (frames%(snakespeed+8) == 0 && isGame("Phantom_Snake")) {
-		cx = clone.last.x;
-		cy = clone.last.y;
-
-		moveClone();
-
-		if (at(FRUIT, cx, cy)) {
-			playSound();
-			set(BOMB, cx, cy);
-			bombs.push({direction:oppDirection(clone.direction), x:cx, y:cy});
-			set(FRUIT);
-		} 
-		
-		var tail = clone.remove();
-		set(EMPTY, tail.x, tail.y);  
-		tail.x = cx;
-		tail.y = cy;
-		set(CLONE, tail.x, tail.y);
-		clone.insert(tail.x, tail.y);
-		
-	}
-
-	if (frames%snakespeed == 0){
-		nx = snake.last.x;
-		ny = snake.last.y;
-
-		moveSnake();
-		
-		if (gameOver(nx, ny)) {
-			gameReset();
-			return init();
-		}
-
-		if (at(FRUIT, nx, ny)) {
-			collectedFruit(nx, ny);
-		} else {
-			var tail = snake.remove();
-			if (!at(BOMB, tail.x, tail.y) && !at(WALL, tail.x, tail.y) && !isGame("Infinity"))
-				set(EMPTY, tail.x, tail.y);  //remove for infinite snake
-			tail.x = nx;
-			tail.y = ny;
-			set(SNAKE, tail.x, tail.y);
-			snake.insert(tail.x, tail.y);
+			var tail = snake[i].remove();
+			if (!infinite && !at(WALL, tail.x, tail.y)) set(EMPTY, tail.x, tail.y);
+			set(SNAKE+i, snake[i].last.x, snake[i].last.y);
+			snake[i].insert(snake[i].last.x, snake[i].last.y);
 		}
 	}
 }
 
 function gameReset() {
 	unlockGames();
+	if (clone) snake.pop();  //get rid of clone snake before next game
 	if (!confirm("Press OK to play again. Press cancel to pick another level.")) location.reload();
 }
 
 function gameOver(x, y){
-	if (x < 0) x = COLS-1;
-	if (y < 0) y = ROWS-1;
-	if (x >= COLS) x = 0;
-	if (y >= ROWS) y = 0;
-
-	if (at(SNAKE, x, y) || at(BOMB, x, y)) return true;
-
-	return false;
+	return (at(SNAKE, x, y) || at(BOMB, x, y));
 }
 
 function at(value, x, y) {
-	if (value == HEAD) return (x == nx && y == ny);
+	if (value == HEAD) return (x == snake[0].last.x && y == snake[0].last.y);
+	if (value == CLONEHEAD) return (x == snake[1].last.x && y == snake[1].last.y);
 	return grid.get(x, y) == value;
 }
 
-function set(value, a, b) {
+function set(value, a, b, isOld) {
 	if (a == null || b == null) { //place at a random spot
 		var empty = [];
 		var i = 0;
-		if (isGame("Boxed_In")) i++;   //don't place fruit on edge of map during Boxed_In
+		if (walls) i++;   //don't place fruit on edge of map during Boxed_In
 	
 		for (var x=grid.width-COLS+i; x < COLS-i; x++) {
 			for (var y=grid.height-ROWS+i; y < ROWS-i; y++) {
-				if (at(EMPTY, x, y) && x != nx && y != ny) {
+				if (at(EMPTY, x, y) && x != snake[0].last.x && y != snake[0].last.y) {
 					empty.push({x:x, y:y});
 				}
 			}
@@ -363,9 +314,10 @@ function set(value, a, b) {
 		if (a == null) a = randpos.x; 
 		if (b == null) b = randpos.y;
 	}
+	
+	if (value != SNAKE && value != EMPTY && value != CLONE && value != WALL) 
+		if (isOld == null) getAll(value).push({direction:getDirection(value), x:a, y:b});
 
-	if (value == FRUIT) fruit = {x:a, y:b};
-	if (value == MISSILE) missiles.push({x:a, y:b});
 	grid.set(value, a, b);
 }
 
@@ -373,118 +325,110 @@ function isGame(gamelist) {
 	return gamelist.includes(gametype);
 }
 
-function collectedFruit(x, y){
+function collectedFruit(x, y, isClone) {
+	fruit.splice(fruit.findIndex(item => item.x === x && item.y === y), 1);
 	playSound();
-	updateScore();
-	lengthenSnake({x:x, y:y}, 2);
-
-	if (isGame("Boxed_In") && taken%4 == 0) shrinkBoard();
-	if (isGame("Portal")) teleportSnake();
-	if (bomb) {
-		set(BOMB, x, y); 
-		bombs.push({direction:oppDirection(snake.direction), x:x, y:y});
+	if (isClone != true) { 
+		updateScore();
+		lengthenSnake({x:x, y:y}, 2);
 	}
+
+	if (walls && taken%4 == 0) shrinkBoard();
+	if (portal) teleportSnake();
 
 	checkHighScores();
 
-	if (isGame("Infinity")) { set(FRUIT); set(FRUIT); }
-	if (isGame("Portal")) set(FRUIT);
+	if (infinite) { set(FRUIT); set(FRUIT); }
+	if (portal) set(FRUIT);
 	set(FRUIT);
-
 }
 
-function moveMissiles() {
-	for (var i = 0; i < missiles.length; i++) {
-		if (at(SNAKE, missiles[i].x, missiles[i].y)) {
-			playSound();
-			lengthenSnake({x:snake.last.x, y:snake.last.y}, 2);
-			missiles.splice(i, 1);
-		} else { 
-			set(EMPTY, missiles[i].x, missiles[i].y);
-			missiles[i].x++;
-			if (missiles[i].x > COLS-1) missiles.splice(i, 1);
-			else grid.set(MISSILE, missiles[i].x, missiles[i].y);
+function move(object) {
+	if (object == SNAKE) moveSnake();
+	else if (object == CLONE) moveClone();
+	else {
+		objArray = getAll(object);
+
+		for (var i = 0; i < objArray.length; i++) {
+			if (at(SNAKE, objArray[i].x, objArray[i].y) && object == MISSILE) collision(object, objArray, i);
+			else { 
+				set(EMPTY, objArray[i].x, objArray[i].y);
+				objArray[i] = newPosition(object, objArray[i].direction, objArray[i].x, objArray[i].y);
+				if (objArray[i] == null) objArray.splice(i, 1);
+				else {
+					set(object, objArray[i].x, objArray[i].y, true);  //true means the object shouldnt be pushed again
+					if (at(HEAD, objArray[i].x, objArray[i].y)) collision(object, objArray, i);
+				}
+			}
 		}
 	}
 }
 
-function moveBombs(){
-	for (var i = 0; i < bombs.length; i++) {
-		set(EMPTY, bombs[i].x, bombs[i].y);
-
-		if (bombs[i].direction == left) {
-			bombs[i].x--;
-			if (bombs[i].x < 0) bombs[i].x = COLS-1;
-	   	} else if (bombs[i].direction == right) {
-			bombs[i].x++;
-			if (bombs[i].x >= COLS) bombs[i].x = 0;
-	   	} else if (bombs[i].direction == up) {
-		   	bombs[i].y--;
-			if (bombs[i].y < 0) bombs[i].y = ROWS-1;
-	   	} else if (bombs[i].direction == down) {
-		   	bombs[i].y++;
-			if (bombs[i].y >= ROWS) bombs[i].y = 0;
-	   	}
-
-	   	if (at(HEAD, bombs[i].x, bombs[i].y)){
-			gameReset();
-			return init();
-	   	}
-
-	   	set(BOMB, bombs[i].x, bombs[i].y);
+function collision(value, array, i) {
+	if (value == MISSILE) {
+		playSound();
+		lengthenSnake({x:snake[0].last.x, y:snake[0].last.y}, 2);
+		array.splice(i, 1);
+	} else if (value == FRUIT) {
+		collectedFruit(snake[0].last.x, snake[0].last.y);
+		if (bomb) set(BOMB, snake[0].last.x, snake[0].last.y);
+	} else if (value == BOMB) {
+		reset = true;
+		gameReset();
 	}
+}
+
+function getDirection(value) {
+	if (value == MISSILE) return right;
+	if (value == FRUIT) return taken%4;
+	if (value == BOMB) return oppDirection(snake[0].direction);
+}
+
+function getAll(value) {
+	if (value == FRUIT) return fruit;
+	if (value == BOMB) return bombs;
+	if (value == MISSILE) return missiles;
+}
+
+function newPosition(value, direction, x, y) {
+	if (direction == left) x--;
+	else if (direction == right) x++;
+	else if (direction == up) y--;
+	else if (direction == down) y++;
+
+	if (x > COLS-1 && value == MISSILE) return null;  //missiles dont wrap around
+	else if (x < grid.width-COLS) x = COLS-1;
+	else if (x > COLS-1) x = grid.width-COLS;
+	else if (y < grid.height-ROWS) y = ROWS-1;
+	else if (y > ROWS-1) y = grid.height-ROWS;
+
+	return {direction:direction, x:x, y:y};
 }
 
 function resetBoard() {
-	for (var i = 0; i < snake.s_body.length; i++) {
-		if (!at(FRUIT, snake.s_body[i].x, snake.s_body[i].y) && !at(WALL, snake.s_body[i].x, snake.s_body[i].y)) set(SNAKE, snake.s_body[i].x, snake.s_body[i].y);
-	}
-
-	if (!at(BOMB, fruit.x, fruit.y)) set(FRUIT, fruit.x, fruit.y);
-
-	for (var i = 0; i < bombs.length; i++) {
-		if (!at(SNAKE, bombs[i].x, bombs[i].y)) set(BOMB, bombs[i].x, bombs[i].y);
-	}
-
-	if (isGame("Phantom_Snake")) {
-		for (var i = 0; i < clone.s_body.length; i++) {
-			set(CLONE, clone.s_body[i].x, clone.s_body[i].y);
+	if (frames > 50) {
+		for (var i = 0; i < snake[0].s_body.length; i++) {
+			if (!at(FRUIT, snake[0].s_body[i].x, snake[0].s_body[i].y) && !at(WALL, snake[0].s_body[i].x, snake[0].s_body[i].y)) set(SNAKE, snake[0].s_body[i].x, snake[0].s_body[i].y, true);
 		}
 	}
-}
 
-function moveFruit(){
-	set(EMPTY, fruit.x, fruit.y);
+	if (!at(BOMB, fruit[0].x, fruit[0].y)) set(FRUIT, fruit[0].x, fruit[0].y, true);
 
-	if (isGame(["Movers", "Frogger"])) fruit.direction = taken;
-	else fruit.direction = Math.floor((Math.random()*15)+1);
-
-	if (fruit.direction%4 == 0) { 
-		fruit.x--;
-		if (fruit.x == grid.width-COLS-1 && isGame(["Movers", "Frogger"])) fruit.x = COLS-1;
-		else if (fruit.x == grid.width-COLS-1) fruit.x++;
-	} else if (fruit.direction%3 == 0) { 
-		fruit.y--;
-		if (fruit.y == grid.height-ROWS-1 && isGame(["Movers", "Frogger"])) fruit.y = ROWS-1;
-		else if (fruit.y == grid.height-ROWS-1) fruit.y++;
-	} else if (fruit.direction%2 == 0) { 
-		fruit.x++;
-		if (fruit.x == COLS && isGame(["Movers", "Frogger"])) fruit.x = grid.width-COLS;
-		else if (fruit.x == COLS) fruit.x--;
-	} else { 
-		fruit.y++;
-		if (fruit.y == ROWS && isGame(["Movers", "Frogger"])) fruit.y = grid.height-ROWS;
-		else if (fruit.y == ROWS) fruit.y--;
+	for (var i = 0; i < bombs.length; i++) {
+		if (!at(SNAKE, bombs[i].x, bombs[i].y) || movebombs) set(BOMB, bombs[i].x, bombs[i].y, true);
 	}
 
-	if (at(HEAD, fruit.x, fruit.y)) collectedFruit(fruit.x, fruit.y); 
-	set(FRUIT, fruit.x, fruit.y);
+	if (clone && frames > 100) {
+		for (var i = 0; i < snake[1].s_body.length; i++) {
+			set(CLONE, snake[1].s_body[i].x, snake[1].s_body[i].y, true);
+		}
+	}
 }
 
 function lengthenSnake(tail, growth_rate) {
 	for (var i = 0; i < growth_rate; i++){			
 		set(SNAKE, tail.x, tail.y);
-		snake.insert(tail.x, tail.y);
+		snake[0].insert(tail.x, tail.y);
 	} 
 
 	snake_length+=growth_rate;
@@ -523,17 +467,10 @@ function updateScore() {
 }
 
 function teleportSnake() {
-	for (var i = 0; i < COLS; i++){
-		for(var j = 0; j < ROWS; j++){
-			if (at(FRUIT, i, j)){
-				set(SNAKE, i, j);
-				snake.last.x = i;
-				snake.last.y = j;
-				nx = i; ny = j;
-				break;
-			}
-		}
-	}
+	set(SNAKE, fruit[0].x, fruit[0].y);
+	snake[0].last.x = fruit[0].x;
+	snake[0].last.y = fruit[0].y;
+	fruit.pop();
 }
 
 function oppDirection(direction) {

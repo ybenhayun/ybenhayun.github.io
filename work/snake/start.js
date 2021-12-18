@@ -1,20 +1,20 @@
 games = [
 	{ name: "Classic", score: 0},
-	{ name: "Bombs", score: 30 },
-	{ name: "Colorblind", score: 20 },
-	{ name: "20/20_Vision", score: 18 },
-	{ name: "Boxed_In", score: 18 },
-	{ name: "Infinity", score: 22 },
-	{ name: "Movers", score: 30 },
-	{ name: "Portal", score: 16 },
-	{ name: "Tick_Tock", score: 30 },
-	{ name: "Flash", score: 25 },
-	{ name: "Phantom_Snake", score: 17 },
-	{ name: "Dodge", score: 20 },
-	{ name: "Frogger", score: 15 },
-	{ name: "Good_Luck", score: 13 },
-	{ name: "Shots_Fired", score: 12 },
-	{ name: "No_Survivors", score: 22 },
+	{ name: "Bombs", score: 0 },
+	{ name: "Colorblind", score: 0 },
+	{ name: "20/20_Vision", score: 0 },
+	{ name: "Boxed_In", score: 0 },
+	{ name: "Infinity", score: 0 },
+	{ name: "Movers", score: 0 },
+	{ name: "Portal", score: 0 },
+	{ name: "Tick_Tock", score: 0 },
+	{ name: "Flash", score: 0 },
+	{ name: "Phantom_Snake", score: 0 },
+	{ name: "Dodge", score: 0 },
+	{ name: "Frogger", score: 0 },
+	{ name: "Good_Luck", score: 0 },
+	{ name: "Shots_Fired", score: 0 },
+	{ name: "No_Survivors", score: 0 },
 ];
 
 var text = null;
@@ -52,14 +52,13 @@ $(document).ready(function(){
 			
 
 		});
-
-	//localStorage.clear();
+	//localStorage.clear();   //uncomment to clear highscores
 });
 
 function createButtons() {
 	for (var i = 0; i < games.length; i++) {
 		document.getElementById("games").innerHTML += "<button id = '" + games[i].name + 
-		"' onclick = setGame('" + games[i].name + "')> " + games[i].name + " <span class ='needed'></span></button>";
+		"' onclick = setGame('" + games[i].name + "')> " + games[i].name.replace(/_/g, ' ') + " <span class ='needed'></span></button>";
 	}
 
 	for (var i = 0; i < games.length; i++) {
