@@ -367,7 +367,7 @@ function isGame(gamelist) {
 
 function getDirection(value) {
 	if (value == MISSILE) return right;
-	if (value == FRUIT) return taken%4;
+	if (value == FRUIT) return Math.round(Math.random()*3);
 	if (value == BOMB) return oppDirection(snake[0].direction);
 }
 
