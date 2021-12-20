@@ -1,7 +1,7 @@
 <span id = 'inst'><br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>
 No tricks here. This is the same classic game you played on your Nokia cell phone.</span>
 This little snake loves fruit, but he seems to leave some nasty things behind as he slithers around...</span>
-Look, differentiating colors can be tough for some of us. And for sometime that can kill you.</span>
+Look, telling colors apart can be tough for some of us. And sometimes that can kill you.</span>
 You might think that the title of this game means your snake has really good eyesight. You'd be wrong.</span>
 I really hope you're not claustrophobic.</span>
 You want a really long snake? Well, here you go.</span>
