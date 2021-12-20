@@ -34,7 +34,7 @@ $(document).ready(function(){
 			$('#overview').empty();
 
 			if (text != null) description = text[0] + "<span id = 'descr'> <br><span id = 'name'>" + 
-			games[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))].title.toUpperCase() + ": " + text[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))+1];
+			games[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))].title.toUpperCase() + "</span>: " + text[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))+1];
 			else description = "<span id = 'inst'><br>You're in local mode!  This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>" + "<span id = 'descr'><br><span id = 'name'> NAME:</span> This is where your description would go!</span>";
 
 			if (getScore($(this).attr('id')) == null) setScore($(this).attr('id'), 0);
