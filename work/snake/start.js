@@ -5,7 +5,7 @@ games = [
 	{ name: "20/20_Vision", score: 0, title: "20/20 Vision" },
 	{ name: "Boxed_In", score: 0, title: "Closing In" },
 	{ name: "Infinity", score: 0, title: "And Beyond" },
-	{ name: "Movers", score: 0, title: "Movers" },
+	{ name: "Movers", score: 0, title: "Track Star" },
 	{ name: "Portal", score: 0, title: "Portal" },
 	{ name: "Tick_Tock", score: 0, title: "Tick Tock" },
 	{ name: "Flash", score: 0, title: "Light Switch" },
