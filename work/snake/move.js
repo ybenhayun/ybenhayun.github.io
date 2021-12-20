@@ -5,6 +5,6 @@ function moveSnake(){
 	else if ((keystate[uarrow]) && snake[0].direction != down) snake[0].direction = up;
 	else if ((keystate[darrow]) && snake[0].direction != up) snake[0].direction = down;
 
-	snake[0].last.x = newPosition(CLONE, snake[0].direction, snake[0].last.x, snake[0].last.y).x
-	snake[0].last.y = newPosition(CLONE, snake[0].direction, snake[0].last.x, snake[0].last.y).y
+	snake[0].last.x = newPosition(SNAKE, snake[0].direction, snake[0].last.x, snake[0].last.y).x;
+	snake[0].last.y = newPosition(SNAKE, snake[0].direction, snake[0].last.x, snake[0].last.y).y;
 }

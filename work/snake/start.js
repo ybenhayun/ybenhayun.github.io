@@ -56,14 +56,12 @@ $(document).ready(function(){
 });
 
 function createButtons() {
-	for (var i = 0; i < games.length; i++) {
-		document.getElementById("games").innerHTML += "<button id = '" + games[i].name + 
-		"' onclick = setGame('" + games[i].name + "')> " + games[i].title + " <span class ='needed'></span></button>";
-	}
+	games.forEach(function(g) {
+		document.getElementById("games").innerHTML += "<button id = '" + g.name + 
+		"' onclick = setGame('" + g.name + "')> " + g.title + " <span class ='needed'></span></button>";
+	});
 
-	for (var i = 0; i < games.length; i++) {
-		scoreNeeded(games[i].name);
-	}
+	games.forEach(function(g) { scoreNeeded(g.name) });
 }
 
 function readDescriptions() {
@@ -93,6 +91,10 @@ function scoreNeeded(gametype) {
 	var points = games.find(games => { return games.name === gametype }).score;
 
 	document.getElementById(gametype).children[0].innerHTML = "Locked. Collect " + points + " fruit from the previous level to progress."
+}
+
+function scoreToContinue(gametype) {
+	return games[games.map(function(e) { return e.name; }).indexOf(gametype)+1].score;
 }
 
 function getScore(gametype) {
