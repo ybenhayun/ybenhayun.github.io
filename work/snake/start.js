@@ -1,20 +1,20 @@
 games = [
-	{ name: "Classic", score: 10, title: "Classic", dev: 126 },
-	{ name: "Bombs", score: 10, title: "Bombs", dev: 38 },
-	{ name: "Colorblind", score: 10, title: "Colorblind", dev: 31 },
-	{ name: "20/20_Vision", score: 10, title: "20/20 Vision", dev: 35 },
-	{ name: "Boxed_In", score: 10, title: "Closing In", dev: 37 },
-	{ name: "Infinity", score: 10, title: "And Beyond", dev: 83 },
-	{ name: "Movers", score: 10, title: "Track Star", dev: 28 },
-	{ name: "Portal", score: 10, title: "Portal", dev: 33 },
-	{ name: "Tick_Tock", score: 10, title: "Tick Tock", dev: 38 },
-	{ name: "Flash", score: 10, title: "Light Switch", dev: 25 },
-	{ name: "Phantom_Snake", score: 10, title: "Phantom Snake", dev: 44 },
-	{ name: "Dodge", score: 10, title: "Dodgeball", dev: 20 },
-	{ name: "Frogger", score: 10, title: "Frogger", dev: 19 },
-	{ name: "Good_Luck", score: 10, title: "Good Luck", dev: 15 },
-	{ name: "Shots_Fired", score: 10, title: "Shots Fired", dev: 27 },
-	{ name: "No_Survivors", score: 10, title: "No Survivors", dev: 12 },
+	{ name: "Classic", score: 0, title: "Classic", dev: 126 },
+	{ name: "Bombs", score: 0, title: "Bombs", dev: 38 },
+	{ name: "Colorblind", score: 0, title: "Colorblind", dev: 31 },
+	{ name: "20/20_Vision", score: 0, title: "20/20 Vision", dev: 35 },
+	{ name: "Boxed_In", score: 0, title: "Closing In", dev: 37 },
+	{ name: "Infinity", score: 0, title: "And Beyond", dev: 83 },
+	{ name: "Movers", score: 0, title: "Track Star", dev: 28 },
+	{ name: "Portal", score: 0, title: "Portal", dev: 33 },
+	{ name: "Tick_Tock", score: 0, title: "Tick Tock", dev: 38 },
+	{ name: "Flash", score: 0, title: "Light Switch", dev: 25 },
+	{ name: "Phantom_Snake", score: 0, title: "Phantom Snake", dev: 44 },
+	{ name: "Dodge", score: 0, title: "Dodgeball", dev: 20 },
+	{ name: "Frogger", score: 0, title: "Frogger", dev: 19 },
+	{ name: "Good_Luck", score: 0, title: "Good Luck", dev: 15 },
+	{ name: "Shots_Fired", score: 0, title: "Shots Fired", dev: 27 },
+	{ name: "No_Survivors", score: 0, title: "No Survivors", dev: 12 },
 ];
 
 var text = null;
@@ -49,9 +49,6 @@ $(document).ready(function(){
 			description += "</span>"
 				
 			$("#overview").append(description);
-
-			
-
 		});
 	//localStorage.clear();   //uncomment to clear highscores
 });
