@@ -1,194 +1,93 @@
 var turn = false;
 
 function moveSnake() {
+	a = emptycells.length;
 	snakespeed = 1; //speed up snake for snakebot
-	var x = snake[0].last.x;
-	var y = snake[0].last.y;
-	var d = snake[0].direction;
-	var fx = fruit[0].x;
-	var fy = fruit[0].y
+	sx = snake[0].last.x;
+	sy = snake[0].last.y;
+	sd = snake[0].direction;
+	fx = fruit[0].x;
+	fy = fruit[0].y;
 
-	//one variable is already equal
-	if (fx == x && fy < y && canGo(up, x, y)) {
+	if (atLevel() && canGo(towards(), sx, sy)) {
+		sd = towards();
 		turn = false;
-		d = up;
-	} else if (fx == x && fy > y && canGo(down, x, y)) {
+	}  else if (headingTowards() && canGo(sd, sx, sy) && !turn) {
 		turn = false;
-		d = down;
-	} else if (fy == y && fx < x && canGo(left, x, y)) {
-		turn = false;
-		d = left;
-	} else if (fy == y && fx > x && canGo(right, x, y)) {
-		turn = false;
-		d = right;
-	} 
-	
-	//if snake is already heading towards the fruit
-	else if (!turn && fx > x && d == right && canGo(right, x, y)) {
-		d = right;
-	} else if (!turn && fx < x && d == left && canGo(left, x, y)) {
-		d = left;
-	} else if (!turn && fy > y && d == down && canGo(down, x, y)) {
-		d = down;
-	} else if (!turn && fy < y && d == up && canGo(up, x, y)) {
-		d = up;
-	}
-
-	//if snake is heading away from the fruit
-	else if (((fx < x && d == right) || (fx > x && d == left)) && (fy > y && canGo(down, x, y))) {
-		d = down;
+	} else if (headingAway() && canGo(nextDir(), sx, sy)) {
+		sd = nextDir();
 		turn = true;
-	} else if (((fx < x && d == right) || (fx > x && d == left)) && (fy < y && canGo(up, x, y))) {
-		d = up;
-		turn = true;
+	} else if (headingTowards() && canGo(nextDir(), sx, sy) && turn) {
+		sd = nextDir();
+		turn = false;
+	} else {
+		sd = getBestDir();
+	}
+	clearGrid();
+
+	snake[0].direction = sd;
+	snake[0].last.x = newPosition(SNAKE, snake[0].direction, sx, sy).x;
+	snake[0].last.y = newPosition(SNAKE, snake[0].direction, sx, sy).y;
+}
+
+function atLevel() {
+	return (fx == sx || fy == sy);
+}
+
+function headingAway() {
+	return (fx > sx && sd == left) || (fx < sx && sd == right) || (fy > sy && sd == up) || (fy < sy && sd == down);
+}
+
+function headingTowards() {
+	return (fx > sx && sd == right) || (fx < sx && sd == left) || (fy > sy && sd == down) || (fy < sy && sd == up);
+}
+
+function towards() {
+	if (fx > sx) return right;
+	if (fx < sx) return left;
+	if (fy > sy) return down;
+	if (fy < sy) return up;
+}
+
+function nextDir() {
+	if (sd == left || sd == right) {
+		if (fy > sy) return down;
+		return up;
 	}
 
-	else if (((fy < y && d == down) || (fy > y && d == up)) && (fx > x && canGo(right, x, y))) {
-		d = right;
-		turn = true;
-	} else if (((fy < y && d == down) || (fy > y && d == up)) && (fx < x && canGo(left, x, y))) {
-		d = left;
-		turn = true;
+	if (sd == up || sd == down) {
+		if (fx > sx) return right;
+		return left;
 	}
+}
 
-	//if snake just turned
-	else if (turn && d == up && fx < x && canGo(left, x, y)) {
-		turn = false;
-		d = left;
-	} else if (turn && d == up && fx > x && canGo(right, x, y)) {
-		turn = false;
-		d = right;
-	} else if (turn && d == down && fx < x && canGo(left, x, y)) {
-		turn = false;
-		d = left;
-	} else if (turn && d == down && fx > x && canGo(right, x, y)) {
-		turn = false;
-		d = right;
-	} 
-
-	else if (turn && d == left && fy < y && canGo(up, x, y)) {
-		turn = false;
-		d = up;
-	} else if (turn && d == left && fy > y && canGo(down, x, y)) {
-		turn = false;
-		d = down;
-	} else if (turn && d == right && fy < y && canGo(up, x, y)) {
-		turn = false;
-		d = up;
-	} else if (turn && d == right && fy > y && canGo(down, x, y)) {
-		turn = false;
-		d = down;
-	} 
-
-	//if snake can just turn to fruit normally
-	else if (fx > x && canGo(right, x, y)) {
-		d = right;
-		turn = false;
-	} else if (fx < x && canGo(left, x, y)) {
-		d = left;
-		turn = false; 
-	} else if (fy > y && canGo(down, x, y)) {
-		d = down;
-		turn = false;
-	} else if (fy < y && canGo(up, x, y)) {
-		d = up;
-		turn = false;
-	}
-
-	/*//dont go through walls at first
-	else if (canGo(right, x, y) && x != COLS-1) {
-		d = right;
-		turn = false;
-	} else if (canGo(left, x, y) && x != 0) {
-		d = left;
-		turn = false;
-	} else if (canGo(down, x, y) && y != ROWS-1) {
-		d = down;
-		turn = false;
-	} else if (canGo(up, x, y) && y != 0) {
-		d = up;
-		turn = false;
-	}*/
-
-	/*//if snake should go through wall
-	else if (fx > x && canGo(left, x, y)) {
-		d = left;
-		turn = false;
-	} else if (fx < x && canGo(right, x, y)) {
-		d = right;
-		turn = false; 
-	} else if (fy > y && canGo(up, x, y)) {
-		d = up;
-		turn = false;
-	} else if (fy < y && canGo(down, x, y)) {
-		d = down;
-		turn = false;
-	}*/
-
-	//if none of the good options are viable
-	else if (canGo(left, x, y) && x != 0) { 
-		turn = false;
-		d = left;
-	} else if (canGo(right, x, y) && x != COLS-1) { 
-		turn = false;
-		d = right;
-	} else if (canGo(up, x, y) && y != 0) {
-		turn = false;
-		d = up;
-	} else if (canGo(down, x, y) && y != ROWS-1) {
-		turn = false;
-		d = down;
-	}
-
-	//you can go through walls now
-	else if (canGo(left, x, y)) { 
-		turn = false;
-		d = left;
-	} else if (canGo(right, x, y)) { 
-		turn = false;
-		d = right;
-	} else if (canGo(up, x, y)) {
-		turn = false;
-		d = up;
-	} else if (canGo(down, x, y)) {
-		turn = false;
-		d = down;
-	}
-
-	//if death is invetible
-	else {
-		console.log("left: " + getBestDir(left, x, y));
-		console.log("right: " + getBestDir(right, x, y));
-		console.log("up: " + getBestDir(up, x, y));
-		console.log("down: " + getBestDir(down, x, y));
-
-		if (!gameOver((COLS+x-1)%COLS, y)) { 
-			turn = false;
-			d = left;
-		} else if (!gameOver((x+1)%COLS, y)) { 
-			turn = false;
-			d = right;
-		} else if (!gameOver(x, (ROWS+y-1)%ROWS)) { 
-			turn = false;
-			d = up;
-		} else if (!gameOver(x, (y+1)%ROWS)) { 
-			turn = false;
-			d = down;
-		} 
-	}
-
+function clearGrid (){
 	for (var i = 0; i < COLS; i++) {
 		for (var j = 0; j < COLS; j++) {
 			if (at(MARKED, i, j)) grid.set(EMPTY, i, j);
 		}
 	}
-
-	snake[0].direction = d;
-	snake[0].last.x = newPosition(SNAKE, snake[0].direction, x, y).x;
-	snake[0].last.y = newPosition(SNAKE, snake[0].direction, x, y).y;
 }
 
-function getBestDir(dir, x, y) {
+function getBestDir() {
+	var l = mostOptions(left, sx, sy);
+	clearGrid();
+	var r = mostOptions(right, sx, sy);
+	clearGrid();
+	var u = mostOptions(up, sx, sy);
+	clearGrid();
+	var dw = mostOptions(down, sx, sy);
+	clearGrid();
+
+	var max = Math.max(l, r, u ,dw);
+
+	if (max == l) return left;
+	if (max == r) return right;
+	if (max == u) return up;
+	if (max == dw) return down;
+}
+
+function mostOptions(dir, x, y) {
 	if (dir == left) {
 		x = x-1; 
 	} else if (dir == right) {
@@ -200,33 +99,32 @@ function getBestDir(dir, x, y) {
 	}
 
 	if (x > COLS - 1) { 
-		if (!gameOver(0, y)) return 1;
-		else return 0;
+		x = 0;
 	} else if (x < 0) { 
-		if (!gameOver(COLS-1, y)) return 1;
-		else return 0;
+		x = COLS-1;
 	} else if (y > ROWS - 1) {
-		if (!gameOver(x, 0)) return 1;
-		else return 0;
+		y = 0;
 	} else if (y < 0) { 
-		if (!gameOver(x, ROWS-1)) return 1;
-		else return 0;
+		y = ROWS-1;
 	}
 
 	if (gameOver(x, y) || at(MARKED, x, y)) {
 		return 0;
 	}
 
-	if (at(WALL, x, y) || (at(FRUIT, x, y) && (x != fruit[0].x || y != fruit[0].y))) { 
-		return 1;
-	}
-
-	if (!at(BOMB, x, y) && !at(SNAKE, x, y) && !at(HEAD, x, y) && !at(FRUIT, x, y)) grid.set(MARKED, x, y);
-
-	return 1 + (canGo(left, x, y) + canGo(right, x, y) + canGo(up, x, y) + canGo(down, x, y))
+	if (at(EMPTY, x, y)) grid.set(MARKED, x, y);
+	
+	return 1 + mostOptions(left, x, y) + mostOptions(right, x, y) + mostOptions(up, x, y) + mostOptions(down, x, y);
 }
 
-function canGo(dir, x, y){
+function canGo(dir, x, y) {
+	can = notBoxedIn(dir, x, y);
+	clearGrid();
+
+	return can;
+}
+
+function notBoxedIn(dir, x, y){
 	if (dir == left) {
 		x = x-1; 
 	} else if (dir == right) {
@@ -257,5 +155,5 @@ function canGo(dir, x, y){
 
 	if (!at(BOMB, x, y) && !at(SNAKE, x, y) && !at(HEAD, x, y) && !at(FRUIT, x, y)) grid.set(MARKED, x, y);
 
-	return (canGo(left, x, y) || canGo(right, x, y) || canGo(up, x, y) || canGo(down, x, y))
+	return (notBoxedIn(left, x, y) || notBoxedIn(right, x, y) || notBoxedIn(up, x, y) || notBoxedIn(down, x, y))
 }

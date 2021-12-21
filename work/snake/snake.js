@@ -84,7 +84,7 @@ function loop() {
 
 function init() {
 	frames = score = taken = 0, fruitvalue = 250;
-	COLS = ROWS = 26, snake_length = 4;
+	COLS = ROWS = 26, snake_length = snakecount = 4;
 	bombs = [], missiles = [], fruit = [], emptycells = [];
 	reset = false, gamecounter++;
 
@@ -139,7 +139,16 @@ function update() {
 			if (at(FRUIT, s.last.x, s.last.y)) collectedFruit(s.last.x, s.last.y, i);
 
 			var tail = s.remove();
-			if (!infinite && !at(WALL, tail.x, tail.y)) set(1, EMPTY, tail.x, tail.y);
+			if (!infinite && !at(WALL, tail.x, tail.y)) { 
+				console.log(emptycells.length);
+				if (snakecount > 0) { 
+					set(1, EMPTY, tail.x, tail.y, true);
+					snakecount--;
+				} else {
+					set(1, EMPTY, tail.x, tail.y);
+				}
+
+			}
 			set(1, SNAKE+i, s.last.x, s.last.y);
 			s.insert(s.last.x, s.last.y);
 		}
@@ -197,7 +206,7 @@ function draw() {
 	}
 }
 
-function set(num, value, a, b, isOld) {
+function set(num, value, a, b, isOld, moving) {
 	for (var count = 0; count < num; count++) {
 		if ((a == null || b == null) || num > 1) {
 			do { var randpos = Math.round(Math.random()*(emptycells.length-1));
@@ -208,11 +217,11 @@ function set(num, value, a, b, isOld) {
 			a = emptycells[randpos].x;
 			b = emptycells[randpos].y;
 		}
-
 		if (value == FRUIT || value == BOMB || value == MISSILE || value == EMPTY)
-			if (isOld == null) getAll(value).push({direction:getDirection(value), x:a, y:b});
-
+			if (!at(value, a, b) && isOld == null) getAll(value).push({direction:getDirection(value), x:a, y:b});
+			
 		if (value != EMPTY && at(EMPTY, a, b)) emptycells.splice(emptycells.findIndex(cell => cell.x === a && cell.y === b), 1);
+
 		grid.set(value, a, b);
 	}
 }
@@ -283,7 +292,7 @@ function timeToMove(object) {
 
 	else if (object == BOMB) {
 		if (frog) return (frames+2)%5 == 0 && frames%100 > 30 && frames%100 < 60;
-		return ((frames+2)%20 == 0); 
+		return ((frames+2)%20 == 0);
 	} else if (object == FRUIT) {
 		if (frog) return frames%4 == 0 && frames%100 > 30 && frames%100 < 60;
 		return frames%4 == 0;
@@ -385,6 +394,7 @@ function lengthenSnake(tail, growth_rate) {
 	} 
 
 	snake_length += growth_rate;
+//	snakecount += growth_rate;
 }
 
 function checkHighScores() {
