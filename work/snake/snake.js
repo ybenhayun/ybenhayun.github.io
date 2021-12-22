@@ -114,7 +114,7 @@ function initSnakes() {
 			body = CLONE;
 		} else body = SNAKE;
 
-		var sp = {x:ROWS-1, y:Math.round(Math.random()*COLS-1)};
+		var sp = {x:0, y:Math.round(Math.random()*COLS-1)};
 		snake[s].init(right, sp.x, sp.y);
 		for (var i = 0; i < snake_length; i++) snake[s].insert(sp.x, sp.y);	
 	}
@@ -138,16 +138,16 @@ function update() {
 
 			if (at(FRUIT, s.last.x, s.last.y)) collectedFruit(s.last.x, s.last.y, i);
 
-			var tail = s.remove();
-			if (!infinite && !at(WALL, tail.x, tail.y)) { 
-				console.log(emptycells.length);
-				if (snakecount > 0) { 
-					set(1, EMPTY, tail.x, tail.y, true);
-					snakecount--;
-				} else {
-					set(1, EMPTY, tail.x, tail.y);
+			if (!infinite) { 
+				var tail = s.remove();
+				if (!at(WALL, tail.x, tail.y)) {
+					if (snakecount > 0) { 
+						set(1, EMPTY, tail.x, tail.y, true);
+						snakecount--;
+					} else {
+						set(1, EMPTY, tail.x, tail.y);
+					}
 				}
-
 			}
 			set(1, SNAKE+i, s.last.x, s.last.y);
 			s.insert(s.last.x, s.last.y);
@@ -184,6 +184,9 @@ function draw() {
 	var tw = canvas.width/grid.width;
 	var th = canvas.height/grid.height;
 
+	ctx.fillStyle = "#ededed";
+	ctx.fillRect(0, 0, canvas.width, canvas.height)
+
 	for (var x = 0; x < grid.width; x++) {
 		for (var y = 0; y < grid.height; y++) {
 			if (at(WALL, x ,y)) ctx.fillStyle = "#2b2b2b";
@@ -200,9 +203,35 @@ function draw() {
 				else if (at(CLONE, x, y)) ctx.fillStyle = "gray";
 			}
 
-			ctx.fillRect(x*tw, y*th, tw, th);
+			if (at(WALL, x, y)) {
+				 if (x <= (grid.width-COLS)/2 || y <= (grid.height-ROWS)/2) ctx.fillRect(x*tw, y*th, tw, th);
+				 else ctx.fillRect(x*tw, y*th, tw, th);
+			}
+			else if ((!at(SNAKE, x, y) && !at(CLONE, x, y)) || at(HEAD, x, y) || at(CLONEHEAD, x, y)) ctx.fillRect(x*tw+1, y*th+1, tw-2, th-2);
+
+			else {
+				if (at(SNAKE, x, y)) drawSnakes(x , y, tw, th, 0);
+				else if (at(CLONE, x, y)) drawSnakes(x, y, th, tw, 1);
+			}
+
 			ctx.stroke();
 		}
+	}
+}
+
+function drawSnakes(x, y, tw, th, i) {
+	var index = snake[i].s_body.findIndex(cell => cell.x === x && cell.y === y)
+	var sx = snake[i].s_body[index].x, sy = snake[i].s_body[index].y;
+	var nx = snake[i].s_body[index-1].x, ny = snake[i].s_body[index-1].y;
+
+	if (sx == nx) {
+		if ((sy - ny == 1) || (ny - sy > 1)) ctx.fillRect(x*tw+1, y*th-1, tw-2, th);
+		else if ((ny - sy == 1) || (sy - ny > 1)) ctx.fillRect(x*tw+1, y*th+1, tw-2, th);
+	} else if (sy == ny) {
+		if ((sx - nx == 1) || (nx - sx > 1)) ctx.fillRect(x*tw-1, y*th+1, tw, th-2);
+		else if ((nx - sx == 1) || (sx - nx > 1)) ctx.fillRect(x*tw+1, y*th+1, tw, th-2);
+	} else {
+		ctx.fillRect(x*tw+1, y*th+1, tw-2, th-2);
 	}
 }
 
@@ -263,11 +292,11 @@ function moveClone() {
 		else snake[1].direction = left
 	} 
 
-	if (snake[1].direction == oppDirection(lastdir)) snake[1].direction = (snake[1].direction+1)%4  //cant turn 180º
+	if (snake[1].direction == oppDirection(lastdir)) snake[1].direction = (snake[1].direction+1)%4;  //cant turn 180º
 
 	snake[1].last.x = newPosition(CLONE, snake[1].direction, snake[1].last.x, snake[1].last.y).x
-	snake[1].last.y = newPosition(CLONE, snake[1].direction, snake[1].last.x, snake[1].last.y).y
-}
+	snake[1].last.y = newPosition(CLONE, snake[1].direction, snake[1].last.x, snake[1].last.y).y;
+};
 
 function newPosition(value, direction, x, y) {
 	if (direction == left) x--;
@@ -328,10 +357,10 @@ function collision(value, array, i) {
 }
 
 function resetBoard() {
-	if (frames > 50) snake[0].s_body.forEach(function(s) { if (!at(FRUIT, s.x, s.y) && !at(WALL, s.x, s.y)) set(1, SNAKE, s.x, s.y, true) });
+	snake[0].s_body.forEach(function(s) { if (!at(FRUIT, s.x, s.y) && !at(WALL, s.x, s.y)) set(1, SNAKE, s.x, s.y, true) });
 	fruit.forEach(function(f) { if (!at(BOMB, f.x, f.y)) set(1, FRUIT, f.x, f.y, true) });
 	bombs.forEach(function(b) { if (!at(SNAKE, b.x, b.y) || movebombs) set(1, BOMB, b.x, b.y, true) });	
-	if (clone && frames > 100) snake[1].s_body.forEach(function(c) { set(1, CLONE, c.x, c.y, true) });
+	if (clone) snake[1].s_body.forEach(function(c) { set(1, CLONE, c.x, c.y, true) });
 }
 
 function getGameAttributes() {
@@ -366,8 +395,10 @@ function gameOver(x, y){
 
 function at(value, x, y) {
 	if (value == HEAD) return (x == snake[0].last.x && y == snake[0].last.y);
-	if (value == CLONEHEAD) return (x == snake[1].last.x && y == snake[1].last.y);
-	return grid.get(x, y) == value;
+	if (value == CLONEHEAD) {
+		if (!clone) return false;
+		return (x == snake[1].last.x && y == snake[1].last.y);
+	} return grid.get(x, y) == value;
 }
 
 function isGame(gamelist) {
@@ -394,7 +425,6 @@ function lengthenSnake(tail, growth_rate) {
 	} 
 
 	snake_length += growth_rate;
-//	snakecount += growth_rate;
 }
 
 function checkHighScores() {
