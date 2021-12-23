@@ -390,6 +390,7 @@ function gameReset() {
 }
 
 function gameOver(x, y){
+	//if (x == snake[0].s_body.at(-1).x && y == snake[0].s_body.at(-1).y) return false;
 	return (at(SNAKE, x, y) || at(BOMB, x, y));
 }
 

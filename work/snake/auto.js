@@ -1,7 +1,9 @@
 var turn = false;
+var timer = 0;
 
 function moveSnake() {
-	a = emptycells.length;
+	var nodirection = false;
+	var max = snake_length/2;
 	snakespeed = 1; //speed up snake for snakebot
 	sx = snake[0].last.x;
 	sy = snake[0].last.y;
@@ -9,19 +11,39 @@ function moveSnake() {
 	fx = fruit[0].x;
 	fy = fruit[0].y;
 
+	outer:
+	for (var i = max; i >= 1; i--) {
+		if (atLevel() && ((canGo(towards(), sx, sy, i)  && getsFruit(towards(), sx, sy)) || (canGo(away(), sx, sy, i)  && getsFruit(away(), sx, sy))))  {
+			if (canGo(towards(), sx, sy, i)) sd = towards();
+			else sd = away();
+			turn = false;
+			break outer;
+		}  else if (headingTowards() && canGo(sd, sx, sy, i) && getsFruit(sd, sx, sy)) {
+			turn = false;
+			break outer;
+		} else if (headingAway() && canGo(nextDir(), sx, sy, i) && getsFruit(nextDir(), sx, sy)) {
+			sd = nextDir();
+			turn = true;
+			break outer;
+		} else if (headingTowards() && canGo(nextDir(), sx, sy, i) && getsFruit(nextDir(), sx, sy) && turn) {
+			sd = nextDir();
+			turn = false;
+			break outer;
+		} else {
+			var p = 0; //Math.round(Math.random()*3);
+			for (var j = p; j <= p+3; j++) {
+				if (canGo(j%4, sx, sy, i)) {
+					sd = j%4;
+					turn = false;
+					break outer;
+				}
+				if (i == 1 && j == p+3) nodirection = true;
+			}
+		}
+	}
 
-	if (atLevel() && canGo(towards(), sx, sy) && leavesMost(towards())) {
-		sd = towards();
-		turn = false;
-	}  else if (headingTowards() && canGo(sd, sx, sy) && !turn && leavesMost(sd)) {
-		turn = false;
-	} else if (headingAway() && canGo(nextDir(), sx, sy) && leavesMost(nextDir())) {
-		sd = nextDir();
-		turn = true;mostOptions
-	} else if (headingTowards() && canGo(nextDir(), sx, sy) && turn && leavesMost(nextDir())) {
-		sd = nextDir();
-		turn = false;
-	} else {
+	if (nodirection) {
+		console.log('dying');
 		sd = getBestDir();
 		turn = false;
 	}
@@ -31,17 +53,7 @@ function moveSnake() {
 	snake[0].direction = sd;
 	snake[0].last.x = newPosition(SNAKE, snake[0].direction, sx, sy).x;
 	snake[0].last.y = newPosition(SNAKE, snake[0].direction, sx, sy).y;
-}
 
-function leavesMost(dir) {
-	var cells = mostOptions(dir, sx, sy);
-	clearGrid();
-
-	if (cells > .80*emptycells.length) return true;
-
-	else {
-		return false;
-	}
 }
 
 function getBestDir() {
@@ -62,52 +74,6 @@ function getBestDir() {
 	if (max == dw) return down;
 }
 
-function longestPath(dir, x, y) {
-	if (dir == left) x = x-1; 
-	else if (dir == right) x = x+1;
-	else if (dir == up) y = y-1;
-	else if (dir == down) y = y+1;
-
-	if (x > COLS - 1) x = 0;
-	else if (x < 0) x = COLS-1;
-	else if (y > ROWS - 1) y = 0;
-	else if (y < 0) y = ROWS-1;
-
-	var l = 1 + toThe(left, x, y);
-	clearGrid();
-	var r = 1 + toThe(right, x, y);
-	clearGrid();
-	var u = 1 + toThe(up, x, y);
-	clearGrid();
-	var dw = 1 + toThe(down, x, y);
-	clearGrid();
-	
-	return Math.max(l, r, u, dw);
-}
-
-function toThe(dir, x, y) {
-	if (dir == left) x = x-1; 
-	else if (dir == right) x = x+1;
-	else if (dir == up) y = y-1;
-	else if (dir == down) y = y+1;
-
-	if (x > COLS - 1) x = 0;
-	else if (x < 0) x = COLS-1;
-	else if (y > ROWS - 1) y = 0;
-	else if (y < 0) y = ROWS-1;
-
-	if (gameOver(x, y) || at(MARKED, x, y)) return 0;
-	if (at(EMPTY, x, y) || at(FRUIT, x, y)) grid.set(MARKED, x, y);
-
-	var l = 1 + toThe(left, x, y);
-	var r = 1 + toThe(right, x, y);
-	var u = 1 + toThe(up, x, y);
-	var dw = 1 + toThe(down, x, y);
-	
-	return Math.max(l, r, u, dw);
-}
-
-
 function mostOptions(dir, x, y) {
 	if (dir == left) x = x-1; 
 	else if (dir == right) x = x+1;
@@ -125,32 +91,58 @@ function mostOptions(dir, x, y) {
 	return 1 + mostOptions(left, x, y) + mostOptions(right, x, y) + mostOptions(up, x, y) + mostOptions(down, x, y);
 }
 
-function canGo(dir, x, y) {
-	can = notBoxedIn(dir, x, y);
+function canGo(dir, x, y, min) {
+	can = getsTail(dir, x, y, 1, min);
 	clearGrid();
 
 	return can;
 }
 
-function notBoxedIn(dir, x, y){
+function getsFruit(dir, x, y) {
+	getfruit = fruitpath(dir, x, y);
+	clearGrid();
+
+	return getfruit;
+}
+
+function fruitpath(dir, x, y) {
 	if (dir == left) x = x-1; 
 	else if (dir == right) x = x+1;
 	else if (dir == up) y = y-1;
 	else if (dir == down) y = y+1;
 	
+	if (x > COLS - 1) x = 0;
+	else if (x < 0)  x = COLS-1;
+	else if (y > ROWS - 1) y = 0;
+	else if (y < 0) y = ROWS-1;
 
-	if (x > COLS - 1) return !gameOver(0, y);
-	else if (x < 0)  return !gameOver(COLS-1, y);
-	else if (y > ROWS - 1) return !gameOver(x, 0);
-	else if (y < 0)  return !gameOver(x, ROWS-1);
-	
+	if (at(FRUIT, x, y)) return true;
 
 	if (gameOver(x, y) || at(MARKED, x, y)) return false;
-	if (at(WALL, x, y) || (at(FRUIT, x, y) && (x != fruit[0].x || y != fruit[0].y))) return true;
 
-	if (!at(BOMB, x, y) && !at(SNAKE, x, y) && !at(HEAD, x, y) && !at(FRUIT, x, y)) grid.set(MARKED, x, y);
+	grid.set(MARKED, x, y);
 
-	return (notBoxedIn(left, x, y) || notBoxedIn(right, x, y) || notBoxedIn(up, x, y) || notBoxedIn(down, x, y))
+	return fruitpath(left, x, y) || fruitpath(right, x, y) || fruitpath(up, x, y) || fruitpath(down, x, y);
+}
+
+function getsTail(dir, x, y, count, min) {
+	if (dir == left) x = x-1; 
+	else if (dir == right) x = x+1;
+	else if (dir == up) y = y-1;
+	else if (dir == down) y = y+1;
+	
+	if (x > COLS - 1) x = 0;
+	else if (x < 0)  x = COLS-1;
+	else if (y > ROWS - 1) y = 0;
+	else if (y < 0) y = ROWS-1;
+
+	if (x == snake[0].s_body.at(-1).x && y == snake[0].s_body.at(-1).y && count > min) return true;
+
+	if (gameOver(x, y) || at(MARKED, x, y)) return false;
+
+	grid.set(MARKED, x, y);
+
+	return getsTail(left, x, y, count+1, min) || getsTail(right, x, y, count+1, min) || getsTail(up, x, y, count+1, min) || getsTail(down, x, y, count+1, min);
 }
 
 function atLevel() {
@@ -170,6 +162,10 @@ function towards() {
 	if (fx < sx) return left;
 	if (fy > sy) return down;
 	if (fy < sy) return up;
+}
+
+function away() {
+	return (towards()+2)%4
 }
 
 function nextDir() {
