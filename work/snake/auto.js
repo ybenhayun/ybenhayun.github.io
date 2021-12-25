@@ -3,13 +3,16 @@ var timer = 0;
 
 function moveSnake() {
 	var nodirection = false;
-	var max = snake_length/2;
+	var max = 10;
+
 	snakespeed = 1; //speed up snake for snakebot
-	sx = snake[0].last.x;
-	sy = snake[0].last.y;
+	sx = snake[0].head.x;
+	sy = snake[0].head.y;
 	sd = snake[0].direction;
 	fx = fruit[0].x;
 	fy = fruit[0].y;
+
+	if (timer > 0) timer--;
 
 	outer:
 	for (var i = max; i >= 1; i--) {
@@ -51,9 +54,10 @@ function moveSnake() {
 	clearGrid();
 
 	snake[0].direction = sd;
-	snake[0].last.x = newPosition(SNAKE, snake[0].direction, sx, sy).x;
-	snake[0].last.y = newPosition(SNAKE, snake[0].direction, sx, sy).y;
-
+	snake[0].head.x = newPosition(SNAKE, snake[0].direction, sx, sy).x;
+	snake[0].head.y = newPosition(SNAKE, snake[0].direction, sx, sy).y;
+	
+	if (at(FRUIT, snake[0].s_body[0].x, snake[0].s_body[0].y)) timer += snake_length;
 }
 
 function getBestDir() {

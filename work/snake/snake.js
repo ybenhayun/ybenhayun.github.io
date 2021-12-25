@@ -33,7 +33,8 @@ grid = {
 
 snake = [{
 	direction: null,
-	last: null,		
+	head: null,	
+	tail: null, 	
 	s_body: null,	
 
 	init: function(d, x, y) {
@@ -42,10 +43,17 @@ snake = [{
 		this.insert(x, y);
 	},
 
+	atend: function(x, y) {
+		this.s_body.push({x:x, y:y});
+		this.head = this.s_body[0];
+		this.tail = this.s_body.at(-1);
+	},
+
 	insert: function(x, y) {
 		// unshift prepends an element to an array
 		this.s_body.unshift({x:x, y:y});
-		this.last = this.s_body[0];
+		this.head = this.s_body[0];
+		this.tail = this.s_body.at(-1);
 	},
 	remove: function() {
 		return this.s_body.pop();
@@ -83,6 +91,7 @@ function loop() {
 }
 
 function init() {
+	beammeup = false;
 	frames = score = taken = 0, fruitvalue = 250;
 	COLS = ROWS = 26, snake_length = snakecount = 4;
 	bombs = [], missiles = [], fruit = [], emptycells = [];
@@ -129,28 +138,22 @@ function update() {
 	if (reset) return init();
 
 	snake.forEach(function(s, i) {
+		console.log(emptycells.length);
 		if ((timeToMove(SNAKE) && i == 0) || (timeToMove(CLONE) && i == 1)) {
 			move(SNAKE+i);
-			if (gameOver(s.last.x, s.last.y) && i == 0 || reset) {
+			if (gameOver(s.head.x, s.head.y) && i == 0 || reset) {
 				gameReset();
 				return init();
 			}
 
-			if (at(FRUIT, s.last.x, s.last.y)) collectedFruit(s.last.x, s.last.y, i);
+			if (at(FRUIT, s.head.x, s.head.y)) collectedFruit(s.head.x, s.head.y, i);
 
 			if (!infinite) { 
 				var tail = s.remove();
-				if (!at(WALL, tail.x, tail.y)) {
-					if (snakecount > 0) { 
-						set(1, EMPTY, tail.x, tail.y, true);
-						snakecount--;
-					} else {
-						set(1, EMPTY, tail.x, tail.y);
-					}
-				}
+				if (!at(WALL, tail.x, tail.y)) set(1, EMPTY, tail.x, tail.y);
 			}
-			set(1, SNAKE+i, s.last.x, s.last.y);
-			s.insert(s.last.x, s.last.y);
+			set(1, SNAKE+i, s.head.x, s.head.y);
+			s.insert(s.head.x, s.head.y);
 		}
 	});
 	if (tick && frames%50 == 0 && fruitvalue < 175) set(1, BOMB);
@@ -235,11 +238,11 @@ function drawSnakes(x, y, tw, th, i) {
 	}
 }
 
-function set(num, value, a, b, isOld, moving) {
+function set(num, value, a, b, isOld) {
 	for (var count = 0; count < num; count++) {
 		if ((a == null || b == null) || num > 1) {
 			do { var randpos = Math.round(Math.random()*(emptycells.length-1));
-			} while ((emptycells[randpos].x == snake[0].last.x || emptycells[randpos].y == snake[0].last.y)
+			} while (((emptycells[randpos].x == snake[0].head.x || emptycells[randpos].y == snake[0].head.y) && value == BOMB)
 					|| (walls && (emptycells[randpos].x <= (grid.width-COLS)/2 || emptycells[randpos].x >= (COLS-1+(grid.width-COLS)/2) 
 					|| emptycells[randpos].y <= (grid.height-ROWS)/2 || emptycells[randpos].y >= (ROWS-1+(grid.height-ROWS)/2))));
 					//dont place on same cell as snake head or on edges if playing w/ walls
@@ -256,7 +259,10 @@ function set(num, value, a, b, isOld, moving) {
 }
 
 function move(object) {
-	if (object == SNAKE) moveSnake();
+	if (object == SNAKE) {
+		if (beammeup) teleportSnake();
+		else moveSnake();
+	}
 	else if (object == CLONE) moveClone();
 	else {
 		getAll(object).forEach(function(item, i, objArray) {
@@ -276,26 +282,27 @@ function move(object) {
 }
 
 function moveClone() {
-	var lastdir = snake[1].direction;
+	var headdir = snake[1].direction;
+	if (frames < 50) snake[1].direction = right;
 
-	if (fruit[0].y < snake[1].last.y && frames > 30) {
-		if (Math.abs(fruit[0].y - snake[1].last.y) < ROWS/2 && fruit[0].y != snake[1].last.y) snake[1].direction = up;
+	else if (fruit[0].y < snake[1].head.y && frames > 30) {
+		if (Math.abs(fruit[0].y - snake[1].head.y) < ROWS/2 && fruit[0].y != snake[1].head.y) snake[1].direction = up;
 		else snake[1].direction = down;
-	} else if (fruit[0].y > snake[1].last.y && frames > 30) {
-		if (Math.abs(fruit[0].y - snake[1].last.y) < ROWS/2 && fruit[0].y != snake[1].last.y) snake[1].direction = down;
+	} else if (fruit[0].y > snake[1].head.y && frames > 30) {
+		if (Math.abs(fruit[0].y - snake[1].head.y) < ROWS/2 && fruit[0].y != snake[1].head.y) snake[1].direction = down;
 		else snake[1].direction = up;
-	} else if (fruit[0].x < snake[1].last.x) {
-		if (Math.abs(fruit[0].x - snake[1].last.x) < COLS/2 && fruit[0].x != snake[1].last.x) snake[1].direction = left;
+	} else if (fruit[0].x < snake[1].head.x) {
+		if (Math.abs(fruit[0].x - snake[1].head.x) < COLS/2 && fruit[0].x != snake[1].head.x) snake[1].direction = left;
 		else snake[1].direction = right;
-	} else if (fruit[0].x > snake[1].last.x) { 
-		if (Math.abs(fruit[0].x - snake[1].last.x) < COLS/2 && fruit[0].x != snake[1].last.x) snake[1].direction = right;
+	} else if (fruit[0].x > snake[1].head.x) { 
+		if (Math.abs(fruit[0].x - snake[1].head.x) < COLS/2 && fruit[0].x != snake[1].head.x) snake[1].direction = right;
 		else snake[1].direction = left
 	} 
 
-	if (snake[1].direction == oppDirection(lastdir)) snake[1].direction = (snake[1].direction+1)%4;  //cant turn 180º
+	if (snake[1].direction == oppDirection(headdir)) snake[1].direction = (snake[1].direction+1)%4;  //cant turn 180º
 
-	snake[1].last.x = newPosition(CLONE, snake[1].direction, snake[1].last.x, snake[1].last.y).x
-	snake[1].last.y = newPosition(CLONE, snake[1].direction, snake[1].last.x, snake[1].last.y).y;
+	snake[1].head.x = newPosition(CLONE, snake[1].direction, snake[1].head.x, snake[1].head.y).x
+	snake[1].head.y = newPosition(CLONE, snake[1].direction, snake[1].head.x, snake[1].head.y).y;
 };
 
 function newPosition(value, direction, x, y) {
@@ -333,11 +340,12 @@ function collectedFruit(x, y, isClone) {
 	playSound();
 	if (isClone != true) { 
 		updateScore();
-		lengthenSnake({x:x, y:y}, 2);
+		lengthenSnake({x:snake[0].tail.x, y:snake[0].tail.y}, 2);
+		i--;
 	}
 
 	if (walls && taken%4 == 0) shrinkBoard();
-	if (portal) teleportSnake();
+	if (portal) beammeup = true;
 	if (bomb || isClone) set(1, BOMB, x, y);
 
 	checkHighScores();
@@ -347,9 +355,9 @@ function collectedFruit(x, y, isClone) {
 function collision(value, array, i) {
 	if (value == MISSILE) {
 		playSound();
-		lengthenSnake({x:snake[0].last.x, y:snake[0].last.y}, 2);
+		lengthenSnake({x:snake[0].tail.x, y:snake[0].tail.y}, 2);
 		array.splice(i, 1);
-	} else if (value == FRUIT) collectedFruit(snake[0].last.x, snake[0].last.y);
+	} else if (value == FRUIT) collectedFruit(snake[0].tail.x, snake[0].tail.y);
 	else if (value == BOMB) {
 		reset = true;
 		gameReset();
@@ -389,16 +397,15 @@ function gameReset() {
 	if (!confirm("Press OK to play again. Press cancel to pick another level.")) location.reload();
 }
 
-function gameOver(x, y){
-	//if (x == snake[0].s_body.at(-1).x && y == snake[0].s_body.at(-1).y) return false;
-	return (at(SNAKE, x, y) || at(BOMB, x, y));
+function gameOver(x, y) {
+	return at(SNAKE, x, y) || at(BOMB, x, y);
 }
 
 function at(value, x, y) {
-	if (value == HEAD) return (x == snake[0].last.x && y == snake[0].last.y);
+	if (value == HEAD) return (x == snake[0].head.x && y == snake[0].head.y);
 	if (value == CLONEHEAD) {
 		if (!clone) return false;
-		return (x == snake[1].last.x && y == snake[1].last.y);
+		return (x == snake[1].head.x && y == snake[1].head.y);
 	} return grid.get(x, y) == value;
 }
 
@@ -422,7 +429,7 @@ function getAll(value) {
 function lengthenSnake(tail, growth_rate) {
 	for (var i = 0; i < growth_rate; i++){			
 		set(1, SNAKE, tail.x, tail.y);
-		snake[0].insert(tail.x, tail.y);
+		snake[0].atend(tail.x, tail.y);
 	} 
 
 	snake_length += growth_rate;
@@ -450,10 +457,11 @@ function oppDirection(direction) {
 }
 
 function teleportSnake() {
-	set(1, SNAKE, fruit[0].x, fruit[0].y);
-	snake[0].last.x = fruit[0].x;
-	snake[0].last.y = fruit[0].y;
-	fruit.pop();
+	set(1, EMPTY, fruit[0].x, fruit[0].y);   //remove this and youll get fruit forever
+	snake[0].head.x = fruit[0].x;
+	snake[0].head.y = fruit[0].y;
+	fruit.splice(0, 1);
+	beammeup = false;
 }
 
 function getGrade() {
