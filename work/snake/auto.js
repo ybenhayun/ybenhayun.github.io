@@ -192,4 +192,5 @@ function clearGrid (){
 	}
 
 	grid.set(FRUIT, fx, fy);
+	//resetBoard();
 }

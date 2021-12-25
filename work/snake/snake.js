@@ -357,8 +357,10 @@ function collision(value, array, i) {
 		playSound();
 		lengthenSnake({x:snake[0].tail.x, y:snake[0].tail.y}, 2);
 		array.splice(i, 1);
-	} else if (value == FRUIT) collectedFruit(snake[0].tail.x, snake[0].tail.y);
-	else if (value == BOMB) {
+	} else if (value == FRUIT) { 
+		collectedFruit(snake[0].head.x, snake[0].head.y);
+		set(1, SNAKE, snake[0].head.x, snake[0].head.y);
+	} else if (value == BOMB) {
 		reset = true;
 		gameReset();
 	}
