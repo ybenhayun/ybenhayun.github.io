@@ -138,7 +138,6 @@ function update() {
 	if (reset) return init();
 
 	snake.forEach(function(s, i) {
-		console.log(emptycells.length);
 		if ((timeToMove(SNAKE) && i == 0) || (timeToMove(CLONE) && i == 1)) {
 			move(SNAKE+i);
 			if (gameOver(s.head.x, s.head.y) && i == 0 || reset) {
