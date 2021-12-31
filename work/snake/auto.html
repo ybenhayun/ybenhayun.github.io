@@ -5,17 +5,16 @@
 	<link rel = "stylesheet" type = "text/css" href = "snake.css">
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   	<script type = "text/javascript" src = "start.js"></script>
-	<script type = "text/javascript" src = "auto.js"></script>
 	<script type = "text/javascript" src = "snake.js"></script>
+  	<script type = "text/javascript" src = "auto.js"></script>
+	<audio preload id = "fruitsound"><source src = "boop.wav" type = "audio/wav"></audio>
 	<title>Snake!</title>
 </head>
 <body>
-	<div id = "games">
+	<div id = "container">
+		<div id = "games"></div>
+		<canvas id = "grid"></canvas>
+		<div id = "score"><span id = "overview"></span></div>
 	</div>
-	<audio preload id = "fruitsound">
-		<source src = "boop.wav" type = "audio/wav">
-	</audio>
-	<canvas id = "grid"></canvas>
-	<div id = "score"><span id = 'overview'></span></div>
 </body>
 </html>

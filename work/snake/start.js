@@ -4,7 +4,7 @@ games = [
 	{ name: "Colorblind", score: 20, title: "Colorblind", dev: 31 },
 	{ name: "20/20_Vision", score: 18, title: "20/20 Vision", dev: 35 },
 	{ name: "Boxed_In", score: 20, title: "Closing In", dev: 37 },
-	{ name: "Infinity", score: 25, title: "And Beyond", dev: 83 },
+	{ name: "Infinity", score: 25, title: "And Beyond", dev: 90 },
 	{ name: "Movers", score: 30, title: "Track Star", dev: 28 },
 	{ name: "Portal", score: 18, title: "Portal", dev: 33 },
 	{ name: "Tick_Tock", score: 30, title: "Tick Tock", dev: 38 },
@@ -14,52 +14,56 @@ games = [
 	{ name: "Frogger", score: 15, title: "Frogger", dev: 19 },
 	{ name: "Good_Luck", score: 13, title: "Good Luck", dev: 15 },
 	{ name: "Shots_Fired", score: 12, title: "Shots Fired", dev: 27 },
-	{ name: "No_Survivors", score: 22, title: "No Survivors", dev: 12 },
+	{ name: "No_Survivors", score: 20, title: "No Survivors", dev: 12 },
 ];
 
 var text = null;
+var orig;
 
 $(document).ready(function(){
 	readDescriptions();
 	createButtons();
 	unlockGames();
-
-	if (text != null) description = text[0];
-	else description = "<span id = 'inst'><br>Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!</span>";
-
-	$("#overview").html(description);
+	original();
 
 	$("button").mouseover(
 		function(){
-			$('#overview').empty();
-
-			if (text != null) description = text[0] + "<span id = 'descr'> <br><span id = 'name'>" + 
-			games[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))].title.toUpperCase() + "</span>: " + text[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))+1];
-			else description = "<span id = 'inst'><br>You're in local mode!  This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>" + "<span id = 'descr'><br><span id = 'name'> NAME:</span> This is where your description would go!</span>";
+			if (text != null) $("#descr").html("<span class = 'name'>" + games[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))].title.toUpperCase() + "</span>: " + text[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))+1]);
+			else $("#descr").html("<span class = 'name'> NAME</span>: This is where your description of your game would go if you could read! But you can't, haha!");
 
 			if (getScore($(this).attr('id')) == null) setScore($(this).attr('id'), 0);
 			if (getFruitScore($(this).attr('id')) == null) setFruitScore($(this).attr('id'), 0);
 						
-			description += "<br><span id = 'best'>HIGH SCORE: " + getScore($(this).attr('id')) + "<br> MOST FRUIT: " + getFruitScore($(this).attr('id')) + "</span>";
-			
-			if ($(this).attr('id') != games.at(-1).name)
-				if (getFruitScore($(this).attr('id')) < scoreToContinue($(this).attr('id')))
-					description += "<br><span id = 'req'> Collect " + scoreToContinue($(this).attr('id')) + " fruit to progress.</span>";
-			
-			description += "</span>"
-				
-			$("#overview").append(description);
+			$("#best").html("<p>HIGH SCORE: " + getScore($(this).attr('id')) + "<br> MOST FRUIT: " + getFruitScore($(this).attr('id')) + "</p>");
+
+			if ($(this).attr('id') != games.at(-1).name && getFruitScore($(this).attr('id')) < scoreToContinue($(this).attr('id')))
+					$("#req").html("Collect " + scoreToContinue($(this).attr('id')) + " fruit to progress.");
+			else $("#req").html("Dev Score: " + games[games.findIndex(g => g.name === $(this).attr('id'))].dev + " fruit");
 		});
+
+		$("button").mouseleave(
+			function(){
+				$("#best").empty();
+				original();
+			}
+		);
 	//localStorage.clear();   //uncomment to clear highscores
 });
+
+function original() {
+	if (text != null) description = text[0];
+	else description = "Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!";
+
+	$("#inst").html(description);
+	$("#descr").html("Place your mouse over the level you want to play to see what it's all about!");
+	$("#req").html("SNAKE by Yuval Ben-Hayun")
+}
 
 function createButtons() {
 	games.forEach(function(g) {
 		document.getElementById("games").innerHTML += "<button id = '" + g.name + 
-		"' onclick = setGame('" + g.name + "')> " + g.title + " <span class ='needed'></span></button>";
+		"' onclick = setGame('" + g.name + "')>" + g.title + "<span class ='needed'></span></button>";
 	});
-
-	games.forEach(function(g) { scoreNeeded(g.name) });
 }
 
 function readDescriptions() {
@@ -80,15 +84,14 @@ function readDescriptions() {
 
 function unlockGames() {
 	for (i = 0; i < games.length-1; i++) {
-		if (getFruitScore(games[i].name) >= games[i+1].score) document.getElementById(games[i+1].name).disabled = false;
-		else document.getElementById(games[i+1].name).disabled = true;
+		if (getFruitScore(games[i].name) >= games[i+1].score) { 
+			document.getElementById(games[i+1].name).disabled = false;
+			document.getElementById(games[i+1].name).innerHTML =  games[i+1].title;
+		} else { 
+			document.getElementById(games[i+1].name).disabled = true;
+			document.getElementById(games[i+1].name).innerHTML = "LOCKED"
+		}
 	}
-}
-
-function scoreNeeded(gametype) {
-	var points = games.find(games => { return games.name === gametype }).score;
-
-	document.getElementById(gametype).children[0].innerHTML = "Locked. Collect " + points + " fruit from the previous level to progress."
 }
 
 function scoreToContinue(gametype) {

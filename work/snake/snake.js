@@ -62,6 +62,20 @@ snake = [{
 
 function setGame(game){
 	gametype = game;
+	
+	for (var i = 0; i < games.length; i++) {
+		if (games[i].name == gametype) { 
+			document.getElementById(games[i].name).style.background = "#607480";
+			document.getElementById(games[i].name).style.fontWeight = "bold";
+			document.getElementById(games[i].name).innerHTML = "* " + games[i].title + " *";
+		} else if (!document.getElementById(games[i].name).disabled) {
+			document.getElementById(games[i].name).style.background = "#485157";
+			document.getElementById(games[i].name).style.color = "#fafafa";
+			document.getElementById(games[i].name).style.fontWeight = "normal";
+			document.getElementById(games[i].name).innerHTML = games[i].title;
+		}
+	}
+
 	if (gamecounter == 0) main();
 	else init();
 }
@@ -71,7 +85,7 @@ function main() {
 	canvas.width = COLS*20;
 	canvas.height = ROWS*20;
 	ctx = canvas.getContext("2d");
-	document.body.appendChild(canvas);
+	//document.body.appendChild(canvas);
 
 	keystate = {};
 	document.addEventListener("keydown", function(evt) {
@@ -80,6 +94,23 @@ function main() {
 	document.addEventListener("keyup", function(evt) {
 		keystate[evt.keyCode] = false;
 	});
+
+	document.querySelectorAll("button").forEach(function(el) {
+		el.addEventListener("mouseover", function() {
+			console.log("mouseover " + el.id);
+			var index = games.findIndex(cell => cell.name === el.id);
+			if (text != null) document.getElementById("descr").innerHTML = "<span class = 'name'>" + games[index].title.toUpperCase() + "</span>: " + text[index+1];
+			else document.getElementById("descr").innerHTML = "This would be new text!";
+		});
+
+		el.addEventListener("mouseout", function() {
+			console.log("mouseout " + el.id);
+			var index = games.findIndex(cell => cell.name === gametype);
+			if (text != null) document.getElementById("descr").innerHTML = "<span class = 'name'>" + games[index].title.toUpperCase() + "</span>: " + text[index+1];
+			else document.getElementById("descr").innerHTML = "Back to the original!";
+		  });
+	  });
+
 	init();
 	loop();
 }
@@ -135,14 +166,14 @@ function update() {
 	if (movefruit && timeToMove(FRUIT)) move(FRUIT);
 	if (movebombs && timeToMove(BOMB)) move(BOMB);
 	if (hasmissiles && timeToMove(MISSILE)) move(MISSILE);
-	if (reset) return init();
+	if (reset) return setGame(gametype);
 
 	snake.forEach(function(s, i) {
 		if ((timeToMove(SNAKE) && i == 0) || (timeToMove(CLONE) && i == 1)) {
 			move(SNAKE+i);
 			if (gameOver(s.head.x, s.head.y) && i == 0 || reset) {
 				gameReset();
-				return init();
+				return setGame(gametype);
 			}
 
 			if (at(FRUIT, s.head.x, s.head.y)) collectedFruit(s.head.x, s.head.y, i);
@@ -150,7 +181,7 @@ function update() {
 			if (!infinite) { 
 				var tail = s.remove();
 				if (!at(WALL, tail.x, tail.y)) set(1, EMPTY, tail.x, tail.y);
-			}
+			} else snake_length++;
 			set(1, SNAKE+i, s.head.x, s.head.y);
 			s.insert(s.head.x, s.head.y);
 		}
@@ -163,21 +194,13 @@ function update() {
 function updateScoreboard() {
 	if (fruitvalue > 50) fruitvalue-=.5;
 
-	var d = "";
-	if (text != null) d += text[0];
-	else d += "<span id = 'inst'><br>You're in local mode! This would be the instructions! You're in local mode! This would be the instructions! You're in local mode! This would be the instructions!</span>"
-	
-	d += "<span id = 'descr'><br> CURRENT SCORE: " + score;
-	d += "<br> FRUIT TAKEN: " + taken;
-	d += "<br> FRUIT VALUE: " + Math.floor(fruitvalue);
-	d += "<br>SNAKE LENGTH: " + snake_length + " pieces long</span>";
-	d += "<br><span id ='best'>HIGH SCORE: " + getScore(gametype);
-	d += "<br>MOST FRUIT: " + getFruitScore(gametype) + "</span>";
+	document.getElementById('points').innerHTML = "<p><span class = 'name'>CURRENT SCORE</span>: <span class = 'amt'>" + score + "</span><br> <span class = 'name'>FRUIT TAKEN</span>: <span class = 'amt'>" + taken + "</span><br> <span class = 'name'>FRUIT VALUE</span>: " 
+												+ Math.floor(fruitvalue) + "<br><span class = 'name'>SNAKE LENGTH</span>: " + snake_length + " pieces long";
+	document.getElementById('best').innerHTML = "<p>HIGH SCORE: " + getScore(gametype) + "<br>MOST FRUIT: " + getFruitScore(gametype) + "</p>";
 
 	if (gametype != games.at(-1).name && getFruitScore(gametype) < scoreToContinue(gametype))
-		d += "<br><span id = 'req'> Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.</span>";
-	
-	document.getElementById("overview").innerHTML = d;
+		document.getElementById('req').innerHTML = "Collect " + (scoreToContinue(gametype) - taken) + " fruit to progress.";
+	else document.getElementById('req').innerHTML = "Dev Score: " + games[games.findIndex(g => g.name === gametype)].dev + " fruit";
 }
 
 function draw() {
@@ -196,7 +219,8 @@ function draw() {
 			else if (at(HEAD, x, y)) ctx.fillStyle = "#f00";
 			else if (at(FRUIT, x, y)) ctx.fillStyle = "#f" + getGrade();
 			else if (at(BOMB, x, y)) {
-				if (flash && frames%100 > 50 && frames%100 < 99) ctx.fillStyle = "fff";
+				var index = bombs.findIndex(cell => cell.x === x && cell.y ===y);
+				if (flash && bombs[index].life%100 > 50 && bombs[index].life%100 < 99) ctx.fillStyle = "fff";
 				else if (redbombs) ctx.fillStyle = "#f00";
 				else ctx.fillStyle = "#000";
 			} else if (at(SNAKE, x, y) || at(MISSILE, x, y)) ctx.fillStyle = "orange";
@@ -249,7 +273,7 @@ function set(num, value, a, b, isOld) {
 			b = emptycells[randpos].y;
 		}
 		if (value == FRUIT || value == BOMB || value == MISSILE || value == EMPTY)
-			if (!at(value, a, b) && isOld == null) getAll(value).push({direction:getDirection(value), x:a, y:b});
+			if (!at(value, a, b) && isOld == null) getAll(value).push({direction:getDirection(value), x:a, y:b, life:0});
 			
 		if (value != EMPTY && at(EMPTY, a, b)) emptycells.splice(emptycells.findIndex(cell => cell.x === a && cell.y === b), 1);
 
@@ -339,7 +363,7 @@ function collectedFruit(x, y, isClone) {
 	playSound();
 	if (isClone != true) { 
 		updateScore();
-		lengthenSnake({x:snake[0].tail.x, y:snake[0].tail.y}, 2);
+		if (!infinite) lengthenSnake({x:snake[0].tail.x, y:snake[0].tail.y}, 2);
 		i--;
 	}
 
@@ -368,7 +392,10 @@ function collision(value, array, i) {
 function resetBoard() {
 	snake[0].s_body.forEach(function(s) { if (!at(FRUIT, s.x, s.y) && !at(WALL, s.x, s.y)) set(1, SNAKE, s.x, s.y, true) });
 	fruit.forEach(function(f) { if (!at(BOMB, f.x, f.y)) set(1, FRUIT, f.x, f.y, true) });
-	bombs.forEach(function(b) { if (!at(SNAKE, b.x, b.y) || movebombs) set(1, BOMB, b.x, b.y, true) });	
+	bombs.forEach(function(b) { 
+		if (flash) b.life++;
+		if (!at(SNAKE, b.x, b.y) || movebombs) set(1, BOMB, b.x, b.y, true) 
+	});	
 	if (clone) snake[1].s_body.forEach(function(c) { set(1, CLONE, c.x, c.y, true) });
 }
 
