@@ -6,7 +6,7 @@ games = [
 	{ name: "Boxed_In", score: 20, title: "Closing In", dev: 37 },
 	{ name: "Infinity", score: 25, title: "And Beyond", dev: 90 },
 	{ name: "Movers", score: 30, title: "Track Star", dev: 28 },
-	{ name: "Portal", score: 18, title: "Portal", dev: 33 },
+	{ name: "Portal", score: 18, title: "Portal", dev: 38 },
 	{ name: "Tick_Tock", score: 30, title: "Tick Tock", dev: 38 },
 	{ name: "Flash", score: 28, title: "Light Switch", dev: 31 },
 	{ name: "Phantom_Snake", score: 16, title: "Phantom Snake", dev: 44 },
