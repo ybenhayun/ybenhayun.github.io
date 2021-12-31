@@ -52,7 +52,7 @@ $(document).ready(function(){
 
 function original() {
 	if (text != null) description = text[0];
-	else description = "I made a fairly straightfoward snake game. Then, I made 15 additional versions that were less straightforward. Take a look! Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!";
+	else description = "This is SNAKE, with 15 alternate versions. Take a look! Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!";
 
 	$("#inst").html(description);
 	$("#descr").html("Want to try a different level? Place your mouse over a level to see what you're in for.");

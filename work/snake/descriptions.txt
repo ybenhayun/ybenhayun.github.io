@@ -1,4 +1,4 @@
-Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!
+This is SNAKE, with 15 alternate versions. Take a look! Use the arrows keys to move around the grid. Collect as many fruit as you can without hitting yourself (walls are ok). Good luck!
 No tricks here. This is the same classic game you played on your Nokia cell phone.
 This little snake loves fruit, but he seems to leave some nasty things behind as he slithers around...
 Look, telling colors apart can be tough for some of us. And sometimes that can kill you.
