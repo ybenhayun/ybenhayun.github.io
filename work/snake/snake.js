@@ -85,7 +85,6 @@ function main() {
 	canvas.width = COLS*20;
 	canvas.height = ROWS*20;
 	ctx = canvas.getContext("2d");
-	//document.body.appendChild(canvas);
 
 	keystate = {};
 	document.addEventListener("keydown", function(evt) {
@@ -97,14 +96,12 @@ function main() {
 
 	document.querySelectorAll("button").forEach(function(el) {
 		el.addEventListener("mouseover", function() {
-			console.log("mouseover " + el.id);
 			var index = games.findIndex(cell => cell.name === el.id);
 			if (text != null) document.getElementById("descr").innerHTML = "<span class = 'name'>" + games[index].title.toUpperCase() + "</span>: " + text[index+1];
 			else document.getElementById("descr").innerHTML = "This would be new text!";
 		});
 
 		el.addEventListener("mouseout", function() {
-			console.log("mouseout " + el.id);
 			var index = games.findIndex(cell => cell.name === gametype);
 			if (text != null) document.getElementById("descr").innerHTML = "<span class = 'name'>" + games[index].title.toUpperCase() + "</span>: " + text[index+1];
 			else document.getElementById("descr").innerHTML = "Back to the original!";
