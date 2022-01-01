@@ -3,7 +3,8 @@ var timer = 0;
 
 function moveSnake() {
 	var nodirection = false;
-	var max = 10;
+	if (emptycells.length < ROWS*2) max = emptycells.length;
+	else max = 10;
 
 	snakespeed = 1; //speed up snake for snakebot
 	sx = snake[0].head.x;
@@ -15,7 +16,7 @@ function moveSnake() {
 	if (timer > 0) timer--;
 
 	outer:
-	for (var i = max; i >= 1; i--) {
+	for (var i = max; i >= 0; i--) {
 		if (atLevel() && ((canGo(towards(), sx, sy, i)  && getsFruit(towards(), sx, sy)) || (canGo(away(), sx, sy, i)  && getsFruit(away(), sx, sy))))  {
 			if (canGo(towards(), sx, sy, i)) sd = towards();
 			else sd = away();
@@ -32,16 +33,58 @@ function moveSnake() {
 			sd = nextDir();
 			turn = false;
 			break outer;
-		} else {
-			var p = 0; //Math.round(Math.random()*3);
-			for (var j = p; j <= p+3; j++) {
-				if (canGo(j%4, sx, sy, i)) {
-					sd = j%4;
-					turn = false;
-					break outer;
-				}
-				if (i == 1 && j == p+3) nodirection = true;
+		} 
+		
+		/* //possible alternate bot code?
+		if (fy < sy) {
+			if (Math.abs(fy - sy) < ROWS/2 && canGo(up, sx, sy, i) && getsFruit(up, sx, sy)) {
+				sd = up;
+				break outer;
+			} else if (canGo(down, sx, sy, i) && getsFruit(down, sx, sy)) { 
+				sd = down;
+				break outer;
 			}
+		} 
+		
+		else if (fy > sy) {
+			if (Math.abs(fy - sy) < ROWS/2 && canGo(down, sx, sy, i) && getsFruit(down, sx, sy)) { 
+				sd = down;
+				break outer;
+			} else if (canGo(up, sx, sy, i) && getsFruit(up, sx, sy)) { 
+				sd = up;
+				break outer;
+			}
+		} 
+		
+		if (fx < sx) {
+			if (Math.abs(fx - sx) < COLS/2 && canGo(left, sx, sy, i) && getsFruit(left, sx, sy)) {
+				sd = left;
+				break outer;
+			} else if (canGo(right, sx, sy, i) && getsFruit(right, sx, sy)){
+				sd = right;
+				break outer;
+			}
+		} 
+		
+		else if (fx > sx) { 
+			if (Math.abs(fx - sx) < COLS/2 && canGo(right, sx, sy, i) && getsFruit(right, sx, sy)){ 
+				sd = right;
+				break outer;
+			} else if (canGo(left, sx, sy, i) && getsFruit(left, sx, sy)) { 
+				sd = left
+				break outer;
+			}
+		}*/ 
+
+
+		var p = Math.round(Math.random()*3);
+		for (var j = p; j <= p+3; j++) {
+			if (canGo(j%4, sx, sy, i)) {
+				sd = j%4;
+				turn = false;
+				break outer;
+			}
+			if (i == 0 && j == p+3) nodirection = true;
 		}
 	}
 
@@ -51,24 +94,24 @@ function moveSnake() {
 		turn = false;
 	}
 
-	clearGrid();
+	resetBoard();
 
 	snake[0].direction = sd;
 	snake[0].head.x = newPosition(SNAKE, snake[0].direction, sx, sy).x;
 	snake[0].head.y = newPosition(SNAKE, snake[0].direction, sx, sy).y;
 	
-	if (at(FRUIT, snake[0].s_body[0].x, snake[0].s_body[0].y)) timer += snake_length;
+	if (at(FRUIT, snake[0].body[0].x, snake[0].body[0].y)) timer += snake_length;
 }
 
 function getBestDir() {
 	var l = mostOptions(left, sx, sy);
-	clearGrid();
+	resetBoard();
 	var r = mostOptions(right, sx, sy);
-	clearGrid();
+	resetBoard();
 	var u = mostOptions(up, sx, sy);
-	clearGrid();
+	resetBoard();
 	var dw = mostOptions(down, sx, sy);
-	clearGrid();
+	resetBoard();
 
 	var max = Math.max(l, r, u ,dw);
 
@@ -84,27 +127,27 @@ function mostOptions(dir, x, y) {
 	else if (dir == up) y = y-1;
 	else if (dir == down) y = y+1;
 
-	if (x > COLS - 1) x = 0;
-	else if (x < 0) x = COLS-1;
-	else if (y > ROWS - 1) y = 0;
-	else if (y < 0) y = ROWS-1;
+	if (x > wall(right)) x = wall(left);
+	else if (x < wall(left)) x = wall(right);
+	else if (y > wall(down)) y = wall(up);
+	else if (y < wall(up)) y = wall(down);
 
 	if (gameOver(x, y) || at(MARKED, x, y)) return 0;
-	if (at(EMPTY, x, y) || at(FRUIT, x, y)) grid.set(MARKED, x, y);
+	grid.set(MARKED, x, y);
 
 	return 1 + mostOptions(left, x, y) + mostOptions(right, x, y) + mostOptions(up, x, y) + mostOptions(down, x, y);
 }
 
 function canGo(dir, x, y, min) {
 	can = getsTail(dir, x, y, 1, min);
-	clearGrid();
+	resetBoard();
 
 	return can;
 }
 
 function getsFruit(dir, x, y) {
 	getfruit = fruitpath(dir, x, y);
-	clearGrid();
+	resetBoard();
 
 	return getfruit;
 }
@@ -115,10 +158,10 @@ function fruitpath(dir, x, y) {
 	else if (dir == up) y = y-1;
 	else if (dir == down) y = y+1;
 	
-	if (x > COLS - 1) x = 0;
-	else if (x < 0)  x = COLS-1;
-	else if (y > ROWS - 1) y = 0;
-	else if (y < 0) y = ROWS-1;
+	if (x > wall(right)) x = wall(left);
+	else if (x < wall(left))  x = wall(right);
+	else if (y > wall(down)) y = wall(up);
+	else if (y < wall(up)) y = wall(down);
 
 	if (at(FRUIT, x, y)) return true;
 
@@ -135,12 +178,12 @@ function getsTail(dir, x, y, count, min) {
 	else if (dir == up) y = y-1;
 	else if (dir == down) y = y+1;
 	
-	if (x > COLS - 1) x = 0;
-	else if (x < 0)  x = COLS-1;
-	else if (y > ROWS - 1) y = 0;
-	else if (y < 0) y = ROWS-1;
+	if (x > wall(right)) x = wall(left);
+	else if (x < wall(left))  x = wall(right);
+	else if (y > wall(down)) y = wall(up);
+	else if (y < wall(up)) y = wall(down);
 
-	if (x == snake[0].s_body.at(-1).x && y == snake[0].s_body.at(-1).y && count > min) return true;
+	if (x == snake[0].body.at(-1).x && y == snake[0].body.at(-1).y && count > min) return true;
 
 	if (gameOver(x, y) || at(MARKED, x, y)) return false;
 
@@ -183,14 +226,7 @@ function nextDir() {
 		return left;
 	}
 }
-
-function clearGrid (){
-	for (var i = 0; i < COLS; i++) {
-		for (var j = 0; j < COLS; j++) {
-			if (at(MARKED, i, j)) grid.set(EMPTY, i, j);
-		}
-	}
-
-	grid.set(FRUIT, fx, fy);
-	//resetBoard();
-}
+/*
+function resetBoard() {
+	resetBoard();
+}*/

@@ -35,28 +35,28 @@ snake = [{
 	direction: null,
 	head: null,	
 	tail: null, 	
-	s_body: null,	
+	body: null,	
 
 	init: function(d, x, y) {
 		this.direction = d;
-		this.s_body = [];
+		this.body = [];
 		this.insert(x, y);
 	},
 
 	atend: function(x, y) {
-		this.s_body.push({x:x, y:y});
-		this.head = this.s_body[0];
-		this.tail = this.s_body.at(-1);
+		this.body.push({x:x, y:y});
+		this.head = this.body[0];
+		this.tail = this.body.at(-1);
 	},
 
 	insert: function(x, y) {
 		// unshift prepends an element to an array
-		this.s_body.unshift({x:x, y:y});
-		this.head = this.s_body[0];
-		this.tail = this.s_body.at(-1);
+		this.body.unshift({x:x, y:y});
+		this.head = this.body[0];
+		this.tail = this.body.at(-1);
 	},
 	remove: function() {
-		return this.s_body.pop();
+		return this.body.pop();
 	}
 }];
 
@@ -151,7 +151,10 @@ function initSnakes() {
 
 		var sp = {x:0, y:Math.round(Math.random()*COLS-1)};
 		snake[s].init(right, sp.x, sp.y);
-		for (var i = 0; i < snake_length; i++) snake[s].insert(sp.x, sp.y);	
+		for (var i = 0; i < snake_length; i++) {
+			snake[s].insert(sp.x, sp.y);	
+			set(1, SNAKE, sp.x, sp.y);
+		}
 	}
 }
 
@@ -203,7 +206,6 @@ function updateScoreboard() {
 
 function draw() {
 	resetBoard();
-
 	var tw = canvas.width/grid.width;
 	var th = canvas.height/grid.height;
 
@@ -216,7 +218,7 @@ function draw() {
 			else if (at(EMPTY, x, y)) ctx.fillStyle = "white";
 			else if (at(HEAD, x, y)) ctx.fillStyle = "red";
 			else if (at(FRUIT, x, y)) ctx.fillStyle = "#f" + getGrade();
-			else if (at(BOMB, x, y)) {
+			else if (at(BOMB, x, y)) { 
 				var index = bombs.findIndex(cell => cell.x === x && cell.y ===y);
 				if (flash && bombs[index].life%100 > 50 && bombs[index].life%100 < 99) ctx.fillStyle = "white";
 				else if (redbombs) ctx.fillStyle = "red";
@@ -226,13 +228,9 @@ function draw() {
 				if (at(CLONEHEAD, x, y)) ctx.fillStyle = "black";
 				else if (at(CLONE, x, y)) ctx.fillStyle = "gray";
 			}
-
-			if (at(WALL, x, y)) {
-				 if (x <= (grid.width-COLS)/2 || y <= (grid.height-ROWS)/2) ctx.fillRect(x*tw, y*th, tw, th);
-				 else ctx.fillRect(x*tw, y*th, tw, th);
-			}
+			
+			if (at(WALL, x, y)) ctx.fillRect(x*tw, y*th, tw, th);
 			else if ((!at(SNAKE, x, y) && !at(CLONE, x, y)) || at(HEAD, x, y) || at(CLONEHEAD, x, y)) ctx.fillRect(x*tw+1, y*th+1, tw-2, th-2);
-
 			else if (at(SNAKE, x, y)) drawSnakes(x , y, tw, th, 0);
 			else if (at(CLONE, x, y)) drawSnakes(x, y, th, tw, 1);
 
@@ -242,9 +240,9 @@ function draw() {
 }
 
 function drawSnakes(x, y, tw, th, i) {
-	var index = snake[i].s_body.findIndex(cell => cell.x === x && cell.y === y)
-	var sx = snake[i].s_body[index].x, sy = snake[i].s_body[index].y;
-	var nx = snake[i].s_body[index-1].x, ny = snake[i].s_body[index-1].y;
+	var index = snake[i].body.findIndex(cell => cell.x === x && cell.y === y)
+	var sx = snake[i].body[index].x, sy = snake[i].body[index].y;
+	var nx = snake[i].body[index-1].x, ny = snake[i].body[index-1].y;
 
 	if (sx == nx) {
 		if ((sy - ny == 1) || (ny - sy > 1)) ctx.fillRect(x*tw+1, y*th-1, tw-2, th);
@@ -258,8 +256,10 @@ function drawSnakes(x, y, tw, th, i) {
 function set(num, value, a, b, isOld) {
 	for (var count = 0; count < num; count++) {
 		if ((a == null || b == null) || num > 1) {
+
 			do { var randpos = Math.round(Math.random()*(emptycells.length-1));
 			} while (cantPlace(emptycells[randpos].x, emptycells[randpos].y, value));
+
 			a = emptycells[randpos].x;
 			b = emptycells[randpos].y;
 		}
@@ -273,8 +273,34 @@ function set(num, value, a, b, isOld) {
 }
 
 function cantPlace(x, y, value) {
-	return (((x == snake[0].head.x || y == snake[0].head.y) && value == BOMB)  //dont place bomb right in front of you
-	|| (walls && (x <= (grid.width-COLS)/2 || x >= (COLS-1+(grid.width-COLS)/2) || y <= (grid.height-ROWS)/2 || y >= (ROWS-1+(grid.height-ROWS)/2))));  //dont place fruit in the walls
+	if (value == FRUIT && bomb) var options = getsToSnake(left, x, y) + getsToSnake(right, x, y) + getsToSnake(up, x, y) + getsToSnake(down, x, y);
+	if (options < 2) return true;
+
+	return ((x == snake[0].head.x || y == snake[0].head.y) && value == BOMB) //dont place bomb right in front of you
+	|| (walls && (x == wall(left) || x == wall(right) || y == wall(up) || y == wall(down)))  //dont place fruit on edge during walls
+	&& emptycells.length > ROWS; // if youre running out of space put it wherever so the game doesnt crash
+}
+
+function getsToSnake(dir, x, y) {
+	if (dir == left) x = x-1; 
+	else if (dir == right) x = x+1;
+	else if (dir == up) y = y-1;
+	else if (dir == down) y = y+1;
+	
+	if (x > wall(right)) x = wall(left);
+	else if (x < wall(left))  x = wall(right);
+	else if (y > wall(down)) y = wall(up);
+	else if (y < wall(up)) y = wall(down);
+
+	if (at(SNAKE, x, y)) {
+		resetBoard();
+		return true;
+	}
+
+	if (bombs.some(e => e.x === x && e.y === y) || at(MARKED, x, y)) return false;
+	grid.set(MARKED, x, y);
+
+	return getsToSnake(left, x, y) || getsToSnake(right, x, y) || getsToSnake(up, x, y) || getsToSnake(down, x, y);
 }
 
 function move(object) {
@@ -304,17 +330,17 @@ function moveClone() {
 	var headdir = snake[1].direction;
 	if (frames < 50) snake[1].direction = right;
 
-	else if (fruit[0].y < snake[1].head.y && frames > 30) {
-		if (Math.abs(fruit[0].y - snake[1].head.y) < ROWS/2 && fruit[0].y != snake[1].head.y) snake[1].direction = up;
+	else if (fruit[0].y < snake[1].head.y) {
+		if (Math.abs(fruit[0].y - snake[1].head.y) < ROWS/2) snake[1].direction = up;
 		else snake[1].direction = down;
-	} else if (fruit[0].y > snake[1].head.y && frames > 30) {
-		if (Math.abs(fruit[0].y - snake[1].head.y) < ROWS/2 && fruit[0].y != snake[1].head.y) snake[1].direction = down;
+	} else if (fruit[0].y > snake[1].head.y) {
+		if (Math.abs(fruit[0].y - snake[1].head.y) < ROWS/2) snake[1].direction = down;
 		else snake[1].direction = up;
 	} else if (fruit[0].x < snake[1].head.x) {
-		if (Math.abs(fruit[0].x - snake[1].head.x) < COLS/2 && fruit[0].x != snake[1].head.x) snake[1].direction = left;
+		if (Math.abs(fruit[0].x - snake[1].head.x) < COLS/2) snake[1].direction = left;
 		else snake[1].direction = right;
 	} else if (fruit[0].x > snake[1].head.x) { 
-		if (Math.abs(fruit[0].x - snake[1].head.x) < COLS/2 && fruit[0].x != snake[1].head.x) snake[1].direction = right;
+		if (Math.abs(fruit[0].x - snake[1].head.x) < COLS/2) snake[1].direction = right;
 		else snake[1].direction = left
 	} 
 
@@ -330,11 +356,11 @@ function newPosition(value, direction, x, y) {
 	else if (direction == up) y--;
 	else if (direction == down) y++;
 
-	if (x > COLS-1 && value == MISSILE) return null;  //missiles dont wrap around
-	else if (x < (grid.width-COLS)/2) x = COLS-1+(grid.width-COLS)/2;
-	else if (x > COLS-1+(grid.width-COLS)/2) x = (grid.width-COLS)/2;
-	else if (y < (grid.height-ROWS)/2) y = ROWS-1+(grid.height-ROWS)/2;
-	else if (y > ROWS-1+(grid.height-ROWS)/2) y = (grid.height-ROWS)/2;
+	if (x > wall(right) && value == MISSILE) return null;  //missiles dont wrap around
+	else if (x < wall(left)) x = wall(right);
+	else if (x > wall(right)) x = wall(left);
+	else if (y < wall(up)) y = wall(down);
+	else if (y > wall(down)) y = wall(up);
 
 	return {direction:direction, x:x, y:y};
 }
@@ -386,13 +412,15 @@ function collision(value, array, i) {
 }
 
 function resetBoard() {
-	snake[0].s_body.forEach(function(s) { if (!at(FRUIT, s.x, s.y) && !at(WALL, s.x, s.y)) set(1, SNAKE, s.x, s.y, true) });
+	emptycells.forEach(function(e) { set(1, EMPTY, e.x, e.y, true) });
+	missiles.forEach(function(m) { set(1, MISSILE, m.x, m.y, true) });
+	snake[0].body.forEach(function(s) { if (!at(FRUIT, s.x, s.y) && !at(WALL, s.x, s.y)) set(1, SNAKE, s.x, s.y, true) });
 	fruit.forEach(function(f) { if (!at(BOMB, f.x, f.y)) set(1, FRUIT, f.x, f.y, true) });
 	bombs.forEach(function(b) { 
 		if (flash) b.life++;
 		if (!at(SNAKE, b.x, b.y) || movebombs) set(1, BOMB, b.x, b.y, true) 
 	});	
-	if (clone) snake[1].s_body.forEach(function(c) { set(1, CLONE, c.x, c.y, true) });
+	if (clone) snake[1].body.forEach(function(c) { set(1, CLONE, c.x, c.y, true) });
 }
 
 function getGameAttributes() {
@@ -418,11 +446,12 @@ function getGameAttributes() {
 function gameReset() {
 	unlockGames();
 	if (clone) snake.pop();  //get rid of clone snake before next game
-	if (!confirm("Press OK to play again. Press cancel to pick another level.")) location.reload();
+	if (!confirm("You died with " + taken + " fruit. Press OK to play again. Press cancel to pick another level.")) location.reload();
 }
 
 function gameOver(x, y) {
 	return at(SNAKE, x, y) || at(BOMB, x, y);
+	//return bombs.some(e => e.x === x && e.y === y) || snake[0].body.filter(e => e.x === x && e.y === y).length > 1;
 }
 
 function at(value, x, y) {
@@ -452,7 +481,7 @@ function getAll(value) {
 
 function lengthenSnake(tail, growth_rate) {
 	for (var i = 0; i < growth_rate; i++){			
-		set(1, SNAKE, tail.x, tail.y);
+		if (at(EMPTY, tail.x, tail.y)) set(1, SNAKE, tail.x, tail.y);
 		snake[0].atend(tail.x, tail.y);
 	} 
 
@@ -503,8 +532,7 @@ function shrinkBoard() {
 		set(1, WALL, wall(right), i);
 	}
 	
-	ROWS -= 2;
-	COLS -= 2;
+	ROWS = COLS -= 2;
 }
 
 function wall(side) {
