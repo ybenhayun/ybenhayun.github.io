@@ -1,5 +1,4 @@
 function moveSnake(){
-	//set direction
 	if ((keystate[larrow]) && snake[0].direction != right) snake[0].direction = left;
 	else if ((keystate[rarrow]) && snake[0].direction != left) snake[0].direction = right;
 	else if ((keystate[uarrow]) && snake[0].direction != down) snake[0].direction = up;

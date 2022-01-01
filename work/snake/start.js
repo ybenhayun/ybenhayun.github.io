@@ -14,11 +14,8 @@ games = [
 	{ name: "Frogger", score: 15, title: "Frogger", dev: 19 },
 	{ name: "Good_Luck", score: 13, title: "Good Luck", dev: 15 },
 	{ name: "Shots_Fired", score: 12, title: "Shots Fired", dev: 27 },
-	{ name: "No_Survivors", score: 20, title: "No Survivors", dev: 12 },
+	{ name: "No_Survivors", score: 16, title: "No Survivors", dev: 12 },
 ];
-
-var text = null;
-var orig;
 
 $(document).ready(function(){
 	readDescriptions();
@@ -67,7 +64,7 @@ function createButtons() {
 }
 
 function readDescriptions() {
-
+	text = null;
 	var txtFile = new XMLHttpRequest();
 	txtFile.open("GET", "descriptions.txt", true);
 	txtFile.onreadystatechange = function() {

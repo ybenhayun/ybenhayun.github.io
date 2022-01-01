@@ -121,7 +121,7 @@ function loop() {
 function init() {
 	beammeup = false;
 	frames = score = taken = 0, fruitvalue = 250;
-	COLS = ROWS = 26, snake_length = snakecount = 4;
+	COLS = ROWS = 26, snake_length = 4;
 	bombs = [], missiles = [], fruit = [], emptycells = [];
 	reset = false, gamecounter++;
 
@@ -140,11 +140,9 @@ function init() {
 }
 
 function initSnakes() {
-	if (clone) count = 2;
-	else count = 1;
 	if (snake.length > 1) snake.pop(); //max 2 snakes in array
 
-	for (var s = 0; s < count; s++) {
+	for (var s = 0; s < 1+clone; s++) {
 		if (s > 0) { 
 			var double = Object.create(snake[0]);
 			snake.push(double);
@@ -163,7 +161,10 @@ function update() {
 	if (movefruit && timeToMove(FRUIT)) move(FRUIT);
 	if (movebombs && timeToMove(BOMB)) move(BOMB);
 	if (hasmissiles && timeToMove(MISSILE)) move(MISSILE);
-	if (reset) return setGame(gametype);
+	if (reset) { 
+		gameReset();
+		return setGame(gametype);
+	} 
 
 	snake.forEach(function(s, i) {
 		if ((timeToMove(SNAKE) && i == 0) || (timeToMove(CLONE) && i == 1)) {
@@ -212,14 +213,14 @@ function draw() {
 	for (var x = 0; x < grid.width; x++) {
 		for (var y = 0; y < grid.height; y++) {
 			if (at(WALL, x ,y)) ctx.fillStyle = "#2b2b2b";
-			else if (at(EMPTY, x, y)) ctx.fillStyle = "#fff";
-			else if (at(HEAD, x, y)) ctx.fillStyle = "#f00";
+			else if (at(EMPTY, x, y)) ctx.fillStyle = "white";
+			else if (at(HEAD, x, y)) ctx.fillStyle = "red";
 			else if (at(FRUIT, x, y)) ctx.fillStyle = "#f" + getGrade();
 			else if (at(BOMB, x, y)) {
 				var index = bombs.findIndex(cell => cell.x === x && cell.y ===y);
-				if (flash && bombs[index].life%100 > 50 && bombs[index].life%100 < 99) ctx.fillStyle = "fff";
-				else if (redbombs) ctx.fillStyle = "#f00";
-				else ctx.fillStyle = "#000";
+				if (flash && bombs[index].life%100 > 50 && bombs[index].life%100 < 99) ctx.fillStyle = "white";
+				else if (redbombs) ctx.fillStyle = "red";
+				else ctx.fillStyle = "black";
 			} else if (at(SNAKE, x, y) || at(MISSILE, x, y)) ctx.fillStyle = "orange";
 			else if (clone) {
 				if (at(CLONEHEAD, x, y)) ctx.fillStyle = "black";
@@ -232,10 +233,8 @@ function draw() {
 			}
 			else if ((!at(SNAKE, x, y) && !at(CLONE, x, y)) || at(HEAD, x, y) || at(CLONEHEAD, x, y)) ctx.fillRect(x*tw+1, y*th+1, tw-2, th-2);
 
-			else {
-				if (at(SNAKE, x, y)) drawSnakes(x , y, tw, th, 0);
-				else if (at(CLONE, x, y)) drawSnakes(x, y, th, tw, 1);
-			}
+			else if (at(SNAKE, x, y)) drawSnakes(x , y, tw, th, 0);
+			else if (at(CLONE, x, y)) drawSnakes(x, y, th, tw, 1);
 
 			ctx.stroke();
 		}
@@ -253,19 +252,14 @@ function drawSnakes(x, y, tw, th, i) {
 	} else if (sy == ny) {
 		if ((sx - nx == 1) || (nx - sx > 1)) ctx.fillRect(x*tw-1, y*th+1, tw, th-2);
 		else if ((nx - sx == 1) || (sx - nx > 1)) ctx.fillRect(x*tw+1, y*th+1, tw, th-2);
-	} else {
-		ctx.fillRect(x*tw+1, y*th+1, tw-2, th-2);
-	}
+	} 
 }
 
 function set(num, value, a, b, isOld) {
 	for (var count = 0; count < num; count++) {
 		if ((a == null || b == null) || num > 1) {
 			do { var randpos = Math.round(Math.random()*(emptycells.length-1));
-			} while (((emptycells[randpos].x == snake[0].head.x || emptycells[randpos].y == snake[0].head.y) && value == BOMB)
-					|| (walls && (emptycells[randpos].x <= (grid.width-COLS)/2 || emptycells[randpos].x >= (COLS-1+(grid.width-COLS)/2) 
-					|| emptycells[randpos].y <= (grid.height-ROWS)/2 || emptycells[randpos].y >= (ROWS-1+(grid.height-ROWS)/2))));
-					//dont place on same cell as snake head or on edges if playing w/ walls
+			} while (cantPlace(emptycells[randpos].x, emptycells[randpos].y, value));
 			a = emptycells[randpos].x;
 			b = emptycells[randpos].y;
 		}
@@ -276,6 +270,11 @@ function set(num, value, a, b, isOld) {
 
 		grid.set(value, a, b);
 	}
+}
+
+function cantPlace(x, y, value) {
+	return (((x == snake[0].head.x || y == snake[0].head.y) && value == BOMB)  //dont place bomb right in front of you
+	|| (walls && (x <= (grid.width-COLS)/2 || x >= (COLS-1+(grid.width-COLS)/2) || y <= (grid.height-ROWS)/2 || y >= (ROWS-1+(grid.height-ROWS)/2))));  //dont place fruit in the walls
 }
 
 function move(object) {
@@ -497,13 +496,20 @@ function getGrade() {
 }
 
 function shrinkBoard() {
-	for (var i = (grid.height-ROWS)/2; i < ROWS+(grid.height-ROWS)/2; i++) {
-		set(1, WALL, i, (grid.height-ROWS)/2);
-		set(1, WALL, i, ROWS-1+(grid.height-ROWS)/2);
-		set(1, WALL, (grid.width-COLS)/2, i);
-		set(1, WALL, COLS-1+(grid.width-COLS)/2, i);
+	for (var i = wall(up); i <= wall(down); i++) {
+		set(1, WALL, i, wall(up));
+		set(1, WALL, i, wall(down));
+		set(1, WALL, wall(left), i);
+		set(1, WALL, wall(right), i);
 	}
 	
 	ROWS -= 2;
 	COLS -= 2;
+}
+
+function wall(side) {
+	if (side == left) return (grid.width-COLS)/2;
+	if (side == right) return COLS-1+(grid.width-COLS)/2;
+	if (side == up) return (grid.height-ROWS)/2;
+	if (side == down) return ROWS-1+(grid.height-ROWS)/2;
 }
