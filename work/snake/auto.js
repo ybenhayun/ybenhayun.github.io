@@ -5,6 +5,7 @@ function moveSnake() {
 	var nodirection = false;
 	if (emptycells.length < ROWS*2) max = emptycells.length;
 	else max = 10;
+	min = 3;
 
 	snakespeed = 1; //speed up snake for snakebot
 	sx = snake[0].head.x;
@@ -14,9 +15,8 @@ function moveSnake() {
 	fy = fruit[0].y;
 
 	if (timer > 0) timer--;
-
 	outer:
-	for (var i = max; i >= 0; i--) {
+	for (var i = max; i >= min; i--) {
 		if (atLevel() && ((canGo(towards(), sx, sy, i)  && getsFruit(towards(), sx, sy)) || (canGo(away(), sx, sy, i)  && getsFruit(away(), sx, sy))))  {
 			if (canGo(towards(), sx, sy, i)) sd = towards();
 			else sd = away();
@@ -84,7 +84,7 @@ function moveSnake() {
 				turn = false;
 				break outer;
 			}
-			if (i == 0 && j == p+3) nodirection = true;
+			if (i == min && j == p+3) nodirection = true;
 		}
 	}
 
@@ -104,13 +104,13 @@ function moveSnake() {
 }
 
 function getBestDir() {
-	var l = mostOptions(left, sx, sy);
+	var l = mostOptions(left, sx, sy, 1);
 	resetBoard();
-	var r = mostOptions(right, sx, sy);
+	var r = mostOptions(right, sx, sy, 1);
 	resetBoard();
-	var u = mostOptions(up, sx, sy);
+	var u = mostOptions(up, sx, sy, 1);
 	resetBoard();
-	var dw = mostOptions(down, sx, sy);
+	var dw = mostOptions(down, sx, sy, 1);
 	resetBoard();
 
 	var max = Math.max(l, r, u ,dw);
@@ -139,7 +139,7 @@ function mostOptions(dir, x, y) {
 }
 
 function canGo(dir, x, y, min) {
-	can = getsTail(dir, x, y, 1, min);
+	can = getsTail(dir, x, y, 0, min);
 	resetBoard();
 
 	return can;
@@ -183,7 +183,7 @@ function getsTail(dir, x, y, count, min) {
 	else if (y > wall(down)) y = wall(up);
 	else if (y < wall(up)) y = wall(down);
 
-	if (x == snake[0].body.at(-1).x && y == snake[0].body.at(-1).y && count > min) return true;
+	if (x == snake[0].body.at(-1).x && y == snake[0].body.at(-1).y && count >= min) return true;
 
 	if (gameOver(x, y) || at(MARKED, x, y)) return false;
 
