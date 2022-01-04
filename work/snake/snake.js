@@ -114,11 +114,11 @@ function loop() {
 }
 
 function init() {
-	beammeup = false;
+	beammeup = reset = false;
 	frames = score = taken = 0, fruitvalue = 250;
 	COLS = ROWS = 26, snake_length = 4;
 	bombs = [], missiles = [], fruit = [], emptycells = [];
-	reset = false, gamecounter++;
+	gamecounter++;
 
 	for (var i = larrow; i <= darrow; i++) keystate[i] = false;
 	grid.init(EMPTY, COLS, ROWS);
@@ -159,10 +159,6 @@ function update() {
 	if (movefruit && timeToMove(FRUIT)) move(FRUIT);
 	if (movebombs && timeToMove(BOMB)) move(BOMB);
 	if (hasmissiles && timeToMove(MISSILE)) move(MISSILE);
-	if (reset) { 
-		gameReset();
-		return setGame(gametype);
-	} 
 
 	snake.forEach(function(s, i) {
 		if ((timeToMove(SNAKE) && i == 0) || (timeToMove(CLONE) && i == 1)) {
@@ -262,14 +258,14 @@ function set(num, value, a, b, isOld) {
 }
 
 function cantPlace(x, y, value) {
+	if (emptycells.length <= ROWS) return false;
 	if (value == FRUIT && bomb) var options = getsToSnake(left, x, y) + getsToSnake(right, x, y) + getsToSnake(up, x, y) + getsToSnake(down, x, y);   //dont place fruit inside bombs
 	if (options < 2) return true;
 
-	if (value == FRUIT && portal && fruit.length == 2 && (x == fruit[1].x || y == fruit[1].y)) return true;      //dont place portals on same line
+	if (value == FRUIT && portal && fruit.length >= 1 && (fruit.some(e => e.x === x || e.y === y))) return true;      //dont place portals on same line
 
-	return ((x == snake[0].head.x || y == snake[0].head.y) && value == BOMB) //dont place bomb right in front of you
-	|| (walls && (x == wall(left) || x == wall(right) || y == wall(up) || y == wall(down)))  //dont place fruit on edge during walls
-	&& emptycells.length > ROWS; // if youre running out of space put it wherever so the game doesnt crash
+	return (x == snake[0].head.x || y == snake[0].head.y) //dont place bomb right in front of you
+	|| (walls && (x == wall(left) || x == wall(right) || y == wall(up) || y == wall(down)));  //dont place fruit on edge during walls
 }
 
 function getsToSnake(dir, x, y) {
@@ -346,7 +342,7 @@ function timeToMove(object) {
 	if (object == SNAKE) return frames%snakespeed == 0;
 	else if (object == CLONE) return frames%(snakespeed+8) == 0;
 	else if (object == MISSILE) return frames%5 == 0;
-	else if (object == BOMB) return (frog) ? (frames%4 == 0 && frames%100 > 30 && frames%100 < 60) : ((frames+2)%20 == 0);
+	else if (object == BOMB) return (frog) ? ((frames+2)%5 == 0 && frames%100 > 30 && frames%100 < 60) : ((frames+2)%20 == 0);
 	else if (object == FRUIT) return (frog) ? (frames%4 == 0 && frames%100 > 30 && frames%100 < 60) : (frames%4 == 0);
 }
 
@@ -375,10 +371,7 @@ function collision(value, array, i) {
 	} else if (value == FRUIT) { 
 		collectedFruit(snake[0].head.x, snake[0].head.y);
 		set(1, SNAKE, snake[0].head.x, snake[0].head.y);
-	} else if (value == BOMB) {
-		reset = true;
-		gameReset();
-	}
+	} else if (value == BOMB) reset = true;
 }
 
 function resetBoard() {

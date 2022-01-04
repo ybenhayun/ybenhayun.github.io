@@ -1,20 +1,20 @@
 games = [
-	{ name: "Classic", score: 0, title: "Classic", dev: 126 },
-	{ name: "Bombs", score: 30, title: "Bombs", dev: 38 },
-	{ name: "Colorblind", score: 20, title: "Colorblind", dev: 31 },
+	{ name: "Classic", score: 30, title: "Classic", dev: 126 },
+	{ name: "Bombs", score: 20, title: "Bombs", dev: 38 },
+	{ name: "Colorblind", score: 18, title: "Colorblind", dev: 31 },
 	{ name: "20/20_Vision", score: 18, title: "20/20 Vision", dev: 35 },
-	{ name: "Boxed_In", score: 20, title: "Closing In", dev: 37 },
-	{ name: "Infinity", score: 25, title: "And Beyond", dev: 90 },
-	{ name: "Movers", score: 30, title: "Track Star", dev: 28 },
-	{ name: "Portal", score: 18, title: "Portal", dev: 47 },
-	{ name: "Tick_Tock", score: 30, title: "Tick Tock", dev: 38 },
-	{ name: "Flash", score: 28, title: "Light Switch", dev: 31 },
-	{ name: "Phantom_Snake", score: 16, title: "Phantom Snake", dev: 44 },
-	{ name: "Dodge", score: 25, title: "Dodgeball", dev: 21 },
-	{ name: "Frogger", score: 15, title: "Frogger", dev: 19 },
-	{ name: "Good_Luck", score: 13, title: "Good Luck", dev: 15 },
-	{ name: "Shots_Fired", score: 12, title: "Shots Fired", dev: 27 },
-	{ name: "No_Survivors", score: 16, title: "No Survivors", dev: 12 },
+	{ name: "Boxed_In", score: 25, title: "Closing In", dev: 37 },
+	{ name: "Infinity", score: 30, title: "And Beyond", dev: 90 },
+	{ name: "Movers", score: 18, title: "Track Star", dev: 28 },
+	{ name: "Portal", score: 30, title: "Portal", dev: 47 },
+	{ name: "Tick_Tock", score: 28, title: "Tick Tock", dev: 38 },
+	{ name: "Flash", score: 16, title: "Light Switch", dev: 31 },
+	{ name: "Phantom_Snake", score: 25, title: "Phantom Snake", dev: 44 },
+	{ name: "Dodge", score: 15, title: "Dodgeball", dev: 21 },
+	{ name: "Frogger", score: 13, title: "Frogger", dev: 19 },
+	{ name: "Good_Luck", score: 12, title: "Good Luck", dev: 15 },
+	{ name: "Shots_Fired", score: 16, title: "Shots Fired", dev: 27 },
+	{ name: "No_Survivors", score: 0, title: "No Survivors", dev: 12 },
 ];
 
 $(document).ready(function(){
@@ -81,7 +81,7 @@ function readDescriptions() {
 
 function unlockGames() {
 	for (i = 0; i < games.length-1; i++) {
-		if (getFruitScore(games[i].name) >= games[i+1].score) { 
+		if (getFruitScore(games[i].name) >= games[i].score) { 
 			document.getElementById(games[i+1].name).disabled = false;
 			document.getElementById(games[i+1].name).innerHTML =  games[i+1].title;
 		} else { 
@@ -92,7 +92,7 @@ function unlockGames() {
 }
 
 function scoreToContinue(gametype) {
-	return games[games.map(function(e) { return e.name; }).indexOf(gametype)+1].score;
+	return games[games.map(function(e) { return e.name; }).indexOf(gametype)].score;
 }
 
 function getScore(gametype) {
