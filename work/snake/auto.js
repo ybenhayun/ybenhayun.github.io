@@ -1,10 +1,4 @@
-var turn = false;
-
 function moveSnake() {
-	var nodirection = false;
-	if (emptycells.length < ROWS*2) max = emptycells.length;
-	else max = 10;
-	min = 2;
 
 	snakespeed = 1; //speed up snake for snakebot
 	sx = snake[0].head.x;
@@ -13,44 +7,39 @@ function moveSnake() {
 	fx = fruit[0].x;
 	fy = fruit[0].y;
 
-	outer:
-	for (var i = max; i >= min; i--) {
-		if (atLevel() && ((canGo(towards(), sx, sy, i)  && getsFruit(towards(), sx, sy)) || (canGo(away(), sx, sy, i)  && getsFruit(away(), sx, sy))))  {
-			if (canGo(towards(), sx, sy, i) && getsFruit(towards(), sx, sy)) sd = towards();
-			else sd = away();
-			turn = false;
-			break outer;
-		}  else if (headingTowards() && canGo(sd, sx, sy, i) && getsFruit(sd, sx, sy)) {
-			turn = false;
-			break outer;
-		} else if (headingAway() && canGo(nextDir(), sx, sy, i) && getsFruit(nextDir(), sx, sy)) {
-			sd = nextDir();
-			turn = true;
-			break outer;
-		} else if (headingTowards() && canGo(nextDir(), sx, sy, i) && getsFruit(nextDir(), sx, sy) && turn) {
-			sd = nextDir();
-			turn = false;
-			break outer;
-		} 
+	var l = canGo(next(sx, left), sy, true);
+	var r = canGo(next(sx, right), sy, true);
+	var u = canGo(sx, next(sy, up), true);
+	var dw = canGo(sx, next(sy, down), true);
+	
+	arry = [l, r, u, dw];
 
-		var p = Math.round(Math.random()*3);
-		for (var j = p; j <= p+3; j++) {
-			if (canGo(j%4, sx, sy, i)) {
-				sd = j%4;
-				turn = false;
-				break outer;
-			}
-			if (i == min && j == p+3) nodirection = true;
+	if (arry.filter(Number).length > 0) {
+		if (emptycells.length >= ROWS*COLS*.10) var spaces = Math.min.apply(Math, arry.filter(Number));
+		else var spaces = Math.max.apply(Math, arry.filter(Number));
+
+		if (spaces == l) sd = left;
+		else if (spaces == r) sd = right;
+		else if (spaces == u) sd = up;
+		else if (spaces == dw) sd = down;
+	} else {
+		var l = canGo(next(sx, left), sy, false);
+		var r = canGo(next(sx, right), sy, false);
+		var u = canGo(sx, next(sy, up), false);
+		var dw = canGo(sx, next(sy, down), false);
+
+		arry = [l, r, u, dw];
+		var spaces = Math.max.apply(Math, arry.filter(Number));
+
+		if (spaces == l) sd = left;
+		else if (spaces == r) sd = right;
+		else if (spaces == u) sd = up;
+		else if (spaces == dw) sd = down;
+		else {
+			console.log('dying');
+			sd = getBestDir();
 		}
 	}
-
-	if (nodirection) {
-		console.log('dying');
-		sd = getBestDir();
-		turn = false;
-	}
-
-	resetBoard();
 
 	snake[0].direction = sd;
 	snake[0].head.x = newPosition(SNAKE, snake[0].direction, sx, sy).x;
@@ -58,14 +47,16 @@ function moveSnake() {
 }
 
 function getBestDir() {
-	var l = mostOptions(left, sx, sy, 1);
-	resetBoard();
-	var r = mostOptions(right, sx, sy, 1);
-	resetBoard();
-	var u = mostOptions(up, sx, sy, 1);
-	resetBoard();
-	var dw = mostOptions(down, sx, sy, 1);
-	resetBoard();
+	var newgrid = new Array(grid.width);
+
+	for (var i = 0; i < newgrid.length; i++) {
+  		newgrid[i] = new Array(grid.height);
+	}
+
+	var l = longestPath(next(sx, left), sy, newgrid, 1);
+	var r = longestPath(next(sx, right), sy, newgrid, 1);
+	var u = longestPath(sx, next(sy, up), newgrid, 1);
+	var dw = longestPath(sx, next(sy, down), newgrid, 1);
 
 	var max = Math.max(l, r, u ,dw);
 
@@ -75,28 +66,170 @@ function getBestDir() {
 	if (max == dw) return down;
 }
 
-function mostOptions(dir, x, y) {
-	if (dir == left) x = x-1; 
-	else if (dir == right) x = x+1;
-	else if (dir == up) y = y-1;
-	else if (dir == down) y = y+1;
+function longestPath(x, y, board) {
+	if (gameOver(x, y)) return 0;
 
-	if (x > wall(right)) x = wall(left);
-	else if (x < wall(left)) x = wall(right);
-	else if (y > wall(down)) y = wall(up);
-	else if (y < wall(up)) y = wall(down);
+	let newgrid = JSON.parse(JSON.stringify(board));
+	newgrid[x][y] = MARKED;
 
-	if (gameOver(x, y) || at(MARKED, x, y)) return 0;
-	grid.set(MARKED, x, y);
+	var stack = [{x:x, y:y}];
+    var path = [];
+    var longPath = [];
 
-	return 1 + mostOptions(left, x, y) + mostOptions(right, x, y) + mostOptions(up, x, y) + mostOptions(down, x, y);
+    while (stack.length) {
+        var curr = stack.pop();
+		newgrid[curr.x][curr.y] = MARKED;
+
+        if (curr !== path[path.length - 1]) path.push(curr);
+
+		var neighbors = exploreLocation(curr);
+		var i = 0;
+
+		if (neighbors.length) {
+			for (neighbor of neighbors) {
+				if(newgrid[neighbor.x][neighbor.y]  != MARKED) {
+    				stack.push(neighbor);
+  				} else i++;
+			}
+		} 
+		if (i == neighbors.length) {
+			if (path.length > longPath.length) {
+                longPath.length = [];
+                for (var i = 0; i < path.length; i++) {
+                    longPath.push(path[i]);
+                }
+            }
+            path.pop();
+            if (path.length) stack.push(path[path.length - 1]);
+		}
+    }
+
+    return longPath.length;
 }
 
-function canGo(dir, x, y, min) {
-	can = getsTail(dir, x, y, 0, min);
-	resetBoard();
+function next(p, dir) {
+	if (dir == right) {
+		p++;
+		if (p > wall(right)) return wall(left);
+	} else if (dir == left) {
+		p--;
+		if (p < wall(left)) return wall(right);
+	} else if (dir == down) {
+		p++;
+		if (p > wall(down)) return wall(up);
+	} else if (dir == up) { 
+		p--;
+		if (p < wall(up)) return wall(down);
+	}
 
-	return can;
+	return p;
+}
+
+function exploreLocation(location) {
+	let x = location.x;
+	let y = location.y;
+	let allNeighbors = [];
+
+	outer:
+	if (portal && at(FRUIT, x, y)) {
+		for (var i = wall(left); i < wall(right); i++) {
+			for (var j = wall(up); j < wall(down); j++) {
+				if (at(FRUIT, i, j) && (i != x || j != y)) {
+					x = i;
+					y = j;
+					break outer;
+				}
+			}
+		}
+	}
+
+	if (!gameOver(x, next(y, up))) allNeighbors.push({ x: x, y: next(y, up) });
+	if (!gameOver(x, next(y, down))) allNeighbors.push({ x: x, y: next(y, down) });
+	if (!gameOver(next(x, left), y)) allNeighbors.push({ x: next(x, left), y: y });
+	if (!gameOver(next(x, right), y)) allNeighbors.push({ x: next(x, right), y: y });
+	
+	return allNeighbors;
+}
+	
+function canGo(x, y, getfruit) {
+	if (gameOver(x, y)) return false;
+	var dist = 1;
+	var start = {x:x, y:y};
+	var newgrid = new Array(grid.width);
+
+	for (var i = 0; i < newgrid.length; i++) {
+		newgrid[i] = new Array(grid.height);
+		for (var j = 0; j < newgrid[i].length; j++) {
+			newgrid[i][j] = [{value:null, parent:null}];
+		}
+	}
+
+	if (getfruit) {
+		dist = toAndFrom(start, "fruit", newgrid);
+		if (dist == 0) return false;
+	}
+
+	var to_tail = toAndFrom(start, "tail", newgrid);
+
+	if (to_tail) {
+		if (getfruit) return dist;
+		return to_tail;
+	}
+	
+	return false;
+}
+
+
+function toAndFrom(start, end, board) {
+	var space = 1;
+
+	var queue = [];
+	queue.push(start);
+		
+	while (queue.length) {
+		var current = queue.shift();
+		board[current.x][current.y].value = MARKED;
+
+		if ((at(FRUIT, current.x, current.y) && end == "fruit") ||
+			(((current.x == next(snake[0].body.at(-1).x, left) && current.y == snake[0].body.at(-1).y) || (current.x == next(snake[0].body.at(-1).x, right) && current.y == snake[0].body.at(-1).y) 
+			|| (current.x == snake[0].body.at(-1).x && current.y == next(snake[0].body.at(-1).y, up)) || (current.x == snake[0].body.at(-1).x && current.y == next(snake[0].body.at(-1).y, down))) && end == "tail"))  {
+				
+			for (var i = 0; i < board.length; i++) {
+			  	for (var j = 0; j < board[i].length; j++) {
+				  	board[i][j].value = null;
+			 	}
+			}
+
+			var nx = current.x;
+			var ny = current.y;
+			while (nx != start.x || ny != start.y) {
+				board[nx][ny].value = MARKED;
+				space++;
+				var p = board[nx][ny].parent;
+				nx = p.x;
+				ny = p.y;
+			} 
+			board[nx][ny].value = MARKED;
+
+			start.x = current.x;
+			start.y = current.y;
+
+			return space;
+		}
+
+		var neighbors = exploreLocation(current);
+
+		for(neighbor of neighbors) {
+  			if(board[neighbor.x][neighbor.y].value != MARKED) {
+    			if (queue.findIndex(item => item.x === neighbor.x && item.y === neighbor.y) == -1) { 
+					queue.push(neighbor);
+					board[neighbor.x][neighbor.y].parent = current;
+				}
+  			} 
+		}
+	}
+
+	return false;
 }
 
 function bombsNearby(x, y, time) {
@@ -131,70 +264,6 @@ function bombsNearby(x, y, time) {
 	}
 
 	return false;
-}
-
-function getsFruit(dir, x, y) {
-	getfruit = fruitpath(dir, x, y);
-	resetBoard();
-
-	return getfruit;
-}
-
-function fruitpath(dir, x, y) {
-	if (dir == left) x = x-1; 
-	else if (dir == right) x = x+1;
-	else if (dir == up) y = y-1;
-	else if (dir == down) y = y+1;
-	
-	if (x > wall(right)) x = wall(left);
-	else if (x < wall(left))  x = wall(right);
-	else if (y > wall(down)) y = wall(up);
-	else if (y < wall(up)) y = wall(down);
-
-	if (at(FRUIT, x, y)) return true;
-
-	if (gameOver(x, y) || at(MARKED, x, y)) return false;
-
-	grid.set(MARKED, x, y);
-
-	return fruitpath(left, x, y) || fruitpath(right, x, y) || fruitpath(up, x, y) || fruitpath(down, x, y);
-}
-
-function getsTail(dir, x, y, count, min) {
-	if (beammeup) {
-		beammeup = false;
-		loop:
-		for (var i = wall(left); i <= wall(right); i++) {
-			for (var j = wall(up); j <= wall(down); j++) {
-				if (at(FRUIT, i, j)) {
-					x = i, y = j;
-					break loop;
-				}
-			}
-		}
-	}
-
-	else if (dir == left) x = x-1; 
-	else if (dir == right) x = x+1;
-	else if (dir == up) y = y-1;
-	else if (dir == down) y = y+1;
-	
-	if (x > wall(right)) x = wall(left);
-	else if (x < wall(left))  x = wall(right);
-	else if (y > wall(down)) y = wall(up);
-	else if (y < wall(up)) y = wall(down);
-
-	if (movebombs && count <= ROWS) {
-		if (bombsNearby(x, y, count)) return false;
-	}
-
-	if (x == snake[0].body.at(-1).x && y == snake[0].body.at(-1).y && count >= min) return true;
-	if (gameOver(x, y) || at(MARKED, x, y)) return false;
-
-	if (at(FRUIT, x, y) && portal) beammeup = true;
-
-	grid.set(MARKED, x, y);
-	return getsTail(left, x, y, count+1, min) || getsTail(right, x, y, count+1, min) || getsTail(up, x, y, count+1, min) || getsTail(down, x, y, count+1, min);
 }
 
 function atLevel() {

@@ -408,7 +408,7 @@ function gameReset() {
 }
 
 function gameOver(x, y) {
-	return at(SNAKE, x, y) || at(BOMB, x, y);
+	return at(SNAKE, x, y) || at(BOMB, x, y) || bombs.some(e => e.x === x && e.y === y) || (snake[0].body.some(e => e.x === x && e.y === y) && (x != snake[0].head.x || y != snake[0].head.y));
 }
 
 function at(value, x, y) {
