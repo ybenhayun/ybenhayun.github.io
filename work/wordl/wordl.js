@@ -29,7 +29,7 @@ $(document).ready(function(){
 
     getWords();
 
-    for (var i = 0; i < text.size; i++) {
+    for (var i = 0; i < text.length; i++) {
         $("#words").append("<p>" + text[i] + "</p>");
     }
 });
