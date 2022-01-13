@@ -28,10 +28,10 @@ $(document).ready(function() {
     $('#wrong_spots').append(wrong_spots_tbl);
     $('table').width(word_length*50);
 
-    $("#words").append(text[0]);
-    for (var i = 0; i < text.length; i++) {
+    if (text != null) $("#words").append(text[0]);
+    /*for (var i = 0; i < text.length; i++) {
         $("#words").append("<p>" + text[i] + "</p>");
-    }
+    }*/
 });
 
 function getWords() {
