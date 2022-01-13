@@ -1,7 +1,8 @@
 var word_length = 5;
 var guesses = 6;
 
-$(document).ready(function(){
+$(document).ready(function() {
+    getWords();
     var correct_tbl = '<table><tr>';
 
     for(var i = 0; i < word_length; i++){
@@ -27,8 +28,7 @@ $(document).ready(function(){
     $('#wrong_spots').append(wrong_spots_tbl);
     $('table').width(word_length*50);
 
-    getWords();
-
+    $("#words").append(text[0]);
     for (var i = 0; i < text.length; i++) {
         $("#words").append("<p>" + text[i] + "</p>");
     }
