@@ -1,5 +1,6 @@
-function moveSnake() {
+const PATH = 10;
 
+function moveSnake() {
 	snakespeed = 1; //speed up snake for snakebot
 	sx = snake[0].head.x;
 	sy = snake[0].head.y;
@@ -153,6 +154,7 @@ function exploreLocation(location) {
 	
 function canGo(x, y, getfruit) {
 	if (gameOver(x, y)) return false;
+
 	var dist = 1;
 	var start = {x:x, y:y};
 	var newgrid = new Array(grid.width);
@@ -175,7 +177,6 @@ function canGo(x, y, getfruit) {
 		if (getfruit) return dist;
 		return to_tail;
 	}
-	
 	return false;
 }
 
@@ -196,20 +197,20 @@ function toAndFrom(start, end, board) {
 				
 			for (var i = 0; i < board.length; i++) {
 			  	for (var j = 0; j < board[i].length; j++) {
-				  	board[i][j].value = null;
+				  	if (board[i][j].value != PATH) board[i][j].value = null;
 			 	}
 			}
 
 			var nx = current.x;
 			var ny = current.y;
 			while (nx != start.x || ny != start.y) {
-				board[nx][ny].value = MARKED;
+				board[nx][ny].value = PATH;
 				space++;
 				var p = board[nx][ny].parent;
 				nx = p.x;
 				ny = p.y;
 			} 
-			board[nx][ny].value = MARKED;
+			board[nx][ny].value = PATH;
 
 			start.x = current.x;
 			start.y = current.y;
@@ -220,7 +221,7 @@ function toAndFrom(start, end, board) {
 		var neighbors = exploreLocation(current);
 
 		for(neighbor of neighbors) {
-  			if(board[neighbor.x][neighbor.y].value != MARKED) {
+  			if(board[neighbor.x][neighbor.y].value == null) {
     			if (queue.findIndex(item => item.x === neighbor.x && item.y === neighbor.y) == -1) { 
 					queue.push(neighbor);
 					board[neighbor.x][neighbor.y].parent = current;
@@ -264,39 +265,4 @@ function bombsNearby(x, y, time) {
 	}
 
 	return false;
-}
-
-function atLevel() {
-	return (fx == sx || fy == sy);
-}
-
-function headingAway() {
-	return (fx > sx && sd == left) || (fx < sx && sd == right) || (fy > sy && sd == up) || (fy < sy && sd == down);
-}
-
-function headingTowards() {
-	return (fx > sx && sd == right) || (fx < sx && sd == left) || (fy > sy && sd == down) || (fy < sy && sd == up);
-}
-
-function towards() {
-	if (fx > sx) return right;
-	if (fx < sx) return left;
-	if (fy > sy) return down;
-	if (fy < sy) return up;
-}
-
-function away() {
-	return (towards()+2)%4
-}
-
-function nextDir() {
-	if (sd == left || sd == right) {
-		if (fy > sy) return down;
-		return up;
-	}
-
-	if (sd == up || sd == down) {
-		if (fx > sx) return right;
-		return left;
-	}
 }
