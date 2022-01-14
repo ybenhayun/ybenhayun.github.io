@@ -1,7 +1,3 @@
-/*table, tr, td {
-    border: 1px solid black;
-}*/
-
 table { 
     width: 250px;
     margin: .5in;
@@ -12,11 +8,73 @@ td {
     padding: 5px;
 }
 
-td > input {
+input {
     width: 100%;
     height: 100%;
+    font-size: 100%;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    caret-color: transparent;
+}
+
+#correct input {
+    background-color: #6AAA64;
+}
+
+#wrong_spots input {
+    background-color: #C9B458;
+}
+
+#exclude input {
+    background-color: #787C7E;
+}
+
+input:focus {
+    background-color: blue;
 }
 
 p {
     margin: 0px;
+}
+
+#left {
+    width: 30%;
+    float: left;
+}
+
+table {
+    margin-left: 0px;
+}
+
+#right {
+    margin-left: 30%;
+}
+
+#word {
+    height: 100%;
+}
+
+ul#list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: calc(100vh - 250px);
+}
+
+ul#best {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 120px;
+}
+
+li {
+    margin-right: 20px;
 }

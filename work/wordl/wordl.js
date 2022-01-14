@@ -5,7 +5,7 @@ $(document).ready(function() {
     var correct_tbl = "<table id = 'corr'><tr>";
 
     for(var i = 0; i < word_length; i++){
-        correct_tbl += "<td><input onkeypress = 'return /[a-z]/i.test(event.key)' type = 'letter' maxlength = '1 size = '1'></td>";
+        correct_tbl += "<td><input onkeypress = 'return /[a-z]/i.test(event.key)' oninput= 'this.value = this.value.toUpperCase()' type = 'letter' maxlength = '1 size = '1'></td>";
     }
 
     correct_tbl +=  '</tr></table>';
@@ -17,7 +17,7 @@ $(document).ready(function() {
     for (var i = 0; i < guesses; i++) {
         wrong_spots_tbl += '<tr>';
         for (var j = 0; j < word_length; j++) {
-            wrong_spots_tbl += "<td><input onkeypress = 'return /[a-z]/i.test(event.key)' type = 'letter' maxlength = '1 size = '1'></td>";
+            wrong_spots_tbl += "<td><input onkeypress = 'return /[a-z]/i.test(event.key)' oninput= 'this.value = this.value.toUpperCase()' type = 'letter' maxlength = '1 size = '1'></td>";
         }
         wrong_spots_tbl += '</tr>';
     }
@@ -26,36 +26,29 @@ $(document).ready(function() {
 
     $('#wrong_spots').append(wrong_spots_tbl);
 
-    $("#exclude").append("<table id = 'excl'><tr><td><input onkeypress = 'return /[a-z]/i.test(event.key)' type = 'letter' size = '1'></td></tr></table>")
+    $("#exclude").append("<table id = 'excl'><tr><td><input onkeypress = 'return /[a-z]/i.test(event.key)' oninput= 'this.value = this.value.toUpperCase()' type = 'letter' size = '1'></td></tr></table>")
 
     $('table').width(word_length*50);
 
     filterList();
-
-    for (var i = 0; i < words.length && i < 100; i++) {
-        $("#words").append("<p>" + words[i] + "</p>");
-    }
 
     $("#clear").click(function() {
         $('input').val('');
         filterList();
     });
 
-    $('#correct').on('change', 'input', function () {
-        filterList();
-    });
+   $("input").keyup(function() {
+       filterList();
 
-    $('#wrong_spots').on('change', 'input', function () {
-        filterList();
-    });
-
-    $('#exclude').on('change', 'input', function () {
-        filterList();
-    });
+        if (this.value.length == this.maxLength) {
+            $(this).parent().next("td").find("input").focus();      
+        }
+   });
 });
 
 function filterList() {
     var filtered = words.slice();
+    filtered = filtered.map(function(x){ return x.toUpperCase(); })
 
     wrongSpots(filtered);
     correctLetters(filtered);
@@ -63,40 +56,85 @@ function filterList() {
 
     var sorted = sortList(filtered);
 
-    document.getElementById("words").innerHTML = "<div id = 'word'>Word List</div>";
+    document.getElementById("list").innerHTML = "";
     for (var i = 0; i < sorted.length && i < 100; i++) { 
-        document.getElementById("words").innerHTML += "<p>" + sorted[i].word + "</p>"; 
+        document.getElementById("list").innerHTML += "<li>" + sorted[i].word + "</li>"; 
     }
 }
 
 function sortList(list) {
+    document.getElementById('best').innerHTML = "";
+    if (!list.length) return [];
+
     var alpha = [];
     var sorted = [];
+    var top_letters = [];
 
-    for (var c = 97; c < 123; c++) {
+    for (var c = 65; c <= 90; c++) {
         alpha[String.fromCharCode(c)] = new Array(word_length+1).fill(0);
     }
 
+    var checked;
     for (var i = 0; i < list.length; i++) {
+        checked = [];
         for (var j = 0; j < word_length; j++) {
             alpha[list[i].charAt(j)][j]++;
-            alpha[list[i].charAt(j)][word_length]++;
+
+            if (checked[list[i].charAt(j)] != true) alpha[list[i].charAt(j)][word_length]++;
+            checked[list[i].charAt(j)] = true;
         }
 
         sorted.push({word:list[i], rank:0});
     }
 
-    var checked = [];
+    for (var i = 0; i < 26; i++) {
+        top_letters.push({letter:String.fromCharCode(i+65), score:alpha[String.fromCharCode(i+65)][word_length]});
+    }
+
+    top_letters.sort((a, b) => (a.score <= b.score) ? 1 : -1);
+
+    for (var c = 0; c < 26; c++) {
+        document.getElementById('best').innerHTML += "<li>" + top_letters[c].letter + " " + parseFloat(top_letters[c].score/list.length*100).toFixed(2) + "%</li>";
+    }
+
+    checked = [];
 
     for (var i = 0; i < sorted.length; i++) {
         for (var j = 0; j < word_length; j++) {
-            if (checked[i + " " + sorted[i].word.charAt(j)] == true) continue;
+            if (checked[i + " " + sorted[i].word.charAt(j)] == true) continue;  //no extra credit to letters with doubles
             sorted[i].rank += alpha[sorted[i].word.charAt(j)][word_length];
             checked[i + " " + sorted[i].word.charAt(j)] = true;
         }
     }
 
     sorted.sort((a, b) => (a.rank <= b.rank) ? 1 : -1);
+
+    var small_list = [];
+    var place = 0;
+    var current = sorted[place].rank;
+
+    for (var i = 0; i < sorted.length; i++) {
+        if (sorted[i].rank == current) {
+            small_list.push(sorted[i]);
+        } else {
+            for (var j = 0; j < small_list.length; j++) {
+                for (var k = 0; k < word_length; k++) {
+                    small_list[j].rank += alpha[small_list[j].word.charAt(k)][k];
+                }
+            } 
+
+            small_list.sort((a, b) => (a.rank <= b.rank) ? 1 : -1);
+
+            for (var j = 0; j < small_list.length; j++) {
+                sorted[j+place] = small_list[j];
+            }
+
+            current = sorted[i].rank;
+            place = i;
+            small_list = [];
+            small_list.push(sorted[i]);
+        }
+    }
 
     return sorted;
 }
