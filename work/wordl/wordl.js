@@ -144,7 +144,7 @@ function sortList(list) {
 
     checked = [];
 
-    if (sorted.length > 50) {
+    if (sorted.length > 25) {
         for (var i = 0; i < sorted.length; i++) {
             for (var j = 0; j < word_length; j++) {
                 if (checked[i + " " + sorted[i].word.charAt(j)] == true) continue;  //no extra credit to letters with doubles
@@ -162,7 +162,7 @@ function sortList(list) {
     var current = sorted[place].rank;
 
     for (var i = 0; i < sorted.length; i++) {
-        if (sorted[i].rank == current) {
+        if (sorted[i].rank == current && i < sorted.length - 1) { 
             small_list.push(sorted[i]);
         } else {
             for (var j = 0; j < small_list.length; j++) {
