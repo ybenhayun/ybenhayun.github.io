@@ -52,12 +52,12 @@ textarea:focus {
 }
 
 #left {
-    width: 30%;
+    width: 550px;
     float: left;
 }
 
 #right {
-    margin-left: 30%;
+    margin-left: 100vw - 550px;
 }
 
 #word {

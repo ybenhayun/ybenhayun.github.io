@@ -1,14 +1,39 @@
 
 body {
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 
+
 #container {
+	display: flex;
+	/*justify-content: center;
+	align-items: center;
+	min-height: 100vh;*/
+	width: 1200px;
+}
+/*
+#screen {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	min-height: 100vh;
-	width: 1200px;
+}
+*/
+#extras {
+	float: left;
+	margin-left: 285px;
+	margin-top: 1px;
+}
+
+#extras > button {
+	width: 250px;
+	height: 50px;
+}
+
+a {
+	text-decoration: none;
+	color: #fafafa;
+	font-weight: bold;
 }
 
 #container > div {
