@@ -31,7 +31,7 @@ $(document).ready(function() {
         if (e.which == 8) {   //backspace
             if (this.value.length == 0) $(this).parent().prev("td").find("input").focus();
             else { 
-                (this.value = '');
+                if (this.value.length == this.maxLength) this.value = '';
                 filterList();
             }
         } else if (e.which == 39) {   //right
