@@ -19,7 +19,7 @@ $(document).ready(function() {
     });
 
     $(document).on('keyup', 'input', function(e) {
-        if (e.which == 8 || e.which == 37 || e.which == 38 || e.which == 39 || e.which == 40) return; 
+        if (e.which == 37 || e.which == 38 || e.which == 39 || e.which == 40) return; 
         if (this.value.length == this.maxLength) {   //entered input
             $(this).parent().next("td").find("input").focus();      
         }
@@ -33,7 +33,6 @@ $(document).ready(function() {
             else { 
                 if (this.value.length == this.maxLength) this.value = '';
             }
-            filterList();
         } else if (e.which == 39) {   //right
             $(this).parent().next("td").find("input").focus();      
         } else if (e.which == 37) {   //left
