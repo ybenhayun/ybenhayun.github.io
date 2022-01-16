@@ -165,6 +165,7 @@ function sortList(list) {
         if (sorted[i].rank == current && i < sorted.length - 1) { 
             small_list.push(sorted[i]);
         } else {
+            if (i == sorted.length - 1) small_list.push(sorted[i]);
             for (var j = 0; j < small_list.length; j++) {
                 for (var k = 0; k < word_length; k++) {
                     small_list[j].rank += alpha[small_list[j].word.charAt(k)][k];
