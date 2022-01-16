@@ -23,7 +23,7 @@ $(document).ready(function(){
 	unlockGames();
 	original();
 
-	$("button").mouseover(
+	$("button").not("#auto").mouseover(
 		function(){
 			if (text != null) $("#descr").html("<span class = 'name'>" + games[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))].title.toUpperCase() + "</span>: " + text[games.map(function(e) { return e.name; }).indexOf($(this).attr('id'))+1]);
 			else $("#descr").html("<span class = 'name'> NAME</span>: This is where your description of your game would go if you could read! But you can't, haha!");
