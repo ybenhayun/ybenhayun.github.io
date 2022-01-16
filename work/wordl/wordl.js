@@ -32,8 +32,8 @@ $(document).ready(function() {
             if (this.value.length == 0) $(this).parent().prev("td").find("input").focus();
             else { 
                 if (this.value.length == this.maxLength) this.value = '';
-                filterList();
             }
+            filterList();
         } else if (e.which == 39) {   //right
             $(this).parent().next("td").find("input").focus();      
         } else if (e.which == 37) {   //left
