@@ -1,6 +1,6 @@
 table { 
     width: 250px;
-    margin: .5in;
+    margin: 0px;
 }
 
 td { 
@@ -28,23 +28,32 @@ input {
 
 #exclude input {
     background-color: #787C7E;
+    caret-color: white;
 }
 
 input:focus {
-    background-color: blue;
+    outline: none;
 }
 
-p {
-    margin: 0px;
+input:focus:not(#exclude input) {
+    height: 120%;
+}
+
+#myRange {
+    width: 80%;
+}
+
+button {
+    float: left;
+}
+
+textarea:focus {
+    outline: none;
 }
 
 #left {
     width: 30%;
     float: left;
-}
-
-table {
-    margin-left: 0px;
 }
 
 #right {

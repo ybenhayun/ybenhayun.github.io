@@ -3,22 +3,26 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel = "stylesheet" type = "text/css" href = "wordl.css">
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   	<script type = "text/javascript" src = "wordl.js"></script>
+    <script type = "text/javascript" src = "words.js"></script>
 	<title>Wordl Calcl</title>
 </head>
 <body>
     <div id = "containter">
         <div id = "left">
+            <input type = "range" min="4" max="11" value = "5" class="slider" id = "myRange">
             <button id = "clear">Reset</button>
-
-            <div id = "correct"><h2>Correct Letters</h2></div>
-            <div id = "wrong_spots"><h2>Correct Letters, Wrong Places</h2></div>
-            <div id = "exclude"><h2>Incorrect Letters</h2></div>
+            
+            <div id = "correct"><h2>Correct Letters</h2><span class = "table"></span></div>
+            <div id = "wrong_spots"><h2>Correct Letters, Wrong Places</h2><span class = "table"></span></div>
+            <div id = "exclude"><h2>Incorrect Letters</h2><span class = "table"></span></div>
         </div>
         <div id = "right">
-            <div id = "letters"><h2>Top Letters</h2><ul id = "best"></ul></div>
-            <div id = "words"><h2>Word List</h2><ul id = "list"></ul></div>
+            <div id = "letters"><h2>Most Common Letters</h2><ul id = "best"></ul></div>
+            <div id = "words"><h2>Word List<span id = "count"></span></h2><ul id = "list"></ul></div>
         </div>
     </div>
 </body>
