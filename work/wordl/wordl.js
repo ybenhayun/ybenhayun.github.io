@@ -19,7 +19,7 @@ $(document).ready(function() {
     });
 
     $(document).on('keyup', 'input', function(e) {
-        if (e.which == 37 || e.which == 38 || e.which == 39 || e.which == 40) return; 
+        if (e.which == 37 || e.which == 38 || e.which == 39 || e.which == 40 || e.which == 8) return; 
         if (this.value.length == this.maxLength) {   //entered input
             $(this).parent().next("td").find("input").focus();      
         }
