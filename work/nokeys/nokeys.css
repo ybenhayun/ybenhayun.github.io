@@ -1,0 +1,91 @@
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(77, 73, 73);
+    flex-direction: column;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 50px;
+    font-weight: bold;
+    color: rgb(235, 221, 221);
+}
+
+#keyboard {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    width: 1200px;
+    transform: perspective(500px) rotateX(20deg);
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+}
+
+.row > div {
+    position: relative;
+    height: 100px;
+    width: 100px;
+    border-radius: 2vh;
+}
+
+.row > div > div {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    border-radius: 2vh;
+}
+
+.spacebar, .row > div > div {
+    background: #2b2b2b;    
+    border-radius: 2vh;
+    border: 1px solid yellow;
+}
+
+.spacebar {
+    width: 400px;
+    height: 60px;
+    margin: auto;
+}
+
+#word {
+    height: 150px;
+    /* width: 300px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#score {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    background: #2b2b2b;
+    color: #fafafa;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 25px;
+    border: 1px solid silver;
+    border-radius: 1vh;
+    padding: 5px;
+}
+
+button:hover {
+    background: #4b4b4b;
+    cursor: pointer;
+}
