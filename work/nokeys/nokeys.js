@@ -8,7 +8,9 @@ $(document).ready(function(){
     $(document).keypress(function(e) {
         if ((e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 97 && e.keyCode <= 122)) {
             var letter = String.fromCharCode(e.which).toUpperCase();
-            $("." + letter).css({ background: "blue" });
+            $("#" + letter).removeClass('backspace');
+            $("#" + letter).addClass('keypress');
+            // changeCSS("#" + letter)
 
             if (!used.includes(letter)) $("#word").append(letter);
         } else if (e.keyCode == 32 || e.keyCode == 13) {
@@ -20,12 +22,13 @@ $(document).ready(function(){
             for (var i = 65; i <= 90; i++) {
                 var letter = String.fromCharCode(i).toUpperCase();
 
-                if ($("." + letter).css("background-color") == "rgb(0, 0, 255)") {
+                if ($("#" + letter).css("background-color") != "rgb(43, 43, 43)") {
                     if (is_word) {
-                        used.push(letter);
-                        $("." + letter).remove();
+                        if (!used.includes(letter)) used.push(letter);
+                        $("#" + letter).remove();
                     } else {
-                        $("." + letter).css({background: "#2b2b2b"});
+                        // resetCSS("#" + letter);
+                        $("#" + letter).removeClass('keypress');
                     }
                 }
             }
@@ -33,8 +36,6 @@ $(document).ready(function(){
             score = 26 - used.length;
             $(".points").html(score + " letters")
         }
-
-        // $("button").unbind();
     });
 
     $(document).keyup(function(e) {
@@ -43,9 +44,13 @@ $(document).ready(function(){
             var letter = word.at(-1);
             $("#word").html(word.slice(0, -1));
 
-            if (!$("#word").html().includes(letter))
-                $("." + letter).css({background: "#2b2b2b"});
-
+            if (!$("#word").html().includes(letter)) {
+                // $("." + letter).css({height: "100%" });
+                // $("." + letter).css({background: "#2b2b2b"});
+                // resetCSS("#" + letter);
+                $("#" + letter).removeClass('keypress');
+                $("#" + letter).addClass('backspace');
+            }
         }
     });
 
@@ -54,21 +59,31 @@ $(document).ready(function(){
     });
 });
 
+function changeCSS(id) {
+    $(id).css({ background: "blue" });
+    $(id).css({ height: "80%" });
+    $(id).css({ fontSize: ".8rem" });
+}
+
+function resetCSS(id) {
+    $(id).css({ background: "#2b2b2b"});
+    $(id).css({ height: "100%" });
+    $(id).css({ fontSize: "1rem" });
+}
+
 function restart() {
-    $(".top").empty();
 
-    for (let i = 0; i < 10; i++) {
-        $(".top").append("<div><div class = " + letters[i] + "> " + letters [i] + " </div></div>");
-    }
+    var row = ".top";
+    $(row).empty();
 
-    $(".middle").empty();
-    for (let i = 10; i < 19; i++) {
-        $(".middle").append("<div><div class = " + letters[i] + "> " + letters [i] + " </div></div>");
-    }
-
-    $(".bottom").empty();
-    for (let i = 19; i < 26; i++) {
-        $(".bottom").append("<div><div class = " + letters[i] + "> " + letters [i] + " </div></div>");
+    for (let i = 0; i < 26; i++) {
+        if (i == 10 || i == 19) {
+            if (i == 10) row = ".middle";
+            else row = ".bottom";
+            
+            $(row).empty();
+        }
+        $(row).append("<div class = 'key'><div id = " + letters[i] + " class = 'letter'> " + letters[i] + " </div></div>");
     }
 
     score = 26;

@@ -1,6 +1,7 @@
 html, body {
     height: 100%;
     width: 100%;
+    font-size: 50px;
 }
 
 body {
@@ -10,7 +11,6 @@ body {
     background: rgb(77, 73, 73);
     flex-direction: column;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 50px;
     font-weight: bold;
     color: rgb(235, 221, 221);
 }
@@ -33,24 +33,28 @@ body {
     width: 100%;
 }
 
-.row > div {
+.key {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
+    aspect-ratio: 1;
     height: 100px;
-    width: 100px;
     border-radius: 2vh;
 }
 
-.row > div > div {
+.letter {
     position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
+    aspect-ratio: 1;
     height: 100%;
-    width: 100%;
     border-radius: 2vh;
+    font-size: 1rem;
 }
 
-.spacebar, .row > div > div {
+.spacebar, .letter {
     background: #2b2b2b;    
     border-radius: 2vh;
     border: 1px solid yellow;
@@ -60,6 +64,36 @@ body {
     width: 400px;
     height: 60px;
     margin: auto;
+}
+
+.keypress {
+    animation: keypress .2s forwards;
+}
+
+.backspace {
+    animation: backspace .2s forwards;
+}
+
+@keyframes keypress {
+    100% {
+        background: blue;
+        height: 80%;
+        font-size: .8rem;
+    }
+}
+
+@keyframes backspace {
+    from {
+        background: blue;
+        height: 80%;
+        font-size: .8rem;
+    }
+
+    to {
+        background: #2b2b2b;
+        height: 100%;
+        font-size: 1rem;
+    }
 }
 
 #word {
@@ -79,7 +113,7 @@ button {
     background: #2b2b2b;
     color: #fafafa;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 25px;
+    font-size: .5rem;
     border: 1px solid silver;
     border-radius: 1vh;
     padding: 5px;
