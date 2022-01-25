@@ -12,7 +12,7 @@ $(document).ready(function(){
 
             if (!used.includes(letter)) $("#word").append(letter);
         } else if (e.keyCode == 32 || e.keyCode == 13) {
-            if (!word_list.includes($("#word").html())) {
+            if (!word_list.includes($("#word").html()) && !word_list.includes($("#word").html().toLowerCase())) {
                 var is_word = false;
             } else is_word = true;
             $("#word").empty();
