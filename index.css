@@ -23,6 +23,8 @@ body {
 	flex-direction: column;
 	background: #92DCE5;
 	padding: 2rem;
+	margin-left: 1rem;
+	margin-right: 1rem;
 	text-align: center;
 }
 
