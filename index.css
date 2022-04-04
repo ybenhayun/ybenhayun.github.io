@@ -17,11 +17,11 @@ body, #container {
 
 body {
 	background: #2B303A;
+	color: #fafafa;
 }
 
 #container {
 	flex-direction: column;
-	background: #92DCE5;
 	padding: 2rem;
 	margin-left: 1rem;
 	margin-right: 1rem;
@@ -42,7 +42,7 @@ body {
 
 .subheading {
 	font-size: 1rem;
-	border-bottom: 1px solid black;
+	border-bottom: 1px solid #fafafa;
 	padding-bottom: 1rem;
 }
 
