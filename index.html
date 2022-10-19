@@ -3,23 +3,136 @@
 <head>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <link rel = "stylesheet" type = "text/css" href = "index.css">
   <title>Yuval BH</title>
 </head>
-<body>
-  <div id ="container">
-  <h1 class = "main">hello, my name's yuval</h1>
-  <h2 class = 'subheading'>(this page is under construction)</h3>
 
-  <!-- <div id = "projects">
-    <h3>in the meantime feel free to check out:</h3>
-    <ul>
-      <li>my near perfect <a href = 'https://ybenhayun.github.io/wordlebot'>wordle bot</a></li>
-      <li><a href = 'https://ybenhayun.github.io/snake16'>snake 16</a> (not your average snake game)</li>
-      <li>a little puzzle i came up with: <a href = 'https://ybenhayun.github.io/cleartheboard'>clear the board</a>. there are at least 11 solutions.</li>
+<body>
+<!-- <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">H</a>
+    </div>
+
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">About</a></li>
+      <li><a href="#">Personal Projects</a></li>
+      <li><a href="#">Contact Me</a></li>
     </ul>
+  </div>
+</nav>
+   -->
+  <div id ="container">
+
+    <h1 class = "main">hello, my name's yuval</h1>
+    <h2 class = 'subheading'>just trying to make something here</h3>
+
+    <!-- <img class = 'face' src="face.png" alt="face"> -->
+
+    <div class="intro">
+      <p class = 'intro top'>Former actor, turned teacher, turned cross country cyclist, turned Tiktok bot maker, turned hopeful software engineer. My life has taken many turns and I was hoping you might help me figure out where it's going next.</p>
+      <!-- <p class="intro bottom">I've always been obsessed with the challenge. There's almost nothing I won't try. Got something for me? Tell me about it. Want to see what I've already faced? Take a look around.</p> -->
+      <p class="intro bottom">This page is currently under construction. Feel free to look at some of my projects in the meantime.</p>
+    </div>
+
+    <div class="projects">
+      <h2 class = 'head'>Personal Projects</h2>
+      <h3 class = 'sub'>just a few of my more recent obsessions</h3>
+      
+      <div class="card-group">
+        
+        <div class="card">
+          <img class = card-img-top src="wordle.png" alt="wordle">
+          <div class="card-body">
+            <div class="card-title">WordleBot</div>
+            <div class="card-text">The best WordleBot on the internet. Capable of Wordles up to 11 letters and 8 different variants.</div>
+            <a target="_blank" href="https://ybenhayun.github.io/wordlebot/" class="btn btn-primary">try it out</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <img class = card-img-top src="weaverbot.png" alt="weaverbot">
+          <div class="card-body">
+            <div class="card-title">WeaverBot</div>
+            <div class="card-text">Give any two 4 letter words, and I'll draw you a graph of all word ladders between them.</div>
+            <a target="_blank" href="https://ybenhayun.github.io/WeaverBot/" class="btn btn-primary">try it out</a>
+          </div>
+        </div>         
+
+        <div class="card">
+          <img class = card-img-top src="snake.png" alt="wordle">
+          <div class="card-body">
+            <div class="card-title">Snake16 <div class = 'desktop'>(desktop only)</div></div>
+            <div class="card-text">Snake, but with 16 different levels. All add something a little different. And yes, there's a bot for it too that plays almost perfectly.</div>
+            <a target="_blank" href="https://ybenhayun.github.io/snake16/" class="btn btn-primary">try it out</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <img class = card-img-top src="keyboard.png" alt="keyboard">
+          <div class="card-body">
+            <div class="card-title">Clear the Board <div class="desktop">(desktop only)</div></div>
+            <div class="card-text">Another word puzzle. So far, I've found 13 valid solutions. CSS is still buggy on mobile, so right now only functional on Desktop.</div>
+            <a target="_blank" href="https://ybenhayun.github.io/cleartheboard/" class="btn btn-primary">try it out</a>
+          </div>
+        </div>        
+        
+
+      </div>
+    </div>
+
+    <!-- <div class="about">
+      <h2>About</h2>
+      <p>So, how did I end up here?</p>
+      <p>I was a Computer Science & Drama double major once upon a time. A unique pairing whose primary use was making people go "Well that's interesting" for the next nine years. Following college, I taught. 
+        I was a high school math teacher for the NYC Department of Education; a decision not a single one of my fellow CS majors shared with me.
+      </p>
+      <p>Towards the end of my teaching career, I started furiously and obsessively coding once again. I was in charge of all things technical
+        and making every possible Google spreadsheet the school could think of, so I was never truly out of practice, but the function flame was only truly reignited after a little game 
+      called Wordle made an appearance. </p>
+      <p>
+        As someone who loves puzzles, I embarked a new puzzle: what is the best possible starting word in a game like Wordle? I was 
+        by no means the first person to ask or even answer this question, but that didn't stop me. I didn't rest until I had arrived at the answer myself. 
+        I kept pushing my code to its limits until I managed the lowest average possible. When that happened, I found ways to keep going. I worked on modifying my code so 
+        it would work for nearly every Wordle variant I could find. I shared my creation to an online audience that has reached millions of people. And I did all of this by myself, five years 
+        out of a CS degree, without even using a single framework outside of vanilla javascript and jquery (mostly because at the time I didn't know anything else). 
+      </p>
+      <p>All this to say, there isn't much I can't teach myself how to do, given enough time and hyperfixation. I have several ideas on what I'd like my next obsession to be, but if you have something in mind, please, let me know. 
+        You'd be hard pressed to give me something I wouldn't try.
+      </p>
+    </div>     -->
+
+    <!-- <div class="contact">
+      <h2>Contact Me</h2>
+
+      <div class="email">
+        <p>Send me a message </p>
+        <form class = "contact-form" action="https://formsubmit.co/ybenhayun@gmail.com" method = "post">
+          <input type="text" name = "name" placeholder="Full name ">
+          <input type="text" name = "email" placeholder="Your e-mail">
+          <input type="text" name = "subject" placeholder="Subject">
+
+          <textarea name="message" placeholder="Message"></textarea>
+          <button type="submit" name="submit">Send Message</button>
+        </form>
+        
+      </div>
+
+      <div class="socials">
+        <div class="logo github"><img src="github.png" alt="github"></div>
+        <div class="logo twitter"><img src="twitter.png" alt="twitter"></div>
+        <div class="logo tiktok"><img src="tiktok.png" alt="tiktok"></div>
+        <div class="logo twitch"><img src="twitch.png" alt="twitch"></div>
+        <div class="logo linkedin"><img src="linkedin.png" alt="linkedin"></div>
+      </div>
+    </div>
+
+  
   </div> -->
 
-  </div>
+
 </body>
 </html>
