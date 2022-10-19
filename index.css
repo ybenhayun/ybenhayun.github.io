@@ -256,5 +256,5 @@ ol {
 }
 
 .card-title:has(> .desktop) {
-	padding-bottom: .5rem;
+	/* padding-bottom: .5rem; */
 }
