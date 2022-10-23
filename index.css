@@ -137,6 +137,8 @@ p {
 .card {
 	width: 49%;
 	color: #2B303A;
+	display: flex;
+	flex-direction: column;
 }
 
 .card-body > * {
@@ -153,7 +155,7 @@ p {
 	height: auto;
 	border-top: none;
 	background-color: #86A59C;
-
+	flex: 1;
 }
 
 .card-text {
