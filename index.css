@@ -102,7 +102,7 @@ a {
 .socials {
 	margin-top: 1rem;
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 }
 
 p {
@@ -259,4 +259,8 @@ ol {
 
 .card-title:has(> .desktop) {
 	/* padding-bottom: .5rem; */
+}
+
+.contact {
+	width: 100%;
 }
