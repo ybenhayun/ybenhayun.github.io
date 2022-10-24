@@ -34,8 +34,8 @@ body {
 	/* margin-right: 1rem; */
 	text-align: center;
 	max-width: 50rem;
-	padding-left: .5rem;
-	padding-right: .5rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
 	margin-bottom: 2rem;
 }
 
@@ -44,7 +44,7 @@ body {
 }
 
 .main {
-	margin-top: 10rem;
+	margin-top: 2rem;
 	font-size: min(7.5rem, 9vw);
 	width: 200%;
 	font-weight: bold;
@@ -263,4 +263,8 @@ ol {
 
 .contact {
 	width: 100%;
+}
+
+.logo {
+	filter: invert(96%) sepia(81%) saturate(37%) hue-rotate(288deg) brightness(108%) contrast(101%);
 }
