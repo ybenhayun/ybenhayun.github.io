@@ -268,3 +268,7 @@ ol {
 .logo {
 	filter: invert(96%) sepia(81%) saturate(37%) hue-rotate(288deg) brightness(108%) contrast(101%);
 }
+
+.logo:hover{
+	filter: none;
+}
