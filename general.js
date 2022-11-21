@@ -18,6 +18,14 @@ function clearHTML(element) {
     element.innerHTML = "";
 }
 
+function setHTML(element, html) {
+    element.innerHTML = html;
+}
+
+function clearValue(element) {
+    element.value = "";
+}
+
 function createElement(object, html, class_name, id) {
     let new_object = document.createElement(object);
     
@@ -36,4 +44,24 @@ function count(string, char) {
     }
 
     return count;
+}
+
+function combineLists(a, b) {
+    return [...new Set(a.concat(b))];
+}
+
+function pluralOrSingle(quantity, singular, plural) {
+    if (quantity == 1) {
+        return singular;
+    }
+
+    return plural;
+}
+
+function intToChar(int) {
+    return String.fromCharCode(int);
+}
+
+function charToInt(char) {
+    return char.charCodeAt(0);
 }
