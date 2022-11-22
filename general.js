@@ -65,3 +65,11 @@ function intToChar(int) {
 function charToInt(char) {
     return char.charCodeAt(0);
 }
+
+function isEmpty(list) {
+    return list.length == 0;
+}
+
+function decimalToPercent(num) {
+    return (num*100).toFixed(2) + "%";
+}
