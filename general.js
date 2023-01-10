@@ -73,3 +73,20 @@ function isEmpty(list) {
 function decimalToPercent(num) {
     return (num*100).toFixed(2) + "%";
 }
+
+function randomElementOf(list) {
+    let index = Math.floor(Math.random()*list.length);
+    return list[index];
+}
+
+function swapDivs(event, elem) {
+    elem.parentNode.insertBefore(elem, event);
+}
+
+function extendArray(array, new_max, value) {
+    for (let i = 0; i < new_max; i++) {
+        if (!array[i]) array[i] = value;
+    }
+
+    return array;
+}
