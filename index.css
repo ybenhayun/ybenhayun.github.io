@@ -26,6 +26,13 @@ body {
     align-items: center;
 }
 
+.screen.top {
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 #container {
 	display: flex;
 	align-items: center;
@@ -45,10 +52,26 @@ body {
 
 .main {
 	margin-top: 2rem;
-	font-size: min(7.5rem, 9vw);
+	font-size: min(9rem, 9vw);
 	width: 200%;
 	font-weight: bold;
+	position: relative;
+	display: flex;
+	justify-content: center;
 }
+
+.main::after {
+	content: "";
+	display: inline-block;
+	background: #3c4351;
+	aspect-ratio: 1;
+	border-radius: 100%;
+	width: 300vw;
+	top: -285vw;
+	position: absolute;
+	z-index: -1;
+}
+
 
 #container > h2::not(.subheading) {
 	font-size: 3.5rem;
